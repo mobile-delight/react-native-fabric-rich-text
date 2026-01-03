@@ -1,6 +1,15 @@
 buildscript {
   ext.getExtOrDefault = {name ->
-    return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['FabricHtmlText_' + name]
+    if (rootProject.ext.has(name)) {
+      return rootProject.ext.get(name)
+    } else if (rootProject.hasProperty(name)) {
+      return rootProject.properties[name]
+    } else if (project.hasProperty('FabricHtmlText_' + name)) {
+      return project.properties['FabricHtmlText_' + name]
+    }
+    // Sensible defaults
+    def defaults = [kotlinVersion: '2.0.21']
+    return defaults[name]
   }
 
   repositories {
@@ -15,20 +24,33 @@ buildscript {
   }
 }
 
+// Detect standalone mode (running tests directly from library)
+def isStandalone = rootProject.name == 'react-native-fabric-html-text'
 
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
 
-apply plugin: "com.facebook.react"
+if (!isStandalone) {
+  apply plugin: "com.facebook.react"
+}
 
 def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["FabricHtmlText_" + name]).toInteger()
+  if (rootProject.ext.has(name)) {
+    return rootProject.ext.get(name)
+  } else if (rootProject.hasProperty(name)) {
+    return rootProject.properties[name].toInteger()
+  } else if (project.hasProperty("FabricHtmlText_" + name)) {
+    return project.properties["FabricHtmlText_" + name].toInteger()
+  }
+  // Sensible defaults for library builds (minSdk 24 required by React Native 0.81+)
+  def defaults = [compileSdkVersion: 35, minSdkVersion: 24, targetSdkVersion: 35]
+  return defaults[name]
 }
 
 android {
-  namespace "com.fabrichtmltext"
+  namespace "io.michaelfay.fabrichtmltext"
 
-  compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
+  compileSdk 35
 
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
@@ -45,13 +67,13 @@ android {
     }
   }
 
-  lintOptions {
+  lint {
     disable "GradleCompatible"
   }
 
   compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
   }
 
   sourceSets {
@@ -60,6 +82,10 @@ android {
         "generated/java",
         "generated/jni"
       ]
+      if (!isStandalone) {
+        // Only include React Native integration files when built as part of RN project
+        java.srcDirs += ["src/main/react"]
+      }
     }
   }
 }
@@ -72,6 +98,52 @@ repositories {
 def kotlin_version = getExtOrDefault("kotlinVersion")
 
 dependencies {
-  implementation "com.facebook.react:react-android"
+  if (isStandalone) {
+    // Standalone mode: use compileOnly to satisfy compilation without runtime dependency
+    compileOnly "com.facebook.react:react-android:0.81.0"
+  } else {
+    // When included in a React Native project, use the project's React Native
+    implementation "com.facebook.react:react-android"
+  }
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation "androidx.appcompat:appcompat:1.7.0"
+  implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20220608.1"
+
+  testImplementation "junit:junit:4.13.2"
+  testImplementation "org.robolectric:robolectric:4.16"
+  testImplementation "androidx.appcompat:appcompat:1.7.0"
+}
+
+// Task to copy custom ShadowNode files over codegen output
+// This enables custom measureContent() for proper Yoga layout measurement
+task copyCustomShadowNodes(type: Copy) {
+  description = "Copy custom ShadowNode implementation over codegen output"
+  from("src/main/jni/react/renderer/components/FabricHTMLTextSpec") {
+    include "ShadowNodes.h"
+    include "ShadowNodes.cpp"
+    include "FabricHTMLTextState.h"
+    include "FabricHTMLTextState.cpp"
+  }
+  into("build/generated/source/codegen/jni/react/renderer/components/FabricHTMLTextSpec")
+}
+
+// Task to copy custom CMakeLists.txt over codegen output
+// This adds the Android log library for __android_log_print support
+task copyCustomCMakeLists(type: Copy) {
+  description = "Copy custom CMakeLists.txt with log library linkage"
+  from("src/main/jni") {
+    include "CMakeLists.txt"
+  }
+  into("build/generated/source/codegen/jni")
+}
+
+// Hook into the build process - run after codegen but before native compile
+afterEvaluate {
+  tasks.matching { it.name.startsWith("generateCodegenArtifacts") }.configureEach {
+    finalizedBy(copyCustomShadowNodes, copyCustomCMakeLists)
+  }
+  // Also run before any CMake configure task
+  tasks.matching { it.name.startsWith("configureCMake") }.configureEach {
+    dependsOn(copyCustomShadowNodes, copyCustomCMakeLists)
+  }
 }

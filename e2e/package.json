@@ -1,0 +1,25 @@
+{
+  "name": "react-native-fabric-html-text-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "description": "End-to-end tests for react-native-fabric-html-text iOS",
+  "scripts": {
+    "build": "./scripts/build-ios.sh",
+    "build:device": "./scripts/build-ios.sh",
+    "test": "wdio run wdio.conf.ts",
+    "test:ci": "./scripts/build-ios.sh && wdio run wdio.conf.ts --bail 1",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@wdio/appium-service": "^9.18.0",
+    "@wdio/cli": "^9.18.4",
+    "@wdio/local-runner": "^9.18.4",
+    "@wdio/mocha-framework": "^9.18.0",
+    "@wdio/spec-reporter": "^9.18.0",
+    "appium": "^3.1.2",
+    "appium-xcuitest-driver": "^10.14.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.2"
+  }
+}

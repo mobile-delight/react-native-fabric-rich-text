@@ -1,0 +1,73 @@
+/**
+ * FabricHTMLTextState.h
+ *
+ * Custom state for FabricHTMLText that enables C++ to Kotlin data passing.
+ * This allows the Kotlin view to receive pre-parsed HTML fragments from C++,
+ * eliminating the need for duplicate HTML parsing and ensuring measurement
+ * and rendering use identical data.
+ *
+ * Pattern based on React Native's ParagraphState for Text components.
+ */
+
+#pragma once
+
+#include <react/debug/react_native_assert.h>
+#include <react/renderer/attributedstring/AttributedString.h>
+#include <react/renderer/attributedstring/ParagraphAttributes.h>
+
+#include <folly/dynamic.h>
+#include <react/renderer/mapbuffer/MapBuffer.h>
+#include <react/renderer/mapbuffer/MapBufferBuilder.h>
+
+namespace facebook::react {
+
+/**
+ * State class for FabricHTMLText.
+ *
+ * Contains the parsed HTML content as an AttributedString, which is
+ * serialized to MapBuffer for consumption by the Kotlin view layer.
+ */
+class FabricHTMLTextState final {
+ public:
+  /**
+   * The parsed HTML content as an AttributedString.
+   * Contains fragments with text and style attributes.
+   */
+  AttributedString attributedString;
+
+  /**
+   * Paragraph-level attributes for text layout.
+   */
+  ParagraphAttributes paragraphAttributes;
+
+  /**
+   * Link URLs indexed by fragment position.
+   * Empty string for non-link fragments.
+   * This enables Kotlin to create HrefClickableSpan for link detection.
+   */
+  std::vector<std::string> linkUrls;
+
+  FabricHTMLTextState() = default;
+
+  FabricHTMLTextState(
+      AttributedString attributedString,
+      ParagraphAttributes paragraphAttributes,
+      std::vector<std::string> linkUrls = {})
+      : attributedString(std::move(attributedString)),
+        paragraphAttributes(std::move(paragraphAttributes)),
+        linkUrls(std::move(linkUrls)) {}
+
+  /**
+   * Constructor for state updates from JS (not supported for FabricHTMLText).
+   */
+  FabricHTMLTextState(
+      const FabricHTMLTextState& /*previousState*/,
+      const folly::dynamic& /*data*/) {
+    react_native_assert(false && "Not supported");
+  }
+
+  folly::dynamic getDynamic() const;
+  MapBuffer getMapBuffer() const;
+};
+
+} // namespace facebook::react

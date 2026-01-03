@@ -21,11 +21,15 @@
     "*.podspec",
     "react-native.config.js",
     "!ios/build",
+    "!ios/ci.sh",
     "!android/build",
     "!android/gradle",
     "!android/gradlew",
     "!android/gradlew.bat",
     "!android/local.properties",
+    "!android/settings.gradle",
+    "!android/ci.sh",
+    "!android/src/test",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
@@ -36,7 +40,11 @@
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build",
     "typecheck": "tsc",
-    "lint": "eslint \"**/*.{js,ts,tsx}\""
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "test": "jest --coverage",
+    "test:android": "./android/ci.sh",
+    "test:ios": "./ios/ci.sh",
+    "test:native": "yarn test:android && yarn test:ios"
   },
   "keywords": [
     "react-native",
@@ -62,15 +70,26 @@
     "@eslint/js": "^9.35.0",
     "@react-native/babel-preset": "0.81.0",
     "@react-native/eslint-config": "0.83.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/dompurify": "^3.0.5",
+    "@types/jest": "^30.0.0",
     "@types/react": "^19.1.0",
+    "@types/react-dom": "^19",
     "del-cli": "^6.0.0",
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
     "prettier": "^2.8.8",
     "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-native": "0.81.0",
     "react-native-builder-bob": "^0.40.17",
+    "react-test-renderer": "19.1.0",
     "turbo": "^2.5.6",
     "typescript": "^5.9.2"
   },
@@ -78,8 +97,12 @@
     "react": "*",
     "react-native": "*"
   },
+  "dependencies": {
+    "dompurify": "^3.3.1"
+  },
   "workspaces": [
-    "example"
+    "example",
+    "e2e"
   ],
   "packageManager": "yarn@4.11.0",
   "react-native-builder-bob": {
@@ -101,15 +124,15 @@
     ]
   },
   "codegenConfig": {
-    "name": "FabricHtmlTextViewSpec",
+    "name": "FabricHTMLTextSpec",
     "type": "all",
     "jsSrcsDir": "src",
     "android": {
-      "javaPackageName": "com.fabrichtmltext"
+      "javaPackageName": "io.michaelfay.fabrichtmltext"
     },
     "ios": {
       "componentProvider": {
-        "FabricHtmlTextView": "FabricHtmlTextView"
+        "FabricHTMLText": "FabricHTMLText"
       }
     }
   },

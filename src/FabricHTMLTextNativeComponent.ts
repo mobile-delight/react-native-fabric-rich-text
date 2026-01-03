@@ -1,0 +1,56 @@
+import {
+  codegenNativeComponent,
+  type ViewProps,
+  type HostComponent,
+} from 'react-native';
+import type {
+  DirectEventHandler,
+  Float,
+  Int32,
+} from 'react-native/Libraries/Types/CodegenTypes';
+
+/**
+ * Type of content detected when a link is pressed.
+ * - 'link': A URL or anchor tag
+ * - 'email': An email address
+ * - 'phone': A phone number
+ */
+export type DetectedContentType = 'link' | 'email' | 'phone';
+
+type LinkPressEvent = Readonly<{
+  url: string;
+  // Inline string union for codegen compatibility (doesn't support type aliases)
+  type: 'link' | 'email' | 'phone';
+}>;
+
+interface NativeProps extends ViewProps {
+  html: string;
+  // testID is inherited from ViewProps - do not redeclare here
+  // as it breaks iOS accessibility identifier mapping in Fabric
+  onLinkPress?: DirectEventHandler<LinkPressEvent>;
+  tagStyles?: string | undefined;
+
+  // Content detection props (all default to false)
+  detectLinks?: boolean | undefined;
+  detectPhoneNumbers?: boolean | undefined;
+  detectEmails?: boolean | undefined;
+  className?: string | undefined;
+
+  // Text style props (following AndroidTextInput pattern)
+  // These ensure C++ measurement and Kotlin/Swift rendering use identical values
+  fontSize?: Float | undefined;
+  lineHeight?: Float | undefined;
+  fontWeight?: string | undefined;
+  fontFamily?: string | undefined;
+  fontStyle?: string | undefined;
+  letterSpacing?: Float | undefined;
+  textAlign?: string | undefined;
+  includeFontPadding?: boolean | undefined;
+  allowFontScaling?: boolean | undefined;
+  maxFontSizeMultiplier?: Float | undefined;
+  color?: Int32 | undefined; // Process with processColor before passing
+}
+
+export default codegenNativeComponent<NativeProps>(
+  'FabricHTMLText'
+) as HostComponent<NativeProps>;
