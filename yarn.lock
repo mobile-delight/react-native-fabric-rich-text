@@ -11867,7 +11867,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nativewind@npm:^4.1.0":
+"nativewind@npm:^4.2.0":
   version: 4.2.1
   resolution: "nativewind@npm:4.2.1"
   dependencies:
@@ -13248,7 +13248,7 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/react": "npm:^19.1.0"
     jest: "npm:^30.0.0"
-    nativewind: "npm:^4.1.0"
+    nativewind: "npm:^4.2.0"
     react: "npm:19.1.0"
     react-native: "npm:0.81.0"
     react-native-builder-bob: "npm:^0.40.17"
@@ -13284,7 +13284,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.5.4"
     jest: "npm:^30.2.0"
     jest-environment-jsdom: "npm:^30.2.0"
-    nativewind: "npm:^4.1.0"
+    nativewind: "npm:^4.2.0"
     prettier: "npm:^2.8.8"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
@@ -13293,11 +13293,11 @@ __metadata:
     react-native-reanimated: "npm:^4.2.1"
     react-native-worklets: "npm:^0.7.1"
     react-test-renderer: "npm:19.1.0"
-    tailwindcss: "npm:>3.3.0 <4.0.0-0"
+    tailwindcss: "npm:>=3.3.0 <4.0.0-0"
     turbo: "npm:^2.5.6"
     typescript: "npm:^5.9.2"
   peerDependencies:
-    nativewind: ^4.1.0
+    nativewind: ^4.2.0
     react: "*"
     react-native: "*"
   peerDependenciesMeta:
@@ -14935,7 +14935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.4.19, tailwindcss@npm:>3.3.0 <4.0.0-0":
+"tailwindcss@npm:3.4.19, tailwindcss@npm:>=3.3.0 <4.0.0-0":
   version: 3.4.19
   resolution: "tailwindcss@npm:3.4.19"
   dependencies:

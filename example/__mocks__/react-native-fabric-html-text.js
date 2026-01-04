@@ -10,5 +10,9 @@ const HTMLText = ({ html, children, ...props }) =>
 
 module.exports = {
   HTMLText,
+  FabricHTMLText: HTMLText,
+  sanitize: (html) => html,
+  ALLOWED_TAGS: [],
+  ALLOWED_ATTR: [],
   DetectedContentType: {},
 };

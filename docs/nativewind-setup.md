@@ -4,8 +4,8 @@ This guide covers the configuration required to use `react-native-fabric-html-te
 
 ## Prerequisites
 
-- React Native 0.74+ (Fabric/New Architecture)
-- NativeWind ^4.1.0
+- React Native 0.81+ (Fabric/New Architecture required)
+- NativeWind ^4.2.0
 - Tailwind CSS 3.x (not 4.x)
 
 ## Installation
@@ -28,7 +28,7 @@ yarn add -D tailwindcss@">=3.3.0 <4.0.0"
 
 ### 2. Configure Babel
 
-Add the NativeWind babel plugins to your `babel.config.js`. For best compatibility, configure the plugins manually:
+Add the NativeWind babel plugin to your `babel.config.js`:
 
 ```javascript
 // babel.config.js
@@ -36,14 +36,7 @@ module.exports = {
   presets: ['module:@react-native/babel-preset'],
   plugins: [
     // NativeWind babel plugin
-    require('react-native-css-interop/dist/babel-plugin').default,
-    [
-      '@babel/plugin-transform-react-jsx',
-      {
-        runtime: 'automatic',
-        importSource: 'react-native-css-interop',
-      },
-    ],
+    'nativewind/babel',
     // Required by NativeWind's css-interop
     'react-native-worklets/plugin',
   ],
@@ -69,15 +62,8 @@ module.exports = getConfig(
       ],
     ],
     plugins: [
-      // NativeWind babel plugin (manually configured for monorepo compatibility)
-      require('react-native-css-interop/dist/babel-plugin').default,
-      [
-        '@babel/plugin-transform-react-jsx',
-        {
-          runtime: 'automatic',
-          importSource: 'react-native-css-interop',
-        },
-      ],
+      // NativeWind babel plugin - uses documented configuration
+      'nativewind/babel',
       // Required by NativeWind's css-interop
       'react-native-worklets/plugin',
     ],
@@ -85,8 +71,6 @@ module.exports = getConfig(
   { root, pkg }
 );
 ```
-
-> **Note**: The manual plugin configuration avoids module resolution issues that can occur with `nativewind/babel` in monorepo setups.
 
 ### 3. Configure Metro
 
