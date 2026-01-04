@@ -60,10 +60,15 @@ int32_t FabricHTMLParser::parseHexColor(const std::string& colorStr) {
   }
 
   try {
-    unsigned int rgb = std::stoul(hex, nullptr, 16);
-    // Return as ARGB with full alpha (0xFF)
-    return static_cast<int32_t>(0xFF000000 | rgb);
-  } catch (...) {
+    unsigned long rgb = std::stoul(hex, nullptr, 16);
+    // Validate that the parsed value fits in 24 bits (valid RGB range)
+    if (rgb > 0xFFFFFF) {
+      return 0;
+    }
+    // Combine with full alpha (0xFF) and safely cast to int32_t
+    uint32_t argb = 0xFF000000u | static_cast<uint32_t>(rgb);
+    return static_cast<int32_t>(argb);
+  } catch (const std::exception&) {
     return 0;
   }
 }
