@@ -4468,7 +4468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sanitize-html@npm:^2.13.0":
+"@types/sanitize-html@npm:^2.16.0":
   version: 2.16.0
   resolution: "@types/sanitize-html@npm:2.16.0"
   dependencies:
@@ -8371,7 +8371,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-next@npm:^14.2.0":
+"eslint-config-next@npm:^14.2.32":
   version: 14.2.35
   resolution: "eslint-config-next@npm:14.2.35"
   dependencies:
@@ -8915,16 +8915,16 @@ __metadata:
     autoprefixer: "npm:^10.4.0"
     dompurify: "npm:^3.2.0"
     eslint: "npm:^8.57.0"
-    eslint-config-next: "npm:^14.2.0"
+    eslint-config-next: "npm:^14.2.32"
     jest: "npm:^29.7.0"
     jest-axe: "npm:^9.0.0"
     jest-environment-jsdom: "npm:^29.7.0"
-    next: "npm:^14.2.0"
+    next: "npm:^14.2.32"
     postcss: "npm:^8.4.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     react-native-fabric-html-text: "workspace:*"
-    sanitize-html: "npm:^2.13.0"
+    sanitize-html: "npm:^2.17.0"
     tailwindcss: "npm:^3.4.0"
     typescript: "npm:^5"
   languageName: unknown
@@ -13453,7 +13453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^14.2.0":
+"next@npm:^14.2.32":
   version: 14.2.35
   resolution: "next@npm:14.2.35"
   dependencies:
@@ -14938,7 +14938,7 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/react": "npm:^19.1.0"
     "@types/react-dom": "npm:^19"
-    "@types/sanitize-html": "npm:^2.13.0"
+    "@types/sanitize-html": "npm:^2.16.0"
     del-cli: "npm:^6.0.0"
     dompurify: "npm:^3.3.1"
     eslint: "npm:^9.35.0"
@@ -14953,7 +14953,7 @@ __metadata:
     react-native: "npm:0.81.0"
     react-native-builder-bob: "npm:^0.40.17"
     react-test-renderer: "npm:19.1.0"
-    sanitize-html: "npm:^2.13.0"
+    sanitize-html: "npm:^2.17.0"
     turbo: "npm:^2.5.6"
     typescript: "npm:^5.9.2"
   peerDependencies:
@@ -14961,7 +14961,7 @@ __metadata:
     nativewind: ^4.2.0
     react: ">=18.0.0"
     react-native: ">=0.81.0"
-    sanitize-html: ^2.13.0
+    sanitize-html: ^2.17.0
   peerDependenciesMeta:
     dompurify:
       optional: true
@@ -15667,7 +15667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sanitize-html@npm:^2.13.0":
+"sanitize-html@npm:^2.17.0":
   version: 2.17.0
   resolution: "sanitize-html@npm:2.17.0"
   dependencies:
