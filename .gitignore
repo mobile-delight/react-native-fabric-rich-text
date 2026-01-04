@@ -4,6 +4,7 @@
 
 # Claude Code
 .claude/
+CLAUDE.md
 
 # Speckit
 .specify/*
@@ -94,3 +95,4 @@ android/generated
 # React Native Nitro Modules
 nitrogen/
 coverage/
+
