@@ -169,11 +169,28 @@ FabricHTMLTagStyle FabricHTMLParser::getStyleFromTagStyles(
     return result;
   }
 
+  // String-aware brace matching: skip braces inside quoted strings
   int braceCount = 1;
   size_t braceEnd = braceStart + 1;
+  bool inString = false;
+  char stringDelimiter = '\0';
   while (braceEnd < tagStyles.size() && braceCount > 0) {
-    if (tagStyles[braceEnd] == '{') braceCount++;
-    else if (tagStyles[braceEnd] == '}') braceCount--;
+    char ch = tagStyles[braceEnd];
+    // Handle string delimiters to skip braces inside quoted strings
+    if (!inString && (ch == '"' || ch == '\'')) {
+      inString = true;
+      stringDelimiter = ch;
+    } else if (inString && ch == stringDelimiter) {
+      // Check for escaped quotes (look back for backslash)
+      if (braceEnd == 0 || tagStyles[braceEnd - 1] != '\\') {
+        inString = false;
+      }
+    }
+    // Only count braces outside of quoted strings
+    if (!inString) {
+      if (ch == '{') braceCount++;
+      else if (ch == '}') braceCount--;
+    }
     braceEnd++;
   }
   if (braceCount != 0) {
