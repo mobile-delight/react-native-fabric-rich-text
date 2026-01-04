@@ -147,6 +147,13 @@ reviews:
     markdownlint:
       enabled: false
 
+  # Disable finishing touches (no auto-generated docstrings or tests)
+  finishing_touches:
+    docstrings:
+      enabled: false
+    unit_tests:
+      enabled: false
+
 # Knowledge base - constitution as code guidelines
 knowledge_base:
   opt_out: false
@@ -164,10 +171,3 @@ knowledge_base:
 # Chat settings
 chat:
   auto_reply: true
-
-# Disable finishing touches (no auto-generated docstrings or tests)
-finishing_touches:
-  docstrings:
-    enabled: false
-  unit_tests:
-    enabled: false
