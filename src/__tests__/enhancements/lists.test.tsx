@@ -62,6 +62,7 @@ jest.mock('../../adapters/native', () => {
         // Note: This is a test mock only. Actual sanitization happens in native code
         // (SwiftSoup on iOS, OWASP on Android). This simple regex is safe here
         // because test inputs are controlled, not user-supplied.
+        // lgtm[js/incomplete-multi-character-sanitization]
         const text = processedContent.replace(/<\/?[a-z][a-z0-9]*[^>]*>/gi, '');
 
         return mockReact.createElement(
