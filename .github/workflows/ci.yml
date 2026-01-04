@@ -131,6 +131,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pods-test-
 
+      - name: Cache Xcode DerivedData
+        uses: irgaly/xcode-cache@25c0c601a065ad15ada58d5e9ac4515538411861 # v1.9.2
+        with:
+          key: xcode-deriveddata-${{ github.workflow }}-${{ github.sha }}
+          restore-keys: xcode-deriveddata-${{ github.workflow }}-
+          deriveddata-directory: example/ios/DerivedData
+
       - name: Run iOS native tests
         run: yarn test:ios
 
