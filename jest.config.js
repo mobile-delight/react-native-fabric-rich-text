@@ -12,6 +12,7 @@ module.exports = {
         '\\.web\\.test\\.[jt]sx?$',
         '<rootDir>/native-tests/',
         '<rootDir>/e2e/',
+        '<rootDir>/example-web/',
       ],
       collectCoverageFrom: [
         'src/**/*.{ts,tsx}',
@@ -31,6 +32,7 @@ module.exports = {
         '/node_modules/',
         '<rootDir>/native-tests/',
         '<rootDir>/e2e/',
+        '<rootDir>/example-web/',
       ],
       collectCoverageFrom: ['src/**/*.web.{ts,tsx}'],
       transform: {

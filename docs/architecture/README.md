@@ -1,15 +1,18 @@
 # FabricHTMLText Architecture
 
-This document describes the architecture of the `react-native-fabric-html-text` library, a React Native Fabric component for rendering HTML text with full native performance.
+This document describes the architecture of the `react-native-fabric-html-text` library, a React Native Fabric component for rendering HTML text with full native performance across iOS, Android, and Web platforms.
+
+> For comprehensive technical details on each system, see [SYSTEM-SPECIFICATION.md](./SYSTEM-SPECIFICATION.md).
 
 ## Architecture Overview
 
-The library is built on React Native's new Fabric architecture and consists of four main layers:
+The library is built on React Native's new Fabric architecture and consists of five main layers:
 
 1. **JavaScript Layer** - React component API and TypeScript types
 2. **C++ Shared Layer** - Cross-platform HTML parsing and measurement
 3. **iOS Native Layer** - Swift/Objective-C rendering with CoreText
 4. **Android Native Layer** - Kotlin rendering with TextView/Spannable
+5. **Web Layer** - Next.js/SSR compatible rendering with DOMPurify
 
 ![Architecture Overview](./architecture-overview.svg)
 
@@ -17,8 +20,23 @@ The library is built on React Native's new Fabric architecture and consists of f
 
 - **Single Source of Truth**: HTML is parsed once in C++ and the result is shared with native views via Fabric state
 - **Measurement/Rendering Alignment**: The same `AttributedString` used for measurement is used for rendering
-- **Security First**: HTML is sanitized at the native layer using industry-standard libraries
+- **Security First**: HTML is sanitized at the native layer using industry-standard libraries (SwiftSoup, OWASP, DOMPurify)
 - **Cross-Platform Consistency**: Shared C++ parser ensures identical parsing behavior on iOS and Android
+- **Web Compatibility**: Same API works on React Native Web and Next.js with SSR support
+
+## Architecture Diagrams
+
+| Diagram | Description |
+|---------|-------------|
+| [architecture-overview.svg](./architecture-overview.svg) | High-level system architecture showing all platforms |
+| [component-interaction.svg](./component-interaction.svg) | Sequence diagram of component lifecycle phases |
+| [data-flow.svg](./data-flow.svg) | Data transformation from HTML input to rendered pixels |
+| [file-structure.svg](./file-structure.svg) | Codebase organization by layer |
+| [native-bridge.svg](./native-bridge.svg) | Fabric/TurboModule architecture and state transfer |
+| [security-architecture.svg](./security-architecture.svg) | XSS prevention and defense-in-depth layers |
+| [truncation-system.svg](./truncation-system.svg) | numberOfLines implementation across platforms |
+| [web-architecture.svg](./web-architecture.svg) | Web/Next.js SSR implementation |
+| [nativewind-integration.svg](./nativewind-integration.svg) | Tailwind CSS styling integration flow |
 
 ## Fabric Shadow Tree and Dynamic Content Measurement
 
@@ -34,15 +52,15 @@ The Shadow Tree is a lightweight C++ representation of the UI hierarchy that mir
 
 ```
 React Tree (JS)          Shadow Tree (C++)           Native Views
-┌─────────────┐         ┌─────────────────┐         ┌─────────────┐
-│  <HTMLText> │ ──────▶ │ FabricHTMLText  │ ──────▶ │ UIView /    │
-│   html="…"  │         │   ShadowNode    │         │ Android View│
-└─────────────┘         └─────────────────┘         └─────────────┘
++--------------+         +------------------+         +--------------+
+|  <HTMLText>  | ------> | FabricHTMLText   | ------> | UIView /     |
+|   html="..."  |         |   ShadowNode     |         | Android View |
++--------------+         +------------------+         +--------------+
 ```
 
 ### Custom Measurement with measureContent()
 
-The `FabricHTMLTextShadowNode` implements a custom `measureContent()` method that Yoga calls during layout. This is where the magic happens:
+The `FabricHTMLTextShadowNode` implements a custom `measureContent()` method that Yoga calls during layout:
 
 ```cpp
 Size FabricHTMLTextShadowNode::measureContent(
@@ -65,8 +83,8 @@ Size FabricHTMLTextShadowNode::measureContent(
 
 This enables:
 
-1. **Precise Height Calculation**: Given a constrained width (e.g., screen width minus margins), the layout engine calculates exactly how tall the HTML content will be when rendered
-2. **Accessibility Scaling**: The `fontSizeMultiplier` from `LayoutContext` ensures measurements account for the user's accessibility font size preferences
+1. **Precise Height Calculation**: Given a constrained width, the layout engine calculates exactly how tall the HTML content will be
+2. **Accessibility Scaling**: The `fontSizeMultiplier` ensures measurements account for the user's accessibility preferences
 3. **Constraint Propagation**: Parent layout constraints flow down, so the HTML content knows its available width
 
 ### State: Bridging Measurement and Rendering
@@ -80,42 +98,9 @@ void FabricHTMLTextShadowNode::layout(LayoutContext layoutContext) {
 }
 ```
 
-On Android, this state is serialized to a `MapBuffer` (an efficient binary format) and deserialized in Kotlin. On iOS, the state is passed directly to the Objective-C++ view. The native view then converts the `AttributedString` fragments to platform-specific styled text (`NSAttributedString` or `Spannable`) for rendering.
-
-### Why This Matters for Dynamic HTML
-
-Without Fabric's Shadow Tree architecture, rendering dynamic HTML in React Native would require either:
-
-1. **Fixed Heights**: Requiring developers to manually specify heights, which breaks with dynamic content
-2. **Two-Pass Rendering**: Render invisibly first to measure, then render again with the correct size (causes flicker)
-3. **JavaScript Measurement**: Measure in JS and communicate back to native (slow, async, race conditions)
-
-With Fabric:
-
-- **Single Pass**: Content is measured and rendered in one synchronous flow
-- **No Flicker**: The view is created with the correct size from the start
-- **Nested Layouts Work**: HTML content correctly participates in Flexbox layouts, ScrollViews, etc.
-- **Updates are Efficient**: When HTML changes, only the affected ShadowNode re-measures
-
-### Example: Dynamic Content in a ScrollView
-
-```tsx
-<ScrollView>
-  <Text>Header</Text>
-  <HTMLText html={dynamicHtmlFromApi} style={{ fontSize: 16 }} />
-  <Text>Footer</Text>
-</ScrollView>
-```
-
-The Shadow Tree ensures:
-1. `HTMLText`'s ShadowNode measures the dynamic HTML content
-2. Yoga calculates the total ScrollView content height
-3. The native ScrollView gets the correct `contentSize`
-4. Everything renders in the correct position with no layout jumps
+On Android, this state is serialized to a `MapBuffer` (an efficient binary format) and deserialized in Kotlin. On iOS, the state is passed directly to the Objective-C++ view.
 
 ## Component Interaction
-
-The following sequence diagram shows how components interact during rendering:
 
 ![Component Interaction](./component-interaction.svg)
 
@@ -137,13 +122,23 @@ The following sequence diagram shows how components interact during rendering:
 | 0. NativeWind (Optional) | `className` string | Style object | `src/nativewind.ts` via `cssInterop` |
 | 1. Component | HTML string + style | Props object | `src/components/HTMLText.tsx` |
 | 2. Adapter | Props | Native props | `src/adapters/native.tsx` |
-| 3. Sanitize | Raw HTML | Safe HTML | iOS: `FabricHTMLSanitizer.swift`, Android: `FabricHTMLSanitizer.kt` |
+| 3. Sanitize | Raw HTML | Safe HTML | Platform-specific sanitizers |
 | 4. Parse | Safe HTML | Text segments | `cpp/FabricHTMLParser.cpp` |
 | 5. Build | Segments | `AttributedString` | `cpp/FabricHTMLParser.cpp` |
 | 6. Measure | `AttributedString` | Size | `TextLayoutManager` |
 | 7. State | `AttributedString` + URLs | State data | Platform ShadowNode |
 | 8. Convert | State data | Platform text | `FabricHTMLFragmentParser` |
-| 9. Render | Platform text | Pixels | CoreText / TextView |
+| 9. Render | Platform text | Pixels | CoreText / TextView / DOM |
+
+## Native Bridge Architecture
+
+![Native Bridge](./native-bridge.svg)
+
+The native bridge diagram shows the detailed flow of data through:
+- Fabric's UIManager and Scheduler
+- C++ Shadow Tree with custom measurement
+- State transfer mechanisms (direct on iOS, MapBuffer on Android)
+- Platform-specific view rendering
 
 ## Security Architecture
 
@@ -154,12 +149,12 @@ The following sequence diagram shows how components interact during rendering:
 The library implements multiple layers of security with platform-specific strategies:
 
 1. **Platform-Specific Sanitization**:
-   - **Web**: [DOMPurify](https://github.com/cure53/DOMPurify) sanitization in the JavaScript layer before rendering
-   - **iOS (React Native)**: JavaScript passes HTML through; sanitization via [SwiftSoup](https://github.com/scinfu/SwiftSoup) in native code
-   - **Android (React Native)**: JavaScript passes HTML through; sanitization via [OWASP Java HTML Sanitizer](https://github.com/OWASP/java-html-sanitizer) in native code
+   - **Web**: [DOMPurify](https://github.com/cure53/DOMPurify) sanitization in the JavaScript layer
+   - **iOS**: [SwiftSoup](https://github.com/scinfu/SwiftSoup) sanitization in native code
+   - **Android**: [OWASP Java HTML Sanitizer](https://github.com/OWASP/java-html-sanitizer) in native code
 
 2. **Allowlist-Based Filtering** (consistent across all platforms):
-   - Only allowed tags: `p`, `h1-h6`, `strong`, `b`, `em`, `i`, `u`, `s`, `a`, `ul`, `ol`, `li`, `br`, `span`
+   - Only allowed tags: `p`, `div`, `h1-h6`, `strong`, `b`, `em`, `i`, `u`, `s`, `del`, `a`, `ul`, `ol`, `li`, `br`, `span`, `blockquote`, `pre`
    - Only allowed attributes: `href` (on `<a>`), `class`
    - Only allowed protocols: `http`, `https`, `mailto`, `tel`
 
@@ -177,6 +172,47 @@ The library implements multiple layers of security with platform-specific strate
 - Style injection via `<style>` tags or `style` attributes
 - VBScript and other dangerous protocols
 
+## Text Truncation System
+
+![Truncation System](./truncation-system.svg)
+
+The truncation system implements `numberOfLines` across all platforms:
+
+- **C++ Measurement**: Uses `ParagraphAttributes.maximumNumberOfLines` for constrained height
+- **iOS**: `CTLineCreateTruncatedLine` with ellipsis character
+- **Android**: `StaticLayout.Builder.setMaxLines()` with `TruncateAt.END`
+- **Web**: CSS `-webkit-line-clamp`
+
+Includes optional height animation via `animationDuration` prop.
+
+## Web Architecture
+
+![Web Architecture](./web-architecture.svg)
+
+The web implementation provides:
+
+- **SSR Compatibility**: DOMPurify works in Node.js for Next.js SSR
+- **Style Conversion**: React Native TextStyle to CSS Properties
+- **Native Truncation**: Uses CSS line-clamp for numberOfLines
+- **Same API**: Identical props as native component
+
+## NativeWind Integration
+
+![NativeWind Integration](./nativewind-integration.svg)
+
+Optional [NativeWind](https://www.nativewind.dev/) support enables Tailwind CSS styling:
+
+```tsx
+import { HTMLText } from 'react-native-fabric-html-text/nativewind';
+
+<HTMLText
+  html="<p>Hello World</p>"
+  className="text-blue-500 text-lg p-4"
+/>
+```
+
+See [docs/nativewind-setup.md](../nativewind-setup.md) for configuration.
+
 ## File Structure
 
 ![File Structure](./file-structure.svg)
@@ -188,16 +224,16 @@ The library implements multiple layers of security with platform-specific strate
 | File | Purpose |
 |------|---------|
 | `index.tsx` | Public API exports |
+| `index.web.tsx` | Web platform exports |
 | `nativewind.ts` | NativeWind-compatible exports with `cssInterop` pre-applied |
 | `FabricHTMLTextNativeComponent.ts` | Codegen native component spec |
 | `components/HTMLText.tsx` | Main React component |
 | `components/HTMLText.web.tsx` | Web platform React component |
 | `adapters/native.tsx` | Native platform adapter |
-| `adapters/web/` | Web platform adapter |
+| `adapters/web/StyleConverter.ts` | React Native style to CSS conversion |
 | `core/sanitize.ts` | Sanitization (pass-through to native) |
 | `core/sanitize.web.ts` | Web sanitization with DOMPurify |
-| `core/constants.ts` | Shared constants |
-| `core/allowedHtml.ts` | Allowed HTML tags and attributes |
+| `core/constants.ts` | Single source of truth for allowed HTML |
 | `types/HTMLTextNativeProps.ts` | TypeScript type definitions |
 
 #### C++ Shared Layer (`cpp/`)
@@ -215,33 +251,30 @@ The library implements multiple layers of security with platform-specific strate
 | `FabricHTMLTextShadowNode.mm` | Measurement and state management |
 | `FabricHTMLTextComponentDescriptor.h` | Fabric component descriptor |
 | `FabricHTMLFragmentParser.mm` | C++ AttributedString to NSAttributedString conversion |
-| `FabricHTMLParsingUtils.mm` | Shared parsing utilities |
 | `FabricHTMLSanitizer.swift` | SwiftSoup HTML sanitizer |
-| `FabricHTMLCoreTextView.m` | CoreText-based rendering |
+| `FabricHTMLCoreTextView.m` | CoreText-based rendering with truncation |
 | `FabricGeneratedConstants.swift` | Generated constants for styling |
 
-#### Android JNI Layer (`android/src/main/jni/`)
+#### Android Layers
+
+**JNI Layer (`android/src/main/jni/`)**
 
 | File | Purpose |
 |------|---------|
 | `ShadowNodes.cpp` | C++ shadow node implementation for measurement |
-| `ShadowNodes.h` | Shadow node interface |
-| `FabricHTMLTextState.cpp` | State management for Android |
-| `FabricHTMLTextState.h` | State interface |
+| `FabricHTMLTextState.cpp` | State serialization to MapBuffer |
 
-#### Android Kotlin Layer (`android/src/main/java/` and `react/`)
+**Kotlin Layer (`android/src/main/java/` and `react/`)**
 
 | File | Purpose | Path |
 |------|---------|------|
 | `FabricHTMLTextViewManager.kt` | React Native view manager | `react/` |
 | `FabricHTMLTextView.kt` | Custom TextView with state-based rendering | `java/` |
-| `FabricHTMLLayoutManager.kt` | Layout measurement | `react/` |
 | `FabricHTMLFragmentParser.kt` | MapBuffer to Spannable conversion | `react/` |
 | `FabricHTMLSanitizer.kt` | OWASP HTML sanitizer | `java/` |
 | `FabricHtmlSpannableBuilder.kt` | Spannable construction | `java/` |
 | `FabricCustomLineHeightSpan.kt` | Custom line height span implementation | `java/` |
 | `FabricGeneratedConstants.kt` | Generated constants for styling | `java/` |
-| `FabricHtmlTextPackage.kt` | React Native package registration | `react/` |
 
 ## Core Concepts
 
@@ -251,12 +284,7 @@ The C++ `AttributedString` is React Native's cross-platform representation of st
 
 - **Fragments**: Runs of text with consistent styling
 - **TextAttributes**: Font size, weight, style, color, decorations, etc.
-- **ParagraphAttributes**: Line height, alignment, etc.
-
-The library's HTML parser converts HTML into `AttributedString` fragments, enabling:
-- Consistent measurement via `TextLayoutManager`
-- State-based rendering without re-parsing
-- Cross-platform styling consistency
+- **ParagraphAttributes**: Maximum lines, ellipsize mode, etc.
 
 ### Fragment-Based Rendering
 
@@ -284,15 +312,18 @@ Links are handled through a multi-step process:
 | Tag | Description |
 |-----|-------------|
 | `<p>` | Paragraph |
+| `<div>` | Block container |
 | `<h1>` - `<h6>` | Headings |
 | `<strong>`, `<b>` | Bold text |
 | `<em>`, `<i>` | Italic text |
 | `<u>` | Underlined text |
-| `<s>` | Strikethrough text |
+| `<s>`, `<del>` | Strikethrough text |
 | `<a href="...">` | Links |
 | `<ul>`, `<ol>`, `<li>` | Lists |
 | `<br>` | Line break |
 | `<span>` | Inline container |
+| `<blockquote>` | Block quote |
+| `<pre>` | Preformatted text |
 
 ## Styling
 
@@ -326,74 +357,6 @@ Override styles for specific HTML tags:
 />
 ```
 
-## NativeWind Integration (Optional)
-
-The library provides optional [NativeWind](https://www.nativewind.dev/) support for Tailwind CSS styling in React Native. This enables using Tailwind's utility-first approach with `className` props.
-
-![NativeWind Integration](./nativewind-integration.svg)
-
-### How It Works
-
-NativeWind's `cssInterop` function bridges the gap between Tailwind's className strings and React Native's style objects:
-
-1. **Build Time**: NativeWind's Babel plugin processes JSX and Metro plugin processes CSS
-2. **Runtime**: `cssInterop` maps `className` props to `style` objects
-3. **Rendering**: The transformed styles flow through to native components
-
-### Integration Approaches
-
-**Pre-configured Export (Recommended)**
-
-Import from the `/nativewind` subpath for zero-config setup:
-
-```tsx
-import { HTMLText } from 'react-native-fabric-html-text/nativewind';
-
-<HTMLText
-  html="<p>Hello World</p>"
-  className="text-blue-500 text-lg p-4"
-/>
-```
-
-**Manual Integration**
-
-Apply `cssInterop` yourself for more control:
-
-```tsx
-import { HTMLText } from 'react-native-fabric-html-text';
-import { cssInterop } from 'nativewind';
-
-cssInterop(HTMLText, { className: 'style' });
-```
-
-### Configuration Requirements
-
-NativeWind integration requires specific configuration in the consumer app:
-
-| File | Purpose |
-|------|---------|
-| `babel.config.js` | Enables css-interop JSX transform and worklets plugin |
-| `metro.config.js` | Wraps config with `withNativeWind` for CSS processing |
-| `tailwind.config.js` | Configures content paths and px-based font sizes |
-| `global.css` | Contains Tailwind directives |
-
-**Important**: NativeWind's default rem-based font sizes differ from React Native's pixel values. Override `fontSize` and `lineHeight` in your Tailwind config with explicit pixel values for consistent styling.
-
-See [docs/nativewind-setup.md](../nativewind-setup.md) for complete setup instructions.
-
-### File Structure Impact
-
-The NativeWind integration adds one file to the JavaScript layer:
-
-| File | Purpose |
-|------|---------|
-| `src/nativewind.ts` | Pre-configured exports with `cssInterop` applied |
-
-This file:
-- Imports base components from main index
-- Applies `cssInterop` to map `className` → `style`
-- Re-exports components and types
-
 ## Performance Considerations
 
 1. **No Bridge Crossing**: Fabric's synchronous C++ layer eliminates async bridge overhead
@@ -402,3 +365,9 @@ This file:
 4. **Lazy Sanitization**: Sanitization happens only when HTML changes
 5. **MapBuffer**: Efficient binary serialization for state transfer (Android)
 6. **NativeWind Zero-Runtime**: Tailwind styles are compiled at build time, not runtime
+
+## Further Reading
+
+- [SYSTEM-SPECIFICATION.md](./SYSTEM-SPECIFICATION.md) - Comprehensive technical reference for all systems
+- [../nativewind-setup.md](../nativewind-setup.md) - NativeWind configuration guide
+- [../web-integration.md](../web-integration.md) - Web/Next.js integration guide

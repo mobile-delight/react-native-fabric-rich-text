@@ -26,6 +26,7 @@ export default function HTMLText({
   detectLinks,
   detectPhoneNumbers,
   detectEmails,
+  numberOfLines,
 }: HTMLTextProps): ReactElement | null {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -74,15 +75,33 @@ export default function HTMLText({
   const sanitizedHtml = sanitize(trimmedHtml);
   const cssStyle = convertStyle(style);
 
+  // Apply CSS line-clamp for truncation when numberOfLines > 0
+  // The line-clamp styles must be applied directly to the text-containing elements,
+  // not to a wrapper, for proper ellipsis behavior.
+  const isTruncated = numberOfLines && numberOfLines > 0;
+  const truncationStyle: React.CSSProperties = isTruncated
+    ? { overflow: 'hidden' }
+    : {};
+
+  // When truncating, apply line-clamp styles directly to block elements in the HTML.
+  // This ensures the ellipsis appears correctly at the truncation point.
+  const lineClampStyles = `display:-webkit-box;-webkit-line-clamp:${numberOfLines};-webkit-box-orient:vertical;overflow:hidden;margin:0;padding:0;`;
+  const processedHtml = isTruncated
+    ? sanitizedHtml.replace(
+        /<(p|div|h[1-6]|blockquote|li|ul|ol)(\s|>)/gi,
+        `<$1 style="${lineClampStyles}"$2`
+      )
+    : sanitizedHtml;
+
   return (
     <div
       ref={containerRef}
       className={className}
-      style={cssStyle}
+      style={{ ...cssStyle, ...truncationStyle }}
       data-testid={testID}
       onClick={onLinkPress ? handleClick : undefined}
-      // nosemgrep: no-dangerous-innerhtml-without-sanitization - sanitizedHtml is sanitized via DOMPurify on line 74
-      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+      // nosemgrep: no-dangerous-innerhtml-without-sanitization - processedHtml is sanitized via DOMPurify (sanitizedHtml on line 75)
+      dangerouslySetInnerHTML={{ __html: processedHtml }}
     />
   );
 }
