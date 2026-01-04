@@ -29,7 +29,8 @@ object FabricHTMLLayoutManager {
     // Cache for layouts: key is (html + tagStyles + width), value is StaticLayout
     private val layoutCache = ConcurrentHashMap<String, CachedLayout>()
 
-    private val builder = FabricHtmlSpannableBuilder()
+    // Create builder per operation to ensure thread safety
+    private fun createBuilder(): FabricHtmlSpannableBuilder = FabricHtmlSpannableBuilder()
 
     data class CachedLayout(
         val layout: StaticLayout,
@@ -65,6 +66,9 @@ object FabricHTMLLayoutManager {
         layoutCache[cacheKey]?.let { cached ->
             return floatArrayOf(cached.width, cached.height)
         }
+
+        // Create a fresh builder for thread safety
+        val builder = createBuilder()
 
         // Configure tag styles
         if (!tagStylesJson.isNullOrEmpty()) {
@@ -151,6 +155,9 @@ object FabricHTMLLayoutManager {
         density: Float
     ): StaticLayout? {
         if (html.isNullOrEmpty()) return null
+
+        // Create a fresh builder for thread safety
+        val builder = createBuilder()
 
         // Configure tag styles
         if (!tagStylesJson.isNullOrEmpty()) {

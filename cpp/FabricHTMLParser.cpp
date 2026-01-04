@@ -546,8 +546,26 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
     }
   };
 
-  // Helper to extract href URL from a tag (returns empty string if not found)
-  auto extractHrefUrl = [](const std::string& fullTag) -> std::string {
+  // Helper to check if a URL scheme is allowed (blocks javascript:, vbscript:, data:)
+  auto isAllowedUrlScheme = [](const std::string& url) -> bool {
+    std::string lowerUrl = url;
+    for (char& c : lowerUrl) c = std::tolower(c);
+    // Trim leading whitespace
+    size_t start = lowerUrl.find_first_not_of(" \t\n\r");
+    if (start != std::string::npos) {
+      lowerUrl = lowerUrl.substr(start);
+    }
+    // Block dangerous schemes
+    if (lowerUrl.rfind("javascript:", 0) == 0 ||
+        lowerUrl.rfind("vbscript:", 0) == 0 ||
+        lowerUrl.rfind("data:", 0) == 0) {
+      return false;
+    }
+    return true;
+  };
+
+  // Helper to extract href URL from a tag (returns empty string if not found or blocked)
+  auto extractHrefUrl = [&isAllowedUrlScheme](const std::string& fullTag) -> std::string {
     // Look for href=" or href=' in the tag
     size_t hrefPos = fullTag.find("href=");
     if (hrefPos == std::string::npos) {
@@ -562,7 +580,12 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
     if (quote == '"' || quote == '\'') {
       size_t valueEnd = fullTag.find(quote, valueStart + 1);
       if (valueEnd != std::string::npos && valueEnd > valueStart + 1) {
-        return fullTag.substr(valueStart + 1, valueEnd - valueStart - 1);
+        std::string url = fullTag.substr(valueStart + 1, valueEnd - valueStart - 1);
+        // Validate URL scheme - reject dangerous protocols
+        if (!isAllowedUrlScheme(url)) {
+          return "";
+        }
+        return url;
       }
     }
     return "";

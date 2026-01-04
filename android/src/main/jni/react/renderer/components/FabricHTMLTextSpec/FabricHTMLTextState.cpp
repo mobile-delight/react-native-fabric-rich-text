@@ -9,6 +9,7 @@
 
 #include <react/renderer/attributedstring/conversions.h>
 #include <android/log.h>
+#include <cstdint>
 
 // Debug flag for verbose state logging.
 // Set to 1 to enable detailed logging for state serialization.
@@ -62,6 +63,11 @@ MapBuffer FabricHTMLTextState::getMapBuffer() const {
     int nonEmptyCount = 0;
 #endif
     for (size_t i = 0; i < linkUrls.size(); i++) {
+      // MapBuffer::Key is uint16_t, so we can only store up to UINT16_MAX entries
+      if (i > UINT16_MAX) {
+        STATE_LOGD("Warning: linkUrls exceeds MapBuffer::Key capacity (%zu > %u), truncating", i, UINT16_MAX);
+        break;
+      }
       STATE_LOGD("  linkUrls[%zu] = '%s' (empty=%d)", i, linkUrls[i].c_str(), linkUrls[i].empty() ? 1 : 0);
       if (!linkUrls[i].empty()) {
         linkUrlsBuilder.putString(static_cast<MapBuffer::Key>(i), linkUrls[i]);

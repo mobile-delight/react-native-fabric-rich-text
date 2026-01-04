@@ -274,10 +274,18 @@ class FabricHtmlSpannableBuilder {
             }
         } else {
             val href = attributes["href"]
-            if (!href.isNullOrEmpty()) {
+            if (!href.isNullOrEmpty() && isAllowedUrlScheme(href)) {
                 state.linkStack.add(LinkInfo(result.length, href))
             }
         }
+    }
+
+    private fun isAllowedUrlScheme(url: String): Boolean {
+        val allowedSchemes = listOf("http://", "https://", "mailto:", "tel:")
+        val lowerUrl = url.lowercase().trim()
+        // Allow if it starts with an allowed scheme, or is a relative/fragment URL
+        return allowedSchemes.any { lowerUrl.startsWith(it) } ||
+               (!lowerUrl.contains(":") || lowerUrl.startsWith("/") || lowerUrl.startsWith("#"))
     }
 
     private fun handleBoldTag(

@@ -59,7 +59,10 @@ jest.mock('../../adapters/native', () => {
         );
 
         // Remove remaining tags for display
-        const text = processedContent.replace(/<[^>]+>/g, '');
+        // Note: This is a test mock only. Actual sanitization happens in native code
+        // (SwiftSoup on iOS, OWASP on Android). This simple regex is safe here
+        // because test inputs are controlled, not user-supplied.
+        const text = processedContent.replace(/<\/?[a-z][a-z0-9]*[^>]*>/gi, '');
 
         return mockReact.createElement(
           View,

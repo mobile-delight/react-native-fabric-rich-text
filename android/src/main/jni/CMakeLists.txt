@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.13)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 # Shared C++ sources (cross-platform HTML parser)
-set(SHARED_CPP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../cpp")
+set(SHARED_CPP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../cpp")
 file(GLOB shared_cpp_SRCS CONFIGURE_DEPENDS ${SHARED_CPP_DIR}/*.cpp)
 
 file(GLOB react_codegen_SRCS CONFIGURE_DEPENDS *.cpp react/renderer/components/FabricHTMLTextSpec/*.cpp)

@@ -15,8 +15,7 @@ static dispatch_queue_t sSharedParsingQueue;
 
 + (void)parseHTML:(NSString *)html
        generation:(NSUInteger)generation
-   generationRef:(std::atomic<NSUInteger> *)generationRef
-       completion:(void (^)(NSAttributedString * _Nullable, NSString * _Nullable))completion {
+       completion:(void (^)(NSUInteger, NSAttributedString * _Nullable, NSString * _Nullable))completion {
 
     dispatch_async(sSharedParsingQueue, ^{
         NSData *data = [html dataUsingEncoding:NSUTF8StringEncoding];
@@ -42,24 +41,16 @@ static dispatch_queue_t sSharedParsingQueue;
             }
         }
 
-        // Compute plain text fallback if parsing failed
+        // If parsing failed, don't attempt unsafe regex fallback
+        // Regex cannot safely parse HTML (fails on comments, CDATA, quoted angle brackets, etc.)
+        // Return nil for both to indicate error - caller should handle gracefully
         if (!attributedText) {
-            NSRegularExpression *regex = [NSRegularExpression
-                regularExpressionWithPattern:@"<[^>]+>"
-                options:NSRegularExpressionCaseInsensitive
-                error:nil];
-            plainText = [regex stringByReplacingMatchesInString:html
-                                                        options:0
-                                                          range:NSMakeRange(0, html.length)
-                                                   withTemplate:@""];
+            plainText = nil;
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            // Check if this result is stale
-            if (generationRef && generation != generationRef->load()) {
-                return;
-            }
-            completion(attributedText, plainText);
+            // Return generation so caller can check for staleness
+            completion(generation, attributedText, plainText);
         });
     });
 }

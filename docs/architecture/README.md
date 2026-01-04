@@ -150,18 +150,21 @@ The following sequence diagram shows how components interact during rendering:
 
 ### Defense in Depth
 
-The library implements multiple layers of security:
+The library implements multiple layers of security with platform-specific strategies:
 
-1. **Native Sanitization**: HTML is sanitized in the native layer using:
-   - **iOS**: [SwiftSoup](https://github.com/scinfu/SwiftSoup) - Swift port of jsoup
-   - **Android**: [OWASP Java HTML Sanitizer](https://github.com/OWASP/java-html-sanitizer)
+1. **Platform-Specific Sanitization**:
+   - **Web**: [DOMPurify](https://github.com/cure53/DOMPurify) sanitization in the JavaScript layer before rendering
+   - **iOS (React Native)**: JavaScript passes HTML through; sanitization via [SwiftSoup](https://github.com/scinfu/SwiftSoup) in native code
+   - **Android (React Native)**: JavaScript passes HTML through; sanitization via [OWASP Java HTML Sanitizer](https://github.com/OWASP/java-html-sanitizer) in native code
 
-2. **Allowlist-Based Filtering**:
+2. **Allowlist-Based Filtering** (consistent across all platforms):
    - Only allowed tags: `p`, `h1-h6`, `strong`, `b`, `em`, `i`, `u`, `s`, `a`, `ul`, `ol`, `li`, `br`, `span`
    - Only allowed attributes: `href` (on `<a>`), `class`
    - Only allowed protocols: `http`, `https`, `mailto`, `tel`
 
-3. **URL Validation**: Link URLs are validated again at render time to prevent XSS
+3. **URL Validation**: Link URLs are validated at multiple points:
+   - During HTML parsing (C++ layer blocks `javascript:`, `data:`, `vbscript:`)
+   - At render time in native views (iOS/Android)
 
 4. **No Script Execution**: Rendered output is styled text only - no JavaScript execution possible
 

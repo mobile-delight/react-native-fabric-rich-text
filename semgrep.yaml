@@ -6,9 +6,9 @@ rules:
     severity: ERROR
     languages: [typescript, javascript]
     patterns:
-      - pattern: dangerouslySetInnerHTML={{ __html: $X }}
-      - pattern-not: dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize($X) }}
-      - pattern-not: dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize($X, ...) }}
+      - pattern: "dangerouslySetInnerHTML={{ __html: $X }}"
+      - pattern-not: "dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize($X) }}"
+      - pattern-not: "dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize($X, ...) }}"
 
   - id: no-innerhtml-assignment
     message: "Direct innerHTML assignment is dangerous. Use DOMPurify.sanitize() first."
@@ -41,8 +41,8 @@ rules:
     metavariable-pattern:
       metavariable: $STRING
       pattern-either:
-        - pattern: "..."
-        - pattern: `...`
+        - pattern: '"..."'
+        - pattern: '`...`'
 
   - id: validate-href-protocol
     message: "URL href must be validated against dangerous protocols (javascript:, data:, vbscript:)."
