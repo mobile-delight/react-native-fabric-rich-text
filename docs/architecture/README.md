@@ -189,9 +189,14 @@ The library implements multiple layers of security with platform-specific strate
 | `index.tsx` | Public API exports |
 | `FabricHTMLTextNativeComponent.ts` | Codegen native component spec |
 | `components/HTMLText.tsx` | Main React component |
+| `components/HTMLText.web.tsx` | Web platform React component |
 | `adapters/native.tsx` | Native platform adapter |
+| `adapters/web/` | Web platform adapter |
 | `core/sanitize.ts` | Sanitization (pass-through to native) |
+| `core/sanitize.web.ts` | Web sanitization with DOMPurify |
 | `core/constants.ts` | Shared constants |
+| `core/allowedHtml.ts` | Allowed HTML tags and attributes |
+| `types/HTMLTextNativeProps.ts` | TypeScript type definitions |
 
 #### C++ Shared Layer (`cpp/`)
 
@@ -206,21 +211,31 @@ The library implements multiple layers of security with platform-specific strate
 |------|---------|
 | `FabricHTMLText.mm` | Fabric component view |
 | `FabricHTMLTextShadowNode.mm` | Measurement and state management |
-| `FabricHTMLFragmentParser.mm` | C++ to NSAttributedString conversion |
+| `FabricHTMLFragmentParser.mm` | C++ AttributedString to NSAttributedString conversion |
 | `FabricHTMLSanitizer.swift` | SwiftSoup HTML sanitizer |
 | `FabricHTMLCoreTextView.m` | CoreText-based rendering |
+| `FabricHTMLParsingUtils.mm` | Shared parsing utilities |
+| `FabricGeneratedConstants.swift` | Generated constants for styling |
 | `FabricHTMLTextComponentDescriptor.h` | Fabric component descriptor |
 
-#### Android Native Layer (`android/src/main/java/`)
+#### Android JNI Layer (`android/src/main/jni/`)
 
 | File | Purpose |
 |------|---------|
-| `FabricHTMLTextViewManager.kt` | React Native view manager |
-| `FabricHTMLTextView.kt` | Custom TextView implementation |
-| `FabricHTMLFragmentParser.kt` | MapBuffer to Spannable conversion |
+| `ShadowNodes.cpp` | C++ shadow node implementation for measurement |
+| `ShadowNodes.h` | Shadow node interface |
+| `FabricHTMLTextState.cpp` | State management for Android |
+| `FabricHTMLTextState.h` | State interface |
+
+#### Android Kotlin Layer (`android/src/main/java/`)
+
+| File | Purpose |
+|------|---------|
+| `FabricHTMLTextView.kt` | Custom TextView with state-based rendering |
 | `FabricHTMLSanitizer.kt` | OWASP HTML sanitizer |
-| `FabricHtmlSpannableBuilder.kt` | Spannable construction |
-| `FabricGeneratedConstants.kt` | Generated constants |
+| `FabricHtmlSpannableBuilder.kt` | MapBuffer to Spannable conversion |
+| `FabricCustomLineHeightSpan.kt` | Custom line height span implementation |
+| `FabricGeneratedConstants.kt` | Generated constants for styling |
 
 ## Core Concepts
 

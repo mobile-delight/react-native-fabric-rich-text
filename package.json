@@ -1,6 +1,6 @@
 {
   "name": "react-native-fabric-html-text",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha.0",
   "description": "Fabric-first HTML text renderer for React Native",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
