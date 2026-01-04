@@ -127,23 +127,71 @@ task copyCustomShadowNodes(type: Copy) {
   into("build/generated/source/codegen/jni/react/renderer/components/FabricHTMLTextSpec")
 }
 
-// Task to copy custom CMakeLists.txt over codegen output
-// This adds the Android log library for __android_log_print support
-task copyCustomCMakeLists(type: Copy) {
-  description = "Copy custom CMakeLists.txt with log library linkage"
-  from("src/main/jni") {
-    include "CMakeLists.txt"
+// Task to modify the codegen-generated CMakeLists.txt
+// Adds: shared C++ sources, include paths, and Android log library
+task patchCMakeLists {
+  description = "Patch codegen CMakeLists.txt with shared C++ and log library"
+
+  doLast {
+    def cmakeFile = file("build/generated/source/codegen/jni/CMakeLists.txt")
+    if (!cmakeFile.exists()) {
+      logger.warn("CMakeLists.txt not found, skipping patch")
+      return
+    }
+
+    def content = cmakeFile.text
+
+    // Skip if already patched
+    if (content.contains("SHARED_CPP_DIR")) {
+      logger.info("CMakeLists.txt already patched")
+      return
+    }
+
+    // Use absolute path computed by Gradle - more robust than relative path counting
+    def cppDir = file("${projectDir}/../cpp").absolutePath
+
+    // Add shared C++ directory and sources after set(CMAKE_VERBOSE_MAKEFILE on)
+    def sharedCppBlock = """
+# Shared C++ sources (cross-platform HTML parser)
+set(SHARED_CPP_DIR "${cppDir}")
+file(GLOB shared_cpp_SRCS CONFIGURE_DEPENDS \${SHARED_CPP_DIR}/*.cpp)
+
+"""
+    content = content.replace(
+      'set(CMAKE_VERBOSE_MAKEFILE on)\n',
+      'set(CMAKE_VERBOSE_MAKEFILE on)\n' + sharedCppBlock
+    )
+
+    // Add shared sources to the library
+    content = content.replace(
+      '${react_codegen_SRCS}',
+      '${react_codegen_SRCS}\n  ${shared_cpp_SRCS}'
+    )
+
+    // Add shared include directory to target_include_directories
+    content = content.replace(
+      'PUBLIC . react/renderer/components/FabricHTMLTextSpec)',
+      'PUBLIC . ${SHARED_CPP_DIR} react/renderer/components/FabricHTMLTextSpec)'
+    )
+
+    // Add log library for __android_log_print
+    content = content.replace(
+      'react_codegen_FabricHTMLTextSpec\n  fbjni',
+      'react_codegen_FabricHTMLTextSpec\n  log\n  fbjni'
+    )
+
+    cmakeFile.text = content
+    logger.lifecycle("Patched CMakeLists.txt with shared C++ and log library")
   }
-  into("build/generated/source/codegen/jni")
 }
 
 // Hook into the build process - run after codegen but before native compile
 afterEvaluate {
   tasks.matching { it.name.startsWith("generateCodegenArtifacts") }.configureEach {
-    finalizedBy(copyCustomShadowNodes, copyCustomCMakeLists)
+    finalizedBy(copyCustomShadowNodes, patchCMakeLists)
   }
   // Also run before any CMake configure task
   tasks.matching { it.name.startsWith("configureCMake") }.configureEach {
-    dependsOn(copyCustomShadowNodes, copyCustomCMakeLists)
+    dependsOn(copyCustomShadowNodes, patchCMakeLists)
   }
 }

@@ -98,7 +98,7 @@ jobs:
     timeout-minutes: 45
 
     env:
-      XCODE_VERSION: 16.3
+      XCODE_VERSION: 26
 
     steps:
       - name: Checkout
