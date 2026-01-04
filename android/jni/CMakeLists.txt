@@ -42,10 +42,13 @@ add_library(
 
 target_include_directories(react_codegen_FabricHTMLTextSpec
     PUBLIC
-    ${CODEGEN_DIR}
-    ${CODEGEN_DIR}/react/renderer/components/FabricHTMLTextSpec
+    # Custom directories MUST come first to override codegen ShadowNodes.h
     ${CUSTOM_JNI_DIR}
     ${CUSTOM_JNI_DIR}/react/renderer/components/FabricHTMLTextSpec
+    # Then codegen directories
+    ${CODEGEN_DIR}
+    ${CODEGEN_DIR}/react/renderer/components/FabricHTMLTextSpec
+    # Shared C++ code
     ${SHARED_CPP_DIR}
 )
 
