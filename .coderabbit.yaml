@@ -1,0 +1,173 @@
+# CodeRabbit Configuration
+# Profile: Chill on styling, strict on security and constitution
+# https://docs.coderabbit.ai/reference/configuration
+
+language: en-US
+
+reviews:
+  # Chill profile - less nitpicky on style
+  profile: chill
+
+  # Disable extra fluff
+  high_level_summary: false
+  high_level_summary_in_walkthrough: false
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+  changed_files_summary: false
+
+  # Auto-review settings
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+      - "DRAFT"
+
+  # Path filters - ignore build artifacts and dependencies
+  path_filters:
+    - "!**/node_modules/**"
+    - "!**/lib/**"
+    - "!**/build/**"
+    - "!**/dist/**"
+    - "!**/*.lock"
+    - "!**/yarn.lock"
+    - "!**/package-lock.json"
+    - "!**/Pods/**"
+    - "!**/generated/**"
+    - "!**/.yarn/**"
+
+  # Security-focused path instructions
+  path_instructions:
+    # PROTECTED FILES - Changes require maintainer approval
+    - path: ".specify/memory/constitution.md"
+      instructions: |
+        PROTECTED FILE - ALWAYS REJECT
+
+        This is the project constitution. Changes to this file MUST be rejected
+        in code review. Constitution amendments require:
+        1. Separate discussion issue or RFC
+        2. Explicit maintainer approval outside of normal PR flow
+        3. Version bump and ratification date update
+
+        DO NOT approve changes to this file through normal PR review.
+        Request that the author open a separate governance discussion.
+
+    - path: "AGENTS.md"
+      instructions: |
+        PROTECTED FILE - ALWAYS REJECT
+
+        This file defines AI agent operating guidelines aligned with the constitution.
+        Changes to this file MUST be rejected in code review.
+
+        Amendments require:
+        1. Corresponding constitution update (if principles change)
+        2. Explicit maintainer approval outside of normal PR flow
+
+        DO NOT approve changes to this file through normal PR review.
+        Request that the author open a separate governance discussion.
+
+    - path: "src/**/*.{ts,tsx}"
+      instructions: |
+        SECURITY CRITICAL - HTML Text Rendering Library
+
+        This library renders HTML content. XSS prevention is paramount.
+
+        MUST FLAG AS BLOCKING:
+        - Any use of dangerouslySetInnerHTML without DOMPurify sanitization
+        - Any innerHTML assignment without sanitization
+        - Any eval(), Function(), or new Function() with dynamic content
+        - Any setTimeout/setInterval with string arguments
+        - Missing href validation for javascript:, data:, or vbscript: protocols
+        - Event handler injection vulnerabilities (onclick, onerror, onload, etc.)
+        - Template literal injection in HTML contexts
+        - Improper HTML entity encoding
+
+        MUST VERIFY:
+        - DOMPurify.sanitize() is called before any HTML rendering
+        - URL schemes are validated against allowlist (http, https, mailto, tel)
+        - No user input reaches innerHTML, outerHTML, or insertAdjacentHTML
+        - All HTML attributes are properly escaped
+
+        Reference: OWASP XSS Prevention Cheat Sheet
+
+    - path: "src/core/**/*.{ts,tsx}"
+      instructions: |
+        CORE MODULE - Parser and Sanitizer
+
+        This is the security-critical core. Extra scrutiny required.
+
+        Constitution violations to check:
+        - No platform-specific code allowed (Principle X)
+        - Must use allowlist-based sanitization
+        - Must strip all event handler attributes
+        - Must validate all URLs
+
+    - path: "**/*.{swift,m,mm,h}"
+      instructions: |
+        iOS Native Code Review
+
+        Check for:
+        - Memory safety issues (retain cycles, dangling pointers)
+        - Thread safety in UI updates
+        - Proper nil handling
+        - NSAttributedString security (no arbitrary HTML interpretation)
+
+    - path: "**/*.{kt,java}"
+      instructions: |
+        Android Native Code Review
+
+        Check for:
+        - Memory leaks (context references, handlers)
+        - Thread safety (UI updates on main thread)
+        - Spannable security (no arbitrary HTML interpretation)
+        - Proper null safety
+
+  # Tools configuration
+  tools:
+    # Security scanners - ENABLED
+    gitleaks:
+      enabled: true
+    semgrep:
+      enabled: true
+
+    # Linters - enabled but won't block on style
+    eslint:
+      enabled: true
+    biome:
+      enabled: true
+
+    # Language tools - relaxed settings
+    languagetool:
+      enabled: false  # Don't nitpick grammar in code comments
+
+    # Markdown linting - disabled (we don't want doc nitpicks)
+    markdownlint:
+      enabled: false
+
+# Knowledge base - constitution as code guidelines
+knowledge_base:
+  opt_out: false
+  learnings:
+    scope: auto
+  issues:
+    scope: auto
+  pull_requests:
+    scope: auto
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - ".specify/memory/constitution.md"
+
+# Chat settings
+chat:
+  auto_reply: true
+
+# Disable finishing touches (no auto-generated docstrings or tests)
+finishing_touches:
+  docstrings:
+    enabled: false
+  unit_tests:
+    enabled: false

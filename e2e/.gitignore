@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Screenshots (generated during test runs)
+screenshots/
+
+# Appium logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# WebdriverIO
+allure-results/
+allure-report/

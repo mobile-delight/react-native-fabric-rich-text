@@ -1,0 +1,92 @@
+rules:
+  # XSS Prevention Rules for React Native HTML Text Library
+
+  - id: no-dangerous-innerhtml-without-sanitization
+    message: "dangerouslySetInnerHTML used without DOMPurify sanitization. This is a potential XSS vulnerability."
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern-regex: 'dangerouslySetInnerHTML\s*=\s*\{\s*\{\s*__html\s*:\s*(?!DOMPurify\.sanitize)'
+
+  - id: no-innerhtml-assignment
+    message: "Direct innerHTML assignment is dangerous. Use DOMPurify.sanitize() first."
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-either:
+          - pattern: $X.innerHTML = $Y
+          - pattern: $X.outerHTML = $Y
+          - pattern: $X.insertAdjacentHTML(...)
+
+  - id: no-eval-with-dynamic-content
+    message: "eval() with dynamic content is a code injection vulnerability."
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-either:
+          - pattern: eval($X)
+          - pattern: new Function($X)
+          - pattern: Function($X)
+
+  - id: no-settimeout-string
+    message: "setTimeout/setInterval with string argument is equivalent to eval()."
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern-either:
+      - pattern: setTimeout("...", ...)
+      - pattern: setInterval("...", ...)
+      - pattern: setTimeout(`...`, ...)
+      - pattern: setInterval(`...`, ...)
+
+  - id: validate-href-protocol
+    message: "URL href must be validated against dangerous protocols (javascript:, data:, vbscript:)."
+    severity: WARNING
+    languages: [typescript, javascript]
+    pattern: href={$URL}
+    metadata:
+      note: "Ensure URL validation is performed elsewhere if this is flagged"
+
+  - id: no-ts-ignore
+    message: "Constitution violation: @ts-ignore is prohibited (Principle III: No Ignores)"
+    severity: ERROR
+    languages: [typescript]
+    pattern-regex: "//\\s*@ts-ignore"
+
+  - id: no-ts-expect-error
+    message: "Constitution violation: @ts-expect-error is prohibited (Principle III: No Ignores)"
+    severity: ERROR
+    languages: [typescript]
+    pattern-regex: "//\\s*@ts-expect-error"
+
+  - id: no-eslint-disable
+    message: "Constitution violation: eslint-disable is prohibited (Principle III: No Ignores)"
+    severity: ERROR
+    languages: [typescript, javascript]
+    pattern-regex: "//\\s*eslint-disable"
+
+  - id: no-test-skip
+    message: "Constitution violation: test.skip is prohibited (Principle III: No Ignores)"
+    severity: ERROR
+    languages: [typescript, javascript]
+    patterns:
+      - pattern-either:
+          - pattern: test.skip(...)
+          - pattern: it.skip(...)
+          - pattern: describe.skip(...)
+          - pattern: xit(...)
+          - pattern: xdescribe(...)
+
+  - id: no-any-without-justification
+    message: "Constitution violation: 'any' type requires JSDoc justification (Principle V)"
+    severity: WARNING
+    languages: [typescript]
+    pattern: |
+      $X: any
+    metadata:
+      note: "Add JSDoc comment explaining why 'any' is necessary"
+
+  - id: prefer-unknown-over-any
+    message: "Prefer 'unknown' over 'any' for truly dynamic data (Principle IV)"
+    severity: WARNING
+    languages: [typescript]
+    pattern: |
+      function $FUNC(..., $PARAM: any, ...): $RET { ... }
