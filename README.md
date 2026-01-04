@@ -86,6 +86,7 @@ export default function App() {
 | `detectLinks` | `boolean` | Auto-detect URLs in text |
 | `detectPhoneNumbers` | `boolean` | Auto-detect phone numbers |
 | `detectEmails` | `boolean` | Auto-detect email addresses |
+| `numberOfLines` | `number` | Limit text to specified number of lines (with animated height transitions) |
 | `includeFontPadding` | `boolean` | Android: include font padding |
 
 ## Requirements
