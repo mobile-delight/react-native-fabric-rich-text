@@ -1,14 +1,11 @@
-import { fileURLToPath } from 'url';
 import { mkdir } from 'fs/promises';
 import path from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export async function captureScreenshot(testName: string): Promise<string> {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const filename = `${testName}-${timestamp}.png`;
-  const screenshotsDir = path.resolve(__dirname, '../screenshots');
+  // Use process.cwd() for CommonJS compatibility
+  const screenshotsDir = path.resolve(process.cwd(), 'e2e/screenshots');
   const screenshotPath = path.join(screenshotsDir, filename);
 
   try {

@@ -4,11 +4,8 @@ rules:
   - id: no-dangerous-innerhtml-without-sanitization
     message: "dangerouslySetInnerHTML used without DOMPurify sanitization. This is a potential XSS vulnerability."
     severity: ERROR
-    languages: [typescript, javascript]
-    patterns:
-      - pattern: "dangerouslySetInnerHTML={{ __html: $X }}"
-      - pattern-not: "dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize($X) }}"
-      - pattern-not: "dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize($X, ...) }}"
+    languages: [typescript, javascript, tsx, jsx]
+    pattern-regex: 'dangerouslySetInnerHTML\s*=\s*\{\s*\{\s*__html\s*:\s*(?!DOMPurify\.sanitize)'
 
   - id: no-innerhtml-assignment
     message: "Direct innerHTML assignment is dangerous. Use DOMPurify.sanitize() first."
