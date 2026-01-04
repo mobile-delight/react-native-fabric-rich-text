@@ -97,7 +97,14 @@ jobs:
           fetch-depth: 0
 
       - name: Run Semgrep
-        run: semgrep scan --config semgrep.yaml --error --baseline-commit ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            # Full scan on scheduled runs (no baseline)
+            semgrep scan --config semgrep.yaml --error
+          else
+            # Differential scan on PRs and pushes
+            semgrep scan --config semgrep.yaml --error --baseline-commit ${{ github.event.pull_request.base.sha || github.event.before }}
+          fi
         env:
           SEMGREP_BASELINE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
 

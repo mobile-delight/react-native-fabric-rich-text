@@ -231,7 +231,7 @@ std::string FabricHTMLParser::normalizeInterTagWhitespace(const std::string& htm
         }
         lastClosedTag = html.substr(tagStart, tagEnd - tagStart);
         for (char& ch : lastClosedTag) {
-          ch = std::tolower(ch);
+          ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
         }
       } else {
         lastClosedTag.clear();
@@ -277,7 +277,7 @@ std::string FabricHTMLParser::stripHtmlTags(const std::string& html) {
 
       std::string lowerTag = tagName;
       for (char& ch : lowerTag) {
-        ch = std::tolower(ch);
+        ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
       }
 
       if (lowerTag == "script") {
@@ -549,7 +549,7 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
   // Helper to check if a URL scheme is allowed (blocks javascript:, vbscript:, data:)
   auto isAllowedUrlScheme = [](const std::string& url) -> bool {
     std::string lowerUrl = url;
-    for (char& c : lowerUrl) c = std::tolower(c);
+    for (char& c : lowerUrl) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
     // Trim leading whitespace
     size_t start = lowerUrl.find_first_not_of(" \t\n\r");
     if (start != std::string::npos) {
@@ -605,7 +605,7 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
 
       std::string lowerTag = tagName;
       for (char& ch : lowerTag) {
-        ch = std::tolower(ch);
+        ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
       }
 
       // Remove attributes from tag name

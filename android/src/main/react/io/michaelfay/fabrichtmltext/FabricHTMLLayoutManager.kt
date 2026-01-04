@@ -26,8 +26,20 @@ object FabricHTMLLayoutManager {
     // Don't set explicit line spacing - let Android use natural font metrics
     // This matches C++ which doesn't set lineHeight
 
+    // Maximum cache size to prevent unbounded memory growth
+    private const val MAX_CACHE_SIZE = 50
+
     // Cache for layouts: key is (html + tagStyles + width), value is StaticLayout
     private val layoutCache = ConcurrentHashMap<String, CachedLayout>()
+
+    // Helper to add to cache with size limit (simple FIFO eviction)
+    private fun putInCache(key: String, value: CachedLayout) {
+        if (layoutCache.size >= MAX_CACHE_SIZE) {
+            // Remove oldest entries to make room
+            layoutCache.keys.take(10).forEach { layoutCache.remove(it) }
+        }
+        layoutCache[key] = value
+    }
 
     // Create builder per operation to ensure thread safety
     private fun createBuilder(): FabricHtmlSpannableBuilder = FabricHtmlSpannableBuilder()
@@ -122,7 +134,7 @@ object FabricHTMLLayoutManager {
         val measuredHeight = layout.height.toFloat()
 
         // Cache the layout
-        layoutCache[cacheKey] = CachedLayout(layout, measuredWidth, measuredHeight)
+        putInCache(cacheKey, CachedLayout(layout, measuredWidth, measuredHeight))
 
         return floatArrayOf(measuredWidth, measuredHeight)
     }
@@ -209,6 +221,7 @@ object FabricHTMLLayoutManager {
     }
 
     private fun buildCacheKey(html: String, tagStylesJson: String?, width: Float): String {
-        return "${html.hashCode()}_${tagStylesJson?.hashCode() ?: 0}_${width.toInt()}"
+        // Use actual strings to avoid hashCode collisions
+        return "$html|${tagStylesJson ?: ""}|${width.toInt()}"
     }
 }
