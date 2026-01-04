@@ -16,6 +16,7 @@ jest.mock('react-native-fabric-html-text', () => {
       <div
         data-testid="html-text"
         data-numberoflines={numberOfLines}
+        // nosemgrep: no-dangerous-innerhtml-without-sanitization
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
       />
     );

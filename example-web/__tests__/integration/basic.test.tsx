@@ -15,6 +15,7 @@ jest.mock('react-native-fabric-html-text', () => {
     return (
       <div
         data-testid="html-text"
+        // nosemgrep: no-dangerous-innerhtml-without-sanitization
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
         onClick={(e) => {
           if (onLinkPress) {
