@@ -38,6 +38,17 @@
                ReferencedContainer = "container:FabricHtmlTextExample.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A0F35C552F09CC8400BFE583"
+               BuildableName = "FabricHtmlTextTests.xctest"
+               BlueprintName = "FabricHtmlTextTests"
+               ReferencedContainer = "container:FabricHtmlTextExample.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

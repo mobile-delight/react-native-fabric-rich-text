@@ -1,0 +1,135 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly security scan on Sundays at midnight UTC
+    - cron: '0 0 * * 0'
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
+jobs:
+  audit:
+    name: Yarn Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '22'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Security audit
+        run: yarn npm audit --all --severity high
+
+  owasp:
+    name: OWASP Dependency Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '22'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@75ba02d6183445fe0761d26e836bde58b1560600 # v1.1.0
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        with:
+          project: 'react-native-fabric-html-text'
+          path: '.'
+          format: 'HTML'
+          args: >-
+            --suppression owasp-suppressions.xml
+            --failOnCVSS 7
+            --enableExperimental
+            --nvdApiKey ${{ secrets.NVD_API_KEY }}
+
+      - name: Upload OWASP report
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: owasp-dependency-check-report
+          path: reports/
+          retention-days: 14
+
+  semgrep:
+    name: Semgrep SAST
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: false
+    container:
+      image: semgrep/semgrep:1.146.0
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Run Semgrep
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            # Full scan on scheduled runs (no baseline)
+            semgrep scan --config semgrep.yaml --error
+          else
+            # Differential scan on PRs and pushes
+            semgrep scan --config semgrep.yaml --error --baseline-commit ${{ github.event.pull_request.base.sha || github.event.before }}
+          fi
+        env:
+          SEMGREP_BASELINE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
+
+  gitleaks:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Install Gitleaks
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.24.2/gitleaks_8.24.2_linux_x64.tar.gz | tar -xz
+          chmod +x gitleaks
+          sudo mv gitleaks /usr/local/bin/
+
+      - name: Run Gitleaks
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            gitleaks git --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.sha }}" --verbose
+          else
+            gitleaks git --verbose
+          fi

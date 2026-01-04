@@ -1,2 +1,7 @@
-export { default as FabricHtmlTextView } from './FabricHtmlTextViewNativeComponent';
-export * from './FabricHtmlTextViewNativeComponent';
+export {
+  default as FabricHTMLText,
+  type DetectedContentType,
+} from './FabricHTMLTextNativeComponent';
+
+export { default as HTMLText, type HTMLTextProps } from './components/HTMLText';
+export { sanitize, ALLOWED_TAGS, ALLOWED_ATTR } from './core/sanitize';

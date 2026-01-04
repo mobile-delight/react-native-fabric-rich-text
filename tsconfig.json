@@ -1,23 +1,21 @@
 {
   "compilerOptions": {
     "rootDir": ".",
+    "baseUrl": ".",
     "paths": {
       "react-native-fabric-html-text": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "customConditions": ["react-native-strict-api"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "noImplicitUseStrict": false,
-    "noStrictGenericChecks": false,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -26,5 +24,7 @@
     "strict": true,
     "target": "ESNext",
     "verbatimModuleSyntax": true
-  }
+  },
+  "include": ["src"],
+  "exclude": ["example", "lib", "node_modules"]
 }
