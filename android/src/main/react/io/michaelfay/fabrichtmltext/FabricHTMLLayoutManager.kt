@@ -7,7 +7,6 @@ import android.text.TextPaint
 import android.text.TextUtils
 import com.facebook.proguard.annotations.DoNotStrip
 import com.facebook.react.bridge.ReactApplicationContext
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.ceil
 
 /**
@@ -29,16 +28,29 @@ object FabricHTMLLayoutManager {
     // Maximum cache size to prevent unbounded memory growth
     private const val MAX_CACHE_SIZE = 50
 
-    // Cache for layouts: key is (html + tagStyles + width), value is StaticLayout
-    private val layoutCache = ConcurrentHashMap<String, CachedLayout>()
-
-    // Helper to add to cache with size limit (simple FIFO eviction)
-    private fun putInCache(key: String, value: CachedLayout) {
-        if (layoutCache.size >= MAX_CACHE_SIZE) {
-            // Remove oldest entries to make room
-            layoutCache.keys.take(10).forEach { layoutCache.remove(it) }
+    // Cache for layouts with true LRU eviction (accessOrder = true)
+    // Synchronized access required since LinkedHashMap is not thread-safe
+    private val layoutCache = object : LinkedHashMap<String, CachedLayout>(
+        MAX_CACHE_SIZE + 1,
+        0.75f,
+        true  // accessOrder = true for LRU behavior
+    ) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, CachedLayout>?): Boolean {
+            return size > MAX_CACHE_SIZE
         }
-        layoutCache[key] = value
+    }
+
+    // Thread-safe cache operations
+    private fun putInCache(key: String, value: CachedLayout) {
+        synchronized(layoutCache) {
+            layoutCache[key] = value
+        }
+    }
+
+    private fun getFromCache(key: String): CachedLayout? {
+        synchronized(layoutCache) {
+            return layoutCache[key]
+        }
     }
 
     // Create builder per operation to ensure thread safety
@@ -75,7 +87,7 @@ object FabricHTMLLayoutManager {
         val cacheKey = buildCacheKey(html, tagStylesJson, maxWidth)
 
         // Check cache first
-        layoutCache[cacheKey]?.let { cached ->
+        getFromCache(cacheKey)?.let { cached ->
             return floatArrayOf(cached.width, cached.height)
         }
 
@@ -152,7 +164,7 @@ object FabricHTMLLayoutManager {
     fun getCachedLayout(html: String?, tagStylesJson: String?, width: Float): StaticLayout? {
         if (html.isNullOrEmpty()) return null
         val cacheKey = buildCacheKey(html, tagStylesJson, width)
-        return layoutCache[cacheKey]?.layout
+        return getFromCache(cacheKey)?.layout
     }
 
     /**
@@ -217,7 +229,9 @@ object FabricHTMLLayoutManager {
      */
     @JvmStatic
     fun clearCache() {
-        layoutCache.clear()
+        synchronized(layoutCache) {
+            layoutCache.clear()
+        }
     }
 
     private fun buildCacheKey(html: String, tagStylesJson: String?, width: Float): String {
