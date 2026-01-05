@@ -210,6 +210,109 @@ function StyleSheetExamples({
           (tap)
         </Text>
       </TouchableOpacity>
+
+      {/* RTL Support Examples */}
+      <Text style={styles.rtlSectionHeader}>RTL Support</Text>
+
+      <Text style={styles.sectionTitle}>Arabic Text</Text>
+      <HTMLText
+        html="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>"
+        style={styles.text}
+        testID="rtl-arabic"
+      />
+
+      <Text style={styles.sectionTitle}>Hebrew Text</Text>
+      <HTMLText
+        html="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>"
+        style={styles.text}
+        testID="rtl-hebrew"
+      />
+
+      <Text style={styles.sectionTitle}>Persian Text</Text>
+      <HTMLText
+        html="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>"
+        style={styles.text}
+        testID="rtl-persian"
+      />
+
+      <Text style={styles.sectionTitle}>Mixed Directional Content</Text>
+      <HTMLText
+        html="<p>مرحباً Hello عالم World!</p>"
+        style={styles.text}
+        testID="rtl-mixed"
+      />
+
+      <Text style={styles.sectionTitle}>RTL with Embedded Numbers</Text>
+      <HTMLText
+        html="<p dir='rtl'>السعر: 123.45 دولار</p>"
+        style={styles.text}
+        testID="rtl-numbers"
+      />
+
+      <Text style={styles.sectionTitle}>BDI Isolation</Text>
+      <HTMLText
+        html="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>"
+        style={styles.text}
+        testID="rtl-bdi"
+      />
+
+      <Text style={styles.sectionTitle}>BDO Override (RTL)</Text>
+      <HTMLText
+        html="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>"
+        style={styles.text}
+        testID="rtl-bdo-rtl"
+      />
+
+      <Text style={styles.sectionTitle}>BDO Override (LTR)</Text>
+      <HTMLText
+        html="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>"
+        style={styles.text}
+        testID="rtl-bdo-ltr"
+      />
+
+      <Text style={styles.sectionTitle}>Direction Attribute</Text>
+      <HTMLText
+        html="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>"
+        style={styles.text}
+        testID="rtl-dir-attr"
+      />
+
+      <Text style={styles.sectionTitle}>writingDirection Prop (RTL)</Text>
+      <HTMLText
+        html="<p>This English text is forced RTL via writingDirection prop.</p>"
+        style={styles.text}
+        writingDirection="rtl"
+        testID="rtl-writing-direction"
+      />
+
+      <Text style={styles.sectionTitle}>RTL with Formatting</Text>
+      <HTMLText
+        html="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>"
+        style={styles.text}
+        testID="rtl-formatting"
+      />
+
+      <Text style={styles.sectionTitle}>RTL with Links</Text>
+      <HTMLText
+        html='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
+        style={styles.text}
+        onLinkPress={onLinkPress}
+        testID="rtl-links"
+      />
+
+      <Text style={styles.sectionTitle}>RTL Unordered List</Text>
+      <HTMLText
+        html="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>"
+        style={styles.text}
+        testID="rtl-ul"
+      />
+
+      <Text style={styles.sectionTitle}>RTL Ordered List</Text>
+      <HTMLText
+        html="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>"
+        style={styles.text}
+        testID="rtl-ol"
+      />
     </>
   );
 }
@@ -472,6 +575,109 @@ function NativeWindExamples({
         className="text-xl font-bold text-indigo-600 tracking-wide"
         testID="nw-typography"
       />
+
+      {/* RTL Support Examples */}
+      <Text style={styles.rtlSectionHeader}>RTL Support</Text>
+
+      <Text style={styles.sectionTitle}>Arabic Text</Text>
+      <NativeWindHTMLText
+        html="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-arabic"
+      />
+
+      <Text style={styles.sectionTitle}>Hebrew Text</Text>
+      <NativeWindHTMLText
+        html="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-hebrew"
+      />
+
+      <Text style={styles.sectionTitle}>Persian Text</Text>
+      <NativeWindHTMLText
+        html="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-persian"
+      />
+
+      <Text style={styles.sectionTitle}>Mixed Directional Content</Text>
+      <NativeWindHTMLText
+        html="<p>مرحباً Hello عالم World!</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-mixed"
+      />
+
+      <Text style={styles.sectionTitle}>RTL with Embedded Numbers</Text>
+      <NativeWindHTMLText
+        html="<p dir='rtl'>السعر: 123.45 دولار</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-numbers"
+      />
+
+      <Text style={styles.sectionTitle}>BDI Isolation</Text>
+      <NativeWindHTMLText
+        html="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-bdi"
+      />
+
+      <Text style={styles.sectionTitle}>BDO Override (RTL)</Text>
+      <NativeWindHTMLText
+        html="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-bdo-rtl"
+      />
+
+      <Text style={styles.sectionTitle}>BDO Override (LTR)</Text>
+      <NativeWindHTMLText
+        html="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-bdo-ltr"
+      />
+
+      <Text style={styles.sectionTitle}>Direction Attribute</Text>
+      <NativeWindHTMLText
+        html="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-dir-attr"
+      />
+
+      <Text style={styles.sectionTitle}>writingDirection Prop (RTL)</Text>
+      <NativeWindHTMLText
+        html="<p>This English text is forced RTL via writingDirection prop.</p>"
+        className="text-base leading-6"
+        writingDirection="rtl"
+        testID="nw-rtl-writing-direction"
+      />
+
+      <Text style={styles.sectionTitle}>RTL with Formatting</Text>
+      <NativeWindHTMLText
+        html="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>"
+        className="text-base leading-6"
+        testID="nw-rtl-formatting"
+      />
+
+      <Text style={styles.sectionTitle}>RTL with Links</Text>
+      <NativeWindHTMLText
+        html='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
+        className="text-base leading-6"
+        onLinkPress={onLinkPress}
+        testID="nw-rtl-links"
+      />
+
+      <Text style={styles.sectionTitle}>RTL Unordered List</Text>
+      <NativeWindHTMLText
+        html="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>"
+        className="text-base leading-6"
+        testID="nw-rtl-ul"
+      />
+
+      <Text style={styles.sectionTitle}>RTL Ordered List</Text>
+      <NativeWindHTMLText
+        html="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>"
+        className="text-base leading-6"
+        testID="nw-rtl-ol"
+      />
     </>
   );
 }
@@ -610,6 +816,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#0066CC',
+    marginTop: 32,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  rtlSectionHeader: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#00AA66',
     marginTop: 32,
     marginBottom: 4,
     textAlign: 'center',

@@ -1,8 +1,10 @@
 import type { ReactElement } from 'react';
 import type { TextStyle } from 'react-native';
+import { I18nManager } from 'react-native';
 import { sanitize } from '../core/sanitize';
 import { HTMLTextNative } from '../adapters/native';
 import type { DetectedContentType } from '../FabricHTMLTextNativeComponent';
+import type { WritingDirection } from '../types/HTMLTextNativeProps';
 
 export interface HTMLTextProps {
   /** HTML string to render */
@@ -57,6 +59,17 @@ export interface HTMLTextProps {
    * @default 0.2
    */
   animationDuration?: number | undefined;
+  /**
+   * Base writing direction for all content.
+   *
+   * - 'auto': Uses I18nManager.isRTL to determine direction (default)
+   * - 'ltr': Forces left-to-right direction
+   * - 'rtl': Forces right-to-left direction
+   *
+   * HTML elements with explicit `dir` attribute will override this setting.
+   * @default 'auto'
+   */
+  writingDirection?: WritingDirection | undefined;
 }
 
 export default function HTMLText({
@@ -71,6 +84,7 @@ export default function HTMLText({
   detectEmails,
   numberOfLines,
   animationDuration,
+  writingDirection = 'auto',
 }: HTMLTextProps): ReactElement | null {
   if (!html) {
     return null;
@@ -82,6 +96,14 @@ export default function HTMLText({
   }
 
   const sanitizedHtml = sanitize(html);
+
+  // Resolve 'auto' to explicit direction using I18nManager
+  const resolvedDirection: 'ltr' | 'rtl' =
+    writingDirection === 'auto'
+      ? I18nManager.isRTL
+        ? 'rtl'
+        : 'ltr'
+      : writingDirection;
 
   return (
     <HTMLTextNative
@@ -96,6 +118,7 @@ export default function HTMLText({
       detectEmails={detectEmails}
       numberOfLines={numberOfLines}
       animationDuration={animationDuration}
+      writingDirection={resolvedDirection}
     />
   );
 }

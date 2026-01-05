@@ -2,6 +2,15 @@ import type { ViewProps, TextStyle } from 'react-native';
 import type { DetectedContentType } from '../FabricHTMLTextNativeComponent';
 
 /**
+ * Writing direction for text content.
+ *
+ * - 'auto': Inherit from I18nManager.isRTL (default)
+ * - 'ltr': Force left-to-right direction
+ * - 'rtl': Force right-to-left direction
+ */
+export type WritingDirection = 'auto' | 'ltr' | 'rtl';
+
+/**
  * Props for the HTMLTextNative component.
  * Extends ViewProps to support standard view properties including accessibility.
  */
@@ -64,4 +73,15 @@ export interface HTMLTextNativeProps extends ViewProps {
    * @default 0.2
    */
   animationDuration?: number | undefined;
+  /**
+   * Base writing direction for all content.
+   *
+   * - 'auto': Uses I18nManager.isRTL to determine direction (default)
+   * - 'ltr': Forces left-to-right direction
+   * - 'rtl': Forces right-to-left direction
+   *
+   * HTML elements with explicit `dir` attribute will override this setting.
+   * @default 'auto'
+   */
+  writingDirection?: WritingDirection | undefined;
 }

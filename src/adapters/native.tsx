@@ -25,6 +25,7 @@ export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
     detectEmails,
     numberOfLines,
     animationDuration,
+    writingDirection,
     ...rest
   } = props;
 
@@ -107,6 +108,7 @@ export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
       detectEmails={detectEmails}
       numberOfLines={effectiveNumberOfLines}
       animationDuration={effectiveAnimationDuration}
+      writingDirection={writingDirection}
       {...rest}
     />
   );

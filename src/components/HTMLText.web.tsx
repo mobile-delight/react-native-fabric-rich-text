@@ -27,6 +27,7 @@ export default function HTMLText({
   detectPhoneNumbers,
   detectEmails,
   numberOfLines,
+  writingDirection = 'auto',
 }: HTMLTextProps): ReactElement | null {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -83,6 +84,19 @@ export default function HTMLText({
     ? { overflow: 'hidden' }
     : {};
 
+  // Apply writing direction - 'auto' inherits from parent/system
+  // Using CSS logical property 'start' which automatically adapts to direction:
+  // - LTR: start = left
+  // - RTL: start = right
+  const directionStyle: React.CSSProperties =
+    writingDirection === 'auto'
+      ? {} // Inherit from parent
+      : {
+          direction: writingDirection,
+          // Use CSS logical property for RTL-aware alignment
+          textAlign: 'start',
+        };
+
   // When truncating, apply line-clamp styles directly to block elements in the HTML.
   // This ensures the ellipsis appears correctly at the truncation point.
   const lineClampStyles = `display:-webkit-box;-webkit-line-clamp:${numberOfLines};-webkit-box-orient:vertical;overflow:hidden;margin:0;padding:0;`;
@@ -97,7 +111,8 @@ export default function HTMLText({
     <div
       ref={containerRef}
       className={className}
-      style={{ ...cssStyle, ...truncationStyle }}
+      style={{ ...cssStyle, ...truncationStyle, ...directionStyle }}
+      dir={writingDirection === 'auto' ? undefined : writingDirection}
       data-testid={testID}
       onClick={onLinkPress ? handleClick : undefined}
       // nosemgrep: no-dangerous-innerhtml-without-sanitization - processedHtml is sanitized via DOMPurify (sanitizedHtml on line 75)

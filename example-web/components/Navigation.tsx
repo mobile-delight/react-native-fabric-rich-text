@@ -8,6 +8,7 @@ const navItems = [
   { href: '/basic', label: 'Basic' },
   { href: '/truncation', label: 'Truncation' },
   { href: '/styling', label: 'Styling' },
+  { href: '/rtl', label: 'RTL' },
 ];
 
 export default function Navigation() {

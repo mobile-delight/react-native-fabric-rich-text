@@ -117,13 +117,15 @@ using namespace facebook::react;
         buildAttributedStringFromCppAttributedString:attributedString
                                         withLinkUrls:linkUrls];
 
-    // Extract numberOfLines and animationDuration from state
+    // Extract numberOfLines, animationDuration, and writingDirection from state
     int numberOfLines = stateData.numberOfLines;
     Float animationDuration = stateData.animationDuration;
+    bool isRTL = (stateData.writingDirection == WritingDirectionState::RTL);
 
     // Update CoreText view properties
     _coreTextView.numberOfLines = numberOfLines;
     _coreTextView.animationDuration = animationDuration;
+    _coreTextView.isRTL = isRTL;
     _coreTextView.attributedText = nsAttributedString;
 }
 
@@ -141,6 +143,12 @@ using namespace facebook::react;
     }
     if (!oldProps || newProps.detectEmails != oldPropsTyped.detectEmails) {
         _coreTextView.detectEmails = newProps.detectEmails;
+    }
+
+    // Update textAlign prop for RTL alignment swap
+    if (!oldProps || newProps.textAlign != oldPropsTyped.textAlign) {
+        NSString *textAlign = newProps.textAlign.empty() ? nil : [NSString stringWithUTF8String:newProps.textAlign.c_str()];
+        _coreTextView.textAlign = textAlign;
     }
 
     [super updateProps:props oldProps:oldProps];

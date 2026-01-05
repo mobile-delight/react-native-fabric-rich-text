@@ -23,8 +23,211 @@ const std::unordered_set<std::string> FabricHTMLParser::BLOCK_LEVEL_TAGS = {
 };
 
 const std::unordered_set<std::string> FabricHTMLParser::INLINE_FORMATTING_TAGS = {
-    "strong", "b", "em", "i", "u", "s", "mark", "small", "sub", "sup", "code", "span", "a"
+    "strong", "b", "em", "i", "u", "s", "mark", "small", "sub", "sup", "code", "span", "a",
+    "bdi", "bdo"  // Bidirectional text elements
 };
+
+// =============================================================================
+// RTL Support Functions
+// =============================================================================
+
+bool isStrongRTL(char32_t codepoint) {
+  // Hebrew: U+0590–U+05FF
+  if (codepoint >= 0x0590 && codepoint <= 0x05FF) return true;
+  // Arabic: U+0600–U+06FF
+  if (codepoint >= 0x0600 && codepoint <= 0x06FF) return true;
+  // Arabic Supplement: U+0750–U+077F
+  if (codepoint >= 0x0750 && codepoint <= 0x077F) return true;
+  // Arabic Extended-A: U+08A0–U+08FF
+  if (codepoint >= 0x08A0 && codepoint <= 0x08FF) return true;
+  // Syriac: U+0700–U+074F
+  if (codepoint >= 0x0700 && codepoint <= 0x074F) return true;
+  // Thaana: U+0780–U+07BF
+  if (codepoint >= 0x0780 && codepoint <= 0x07BF) return true;
+  // N'Ko: U+07C0–U+07FF
+  if (codepoint >= 0x07C0 && codepoint <= 0x07FF) return true;
+  // Hebrew Presentation Forms: U+FB1D–U+FB4F
+  if (codepoint >= 0xFB1D && codepoint <= 0xFB4F) return true;
+  // Arabic Presentation Forms-A: U+FB50–U+FDFF
+  if (codepoint >= 0xFB50 && codepoint <= 0xFDFF) return true;
+  // Arabic Presentation Forms-B: U+FE70–U+FEFF
+  if (codepoint >= 0xFE70 && codepoint <= 0xFEFF) return true;
+  return false;
+}
+
+bool isStrongLTR(char32_t codepoint) {
+  // Basic Latin letters: U+0041–U+005A (A-Z), U+0061–U+007A (a-z)
+  if (codepoint >= 0x0041 && codepoint <= 0x005A) return true;
+  if (codepoint >= 0x0061 && codepoint <= 0x007A) return true;
+  // Latin Extended-A/B: U+00C0–U+024F
+  if (codepoint >= 0x00C0 && codepoint <= 0x024F) return true;
+  // Latin Extended Additional: U+1E00–U+1EFF
+  if (codepoint >= 0x1E00 && codepoint <= 0x1EFF) return true;
+  // Greek: U+0370–U+03FF
+  if (codepoint >= 0x0370 && codepoint <= 0x03FF) return true;
+  // Cyrillic: U+0400–U+04FF
+  if (codepoint >= 0x0400 && codepoint <= 0x04FF) return true;
+  // Georgian: U+10A0–U+10FF
+  if (codepoint >= 0x10A0 && codepoint <= 0x10FF) return true;
+  return false;
+}
+
+WritingDirection detectDirectionFromText(const std::string& text) {
+  // UTF-8 decode and check first strong directional character
+  size_t i = 0;
+  while (i < text.size()) {
+    char32_t codepoint = 0;
+    unsigned char c = static_cast<unsigned char>(text[i]);
+
+    // UTF-8 decoding
+    if (c < 0x80) {
+      // ASCII
+      codepoint = c;
+      i += 1;
+    } else if ((c & 0xE0) == 0xC0) {
+      // 2-byte sequence
+      if (i + 1 >= text.size()) break;
+      codepoint = ((c & 0x1F) << 6) |
+                  (static_cast<unsigned char>(text[i + 1]) & 0x3F);
+      i += 2;
+    } else if ((c & 0xF0) == 0xE0) {
+      // 3-byte sequence
+      if (i + 2 >= text.size()) break;
+      codepoint = ((c & 0x0F) << 12) |
+                  ((static_cast<unsigned char>(text[i + 1]) & 0x3F) << 6) |
+                  (static_cast<unsigned char>(text[i + 2]) & 0x3F);
+      i += 3;
+    } else if ((c & 0xF8) == 0xF0) {
+      // 4-byte sequence
+      if (i + 3 >= text.size()) break;
+      codepoint = ((c & 0x07) << 18) |
+                  ((static_cast<unsigned char>(text[i + 1]) & 0x3F) << 12) |
+                  ((static_cast<unsigned char>(text[i + 2]) & 0x3F) << 6) |
+                  (static_cast<unsigned char>(text[i + 3]) & 0x3F);
+      i += 4;
+    } else {
+      // Invalid UTF-8, skip byte
+      i += 1;
+      continue;
+    }
+
+    // Check for strong directional character
+    if (isStrongRTL(codepoint)) {
+      return WritingDirection::RightToLeft;
+    }
+    if (isStrongLTR(codepoint)) {
+      return WritingDirection::LeftToRight;
+    }
+    // Skip neutral characters (numbers, punctuation, whitespace) and continue
+  }
+
+  // Default to LTR if no strong character found
+  return WritingDirection::LeftToRight;
+}
+
+WritingDirection parseDirectionAttribute(const std::string& dirAttr) {
+  if (dirAttr.empty()) {
+    return WritingDirection::Natural;
+  }
+
+  // Convert to lowercase for case-insensitive comparison
+  std::string lower = dirAttr;
+  for (char& c : lower) {
+    c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+  }
+
+  if (lower == "rtl") {
+    return WritingDirection::RightToLeft;
+  }
+  if (lower == "ltr") {
+    return WritingDirection::LeftToRight;
+  }
+  if (lower == "auto") {
+    // "auto" requires text content to detect - return Natural as a marker
+    // The caller should use detectDirectionFromText() for actual detection
+    return WritingDirection::Natural;
+  }
+
+  // Invalid value - ignore and use inherited direction
+  return WritingDirection::Natural;
+}
+
+// DirectionContext implementation
+
+void DirectionContext::enterElement(const std::string& tag,
+                                    const std::string& dirAttr,
+                                    const std::string& textContent) {
+  // Save current state to stack
+  directionStack.push_back(currentDirection);
+
+  bool isBdi = (tag == "bdi");
+  bool isBdo = (tag == "bdo");
+
+  isBdiStack.push_back(isBdi);
+  isBdoStack.push_back(isBdo);
+
+  if (isBdi) {
+    isolationDepth++;
+  }
+  if (isBdo) {
+    overrideDepth++;
+  }
+
+  // Handle dir attribute
+  if (!dirAttr.empty()) {
+    std::string lowerDir = dirAttr;
+    for (char& c : lowerDir) {
+      c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+    }
+
+    if (lowerDir == "rtl") {
+      currentDirection = WritingDirection::RightToLeft;
+    } else if (lowerDir == "ltr") {
+      currentDirection = WritingDirection::LeftToRight;
+    } else if (lowerDir == "auto") {
+      // For dir="auto", detect from text content
+      if (!textContent.empty()) {
+        currentDirection = detectDirectionFromText(textContent);
+      }
+      // If no text content, keep current direction
+    }
+  } else if (isBdi) {
+    // <bdi> without dir attribute defaults to dir="auto" behavior
+    if (!textContent.empty()) {
+      currentDirection = detectDirectionFromText(textContent);
+    }
+  }
+  // <bdo> without dir attribute has no directional effect (per HTML5 spec)
+  // Other elements inherit the current direction
+}
+
+void DirectionContext::exitElement(const std::string& tag) {
+  if (directionStack.empty()) {
+    return;
+  }
+
+  // Pop bdi/bdo tracking
+  if (!isBdiStack.empty()) {
+    if (isBdiStack.back()) {
+      isolationDepth--;
+    }
+    isBdiStack.pop_back();
+  }
+  if (!isBdoStack.empty()) {
+    if (isBdoStack.back()) {
+      overrideDepth--;
+    }
+    isBdoStack.pop_back();
+  }
+
+  // Restore previous direction
+  currentDirection = directionStack.back();
+  directionStack.pop_back();
+}
+
+WritingDirection DirectionContext::getEffectiveDirection() const {
+  return currentDirection;
+}
 
 bool FabricHTMLParser::isBlockLevelTag(const std::string& tag) {
   return BLOCK_LEVEL_TAGS.find(tag) != BLOCK_LEVEL_TAGS.end();
@@ -508,6 +711,9 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
   std::vector<std::string> linkUrlStack;  // Stack of link URLs for nested <a> tags
   int linkDepth = 0;  // Track nested depth inside <a href="..."> tags
 
+  // RTL Support: Direction context for tracking writing direction
+  DirectionContext dirContext;
+
   bool inTag = false;
   bool inScript = false;
   bool inStyle = false;
@@ -515,18 +721,22 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
 
   auto flushSegment = [&](bool closingInlineElement = false) {
     if (!currentText.empty()) {
-      segments.push_back({
-          currentText,
-          currentScale,
-          currentBold,
-          currentItalic,
-          currentUnderline,
-          currentStrikethrough,
-          currentLink,
-          nextFollowsInline,
-          currentParentTag,
-          currentLinkUrl
-      });
+      FabricHTMLTextSegment segment;
+      segment.text = currentText;
+      segment.fontScale = currentScale;
+      segment.isBold = currentBold;
+      segment.isItalic = currentItalic;
+      segment.isUnderline = currentUnderline;
+      segment.isStrikethrough = currentStrikethrough;
+      segment.isLink = currentLink;
+      segment.followsInlineElement = nextFollowsInline;
+      segment.parentTag = currentParentTag;
+      segment.linkUrl = currentLinkUrl;
+      // RTL Support: Add direction info
+      segment.writingDirection = dirContext.getEffectiveDirection();
+      segment.isBdiIsolated = dirContext.isIsolated();
+      segment.isBdoOverride = dirContext.isOverride();
+      segments.push_back(std::move(segment));
       currentText.clear();
     }
     nextFollowsInline = closingInlineElement;
@@ -613,6 +823,72 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
     return "";
   };
 
+  // Helper to extract dir attribute from a tag
+  auto extractDirAttr = [](const std::string& fullTag) -> std::string {
+    // Look for dir=" or dir=' in the tag
+    size_t dirPos = fullTag.find("dir=");
+    if (dirPos == std::string::npos) {
+      return "";
+    }
+    // Make sure there's a value after dir=
+    size_t valueStart = dirPos + 4;
+    if (valueStart >= fullTag.size()) {
+      return "";
+    }
+    char quote = fullTag[valueStart];
+    if (quote == '"' || quote == '\'') {
+      size_t valueEnd = fullTag.find(quote, valueStart + 1);
+      if (valueEnd != std::string::npos && valueEnd > valueStart + 1) {
+        return fullTag.substr(valueStart + 1, valueEnd - valueStart - 1);
+      }
+    }
+    return "";
+  };
+
+  // Helper to extract text content from position until the closing tag (for dir="auto" detection)
+  // This looks ahead in the HTML without modifying the parse state
+  auto extractTextForAutoDetection = [&html](size_t startPos, const std::string& tagToClose) -> std::string {
+    std::string textContent;
+    bool inNestedTag = false;
+    int nestedDepth = 0;
+    std::string closingPattern = "</" + tagToClose;
+
+    for (size_t j = startPos; j < html.size(); ++j) {
+      char ch = html[j];
+
+      if (ch == '<') {
+        inNestedTag = true;
+        // Check if this is our closing tag
+        std::string remaining = html.substr(j, closingPattern.size() + 1);
+        // Convert to lowercase for comparison
+        std::string lowerRemaining = remaining;
+        for (char& c : lowerRemaining) {
+          c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        }
+        if (lowerRemaining.find(closingPattern) == 0) {
+          // Found closing tag at our level
+          if (nestedDepth == 0) {
+            break;
+          }
+          nestedDepth--;
+        }
+        continue;
+      }
+
+      if (ch == '>') {
+        inNestedTag = false;
+        continue;
+      }
+
+      // Collect text content (not inside tags)
+      if (!inNestedTag) {
+        textContent += ch;
+      }
+    }
+
+    return textContent;
+  };
+
   for (size_t i = 0; i < html.size(); ++i) {
     char c = html[i];
 
@@ -652,6 +928,8 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
         flushSegment();
         if (!tagStack.empty() && tagStack.back() == cleanTag) {
           tagStack.pop_back();
+          // RTL Support: Exit element
+          dirContext.exitElement(cleanTag);
           updateStyleFromStack();
         }
         // SECURITY BOUNDARY: Clear any unclosed link state when closing block elements.
@@ -665,6 +943,20 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
                                 cleanTag == "p" || cleanTag == "div")) {
         flushSegment();
         tagStack.push_back(cleanTag);
+        // RTL Support: Extract dir attribute and enter element
+        std::string dirAttr = extractDirAttr(tagName);
+        // For dir="auto", look ahead to extract text content for direction detection
+        std::string textForDetection;
+        if (!dirAttr.empty()) {
+          std::string lowerDir = dirAttr;
+          for (char& ch : lowerDir) {
+            ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+          }
+          if (lowerDir == "auto") {
+            textForDetection = extractTextForAutoDetection(i + 1, cleanTag);
+          }
+        }
+        dirContext.enterElement(cleanTag, dirAttr, textForDetection);
         updateStyleFromStack();
       } else if (!isClosing && isInlineFormattingTag(cleanTag)) {
         flushSegment();
@@ -677,8 +969,59 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
             linkUrlStack.push_back(url);
           }
         }
+        // RTL Support: Extract dir attribute and enter element
+        std::string dirAttr = extractDirAttr(tagName);
+        // For dir="auto" or <bdi> without dir, look ahead to extract text content for direction detection
+        std::string textForDetection;
+        bool needsAutoDetection = false;
+        if (!dirAttr.empty()) {
+          std::string lowerDir = dirAttr;
+          for (char& ch : lowerDir) {
+            ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+          }
+          needsAutoDetection = (lowerDir == "auto");
+        } else if (cleanTag == "bdi") {
+          // <bdi> defaults to dir="auto" behavior
+          needsAutoDetection = true;
+        }
+        if (needsAutoDetection) {
+          textForDetection = extractTextForAutoDetection(i + 1, cleanTag);
+        }
+        dirContext.enterElement(cleanTag, dirAttr, textForDetection);
+
+        // Unicode BiDi control characters for <bdi> and <bdo>
+        // Insert isolation/override control characters before content
+        if (cleanTag == "bdi") {
+          // FSI (U+2068) - First Strong Isolate
+          currentText += "\xE2\x81\xA8";  // UTF-8 encoding of U+2068
+        } else if (cleanTag == "bdo") {
+          // Get effective direction from context for <bdo>
+          std::string lowerDir = dirAttr;
+          for (char& ch : lowerDir) {
+            ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+          }
+          if (lowerDir == "rtl") {
+            // RLO (U+202E) - Right-to-Left Override
+            currentText += "\xE2\x80\xAE";  // UTF-8 encoding of U+202E
+          } else if (lowerDir == "ltr") {
+            // LRO (U+202D) - Left-to-Right Override
+            currentText += "\xE2\x80\xAD";  // UTF-8 encoding of U+202D
+          }
+          // Note: <bdo> without dir attribute has no directional effect per HTML5 spec
+        }
+
         updateStyleFromStack();
       } else if (isClosing && isInlineFormattingTag(cleanTag)) {
+        // Unicode BiDi control characters: close isolation/override before flushing
+        if (cleanTag == "bdi") {
+          // PDI (U+2069) - Pop Directional Isolate
+          currentText += "\xE2\x81\xA9";  // UTF-8 encoding of U+2069
+        } else if (cleanTag == "bdo") {
+          // Check if the bdo had a dir attribute (we need to look at tag stack)
+          // PDF (U+202C) - Pop Directional Format
+          // We insert PDF regardless - it's harmless if no override was started
+          currentText += "\xE2\x80\xAC";  // UTF-8 encoding of U+202C
+        }
         flushSegment(true);
         if (!tagStack.empty() && tagStack.back() == cleanTag) {
           tagStack.pop_back();
@@ -689,6 +1032,8 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
               linkUrlStack.pop_back();
             }
           }
+          // RTL Support: Exit element
+          dirContext.exitElement(cleanTag);
           updateStyleFromStack();
         }
       } else if (!isClosing && cleanTag == "li") {

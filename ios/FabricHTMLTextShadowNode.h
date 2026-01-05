@@ -12,6 +12,15 @@ namespace facebook::react {
 extern const char FabricHTMLTextComponentName[];
 
 /**
+ * Writing direction for RTL text support.
+ * Maps to NSWritingDirection on iOS and TextDirectionHeuristics on Android.
+ */
+enum class WritingDirectionState {
+  LTR,   // Left-to-right (default)
+  RTL    // Right-to-left
+};
+
+/**
  * Custom state that holds the AttributedString for the native view.
  * This is passed to the native component view after layout.
  */
@@ -24,6 +33,8 @@ class FabricHTMLTextStateData final {
   int numberOfLines{0};
   // Animation duration for height changes in seconds (0 = instant)
   Float animationDuration{0.2f};
+  // Base writing direction for text content
+  WritingDirectionState writingDirection{WritingDirectionState::LTR};
 };
 
 /**

@@ -114,6 +114,24 @@ static NSString *const HTMLDetectedContentTypeKey = @"HTMLDetectedContentType";
   _animationDuration = animationDuration;
 }
 
+- (void)setIsRTL:(BOOL)isRTL {
+  if (_isRTL == isRTL) {
+    return;
+  }
+  _isRTL = isRTL;
+  [self invalidateFrame];
+  [self setNeedsDisplay];
+}
+
+- (void)setTextAlign:(NSString *)textAlign {
+  if (_textAlign == textAlign || [_textAlign isEqualToString:textAlign]) {
+    return;
+  }
+  _textAlign = [textAlign copy];
+  [self invalidateFrame];
+  [self setNeedsDisplay];
+}
+
 /**
  * Process the attributed string to add detected links, emails, and phone numbers.
  */
@@ -260,8 +278,14 @@ static NSString *const HTMLDetectedContentTypeKey = @"HTMLDetectedContentType";
 - (CTFrameRef)ctFrame {
   NSAttributedString *textToRender = _processedAttributedText ?: _attributedText;
   if (!_ctFrame && textToRender.length > 0) {
+    // Apply base writing direction if RTL
+    NSAttributedString *directedText = textToRender;
+    if (_isRTL) {
+      directedText = [self applyBaseWritingDirection:textToRender isRTL:YES];
+    }
+
     CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(
-        (__bridge CFAttributedStringRef)textToRender);
+        (__bridge CFAttributedStringRef)directedText);
 
     CGRect bounds = self.bounds;
     CGMutablePathRef path = CGPathCreateMutable();
@@ -274,6 +298,87 @@ static NSString *const HTMLDetectedContentTypeKey = @"HTMLDetectedContentType";
     CFRelease(framesetter);
   }
   return _ctFrame;
+}
+
+/**
+ * Apply base writing direction to attributed string via paragraph style.
+ * Sets NSWritingDirection on the paragraph style for the entire string.
+ *
+ * Text alignment behavior in RTL mode:
+ * - "left" → NSTextAlignmentRight (start of RTL text)
+ * - "right" → NSTextAlignmentLeft (end of RTL text)
+ * - "center" → NSTextAlignmentCenter (unchanged)
+ * - "justify" → NSTextAlignmentJustified (unchanged)
+ * - nil/natural → NSTextAlignmentRight (default for RTL)
+ */
+- (NSAttributedString *)applyBaseWritingDirection:(NSAttributedString *)attributedText isRTL:(BOOL)isRTL {
+  if (!attributedText || attributedText.length == 0) {
+    return attributedText;
+  }
+
+  NSMutableAttributedString *mutableText = [attributedText mutableCopy];
+  NSRange fullRange = NSMakeRange(0, mutableText.length);
+
+  // Determine text alignment based on textAlign prop and RTL mode
+  // In RTL mode, "left" and "right" are swapped to maintain semantic meaning
+  // (left = start, right = end)
+  NSTextAlignment alignment = NSTextAlignmentNatural;
+  if (_textAlign) {
+    if ([_textAlign isEqualToString:@"center"]) {
+      alignment = NSTextAlignmentCenter;
+    } else if ([_textAlign isEqualToString:@"justify"]) {
+      alignment = NSTextAlignmentJustified;
+    } else if ([_textAlign isEqualToString:@"left"]) {
+      // In RTL mode, "left" means "start" which is right-aligned
+      alignment = isRTL ? NSTextAlignmentRight : NSTextAlignmentLeft;
+    } else if ([_textAlign isEqualToString:@"right"]) {
+      // In RTL mode, "right" means "end" which is left-aligned
+      alignment = isRTL ? NSTextAlignmentLeft : NSTextAlignmentRight;
+    }
+  } else if (isRTL) {
+    // Default for RTL text with no explicit alignment
+    alignment = NSTextAlignmentRight;
+  }
+
+  // Get or create paragraph style for the full range
+  [mutableText enumerateAttribute:NSParagraphStyleAttributeName
+                          inRange:fullRange
+                          options:0
+                       usingBlock:^(id value, NSRange range, BOOL *stop) {
+    NSMutableParagraphStyle *style;
+    if (value) {
+      style = [value mutableCopy];
+    } else {
+      style = [[NSMutableParagraphStyle alloc] init];
+    }
+
+    // Set base writing direction
+    style.baseWritingDirection = isRTL ? NSWritingDirectionRightToLeft : NSWritingDirectionLeftToRight;
+
+    // Apply alignment (natural will use the computed alignment above)
+    if (alignment != NSTextAlignmentNatural) {
+      style.alignment = alignment;
+    } else if (isRTL && style.alignment == NSTextAlignmentNatural) {
+      style.alignment = NSTextAlignmentRight;
+    }
+
+    [mutableText addAttribute:NSParagraphStyleAttributeName value:style range:range];
+  }];
+
+  // If no paragraph style was set on any range, apply to full range
+  id existingStyle = [mutableText attribute:NSParagraphStyleAttributeName atIndex:0 effectiveRange:NULL];
+  if (!existingStyle) {
+    NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+    style.baseWritingDirection = isRTL ? NSWritingDirectionRightToLeft : NSWritingDirectionLeftToRight;
+    if (alignment != NSTextAlignmentNatural) {
+      style.alignment = alignment;
+    } else if (isRTL) {
+      style.alignment = NSTextAlignmentRight;
+    }
+    [mutableText addAttribute:NSParagraphStyleAttributeName value:style range:fullRange];
+  }
+
+  return mutableText;
 }
 
 #if DEBUG

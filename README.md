@@ -10,6 +10,7 @@ Fabric-first HTML text renderer for React Native with iOS, Android, and web supp
 - Custom tag styles via `tagStyles` prop
 - XSS protection with built-in sanitization
 - NativeWind/Tailwind CSS integration via `/nativewind` export
+- RTL (Right-to-Left) text support with `bdi`, `bdo`, and `dir` attributes
 
 ## Installation
 
@@ -160,6 +161,102 @@ Add NativeWind types to your project:
 - NativeWind ^4.1.0
 - Tailwind CSS 3.x
 
+## RTL (Right-to-Left) Support
+
+Full support for RTL languages including Arabic, Hebrew, and Persian.
+
+### Basic RTL Text
+
+RTL scripts are automatically detected and rendered correctly:
+
+```tsx
+<HTMLText html="<p>مرحباً بالعالم!</p>" />
+<HTMLText html="<p>שלום עולם!</p>" />
+```
+
+### Direction Attribute
+
+Use the `dir` attribute to control text direction:
+
+```tsx
+// Explicit RTL
+<HTMLText html="<p dir='rtl'>Right-to-left paragraph</p>" />
+
+// Explicit LTR
+<HTMLText html="<p dir='ltr'>Left-to-right paragraph</p>" />
+
+// Auto-detect from first strong character
+<HTMLText html="<p dir='auto'>مرحباً - detects as RTL</p>" />
+```
+
+### writingDirection Prop
+
+Control direction at the component level:
+
+```tsx
+// Force RTL for entire component
+<HTMLText
+  html="<p>This will render RTL</p>"
+  writingDirection="rtl"
+/>
+
+// Force LTR
+<HTMLText
+  html="<p>مرحباً</p>"
+  writingDirection="ltr"
+/>
+
+// Auto-detect (default)
+<HTMLText
+  html="<p>Text</p>"
+  writingDirection="auto"
+/>
+```
+
+### BDI Element (Bidirectional Isolation)
+
+The `<bdi>` tag isolates bidirectional text to prevent it from affecting surrounding content. Useful for user-generated content:
+
+```tsx
+<HTMLText html="<p>User: <bdi>محمد</bdi> logged in</p>" />
+<HTMLText html="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi></p>" />
+```
+
+### BDO Element (Bidirectional Override)
+
+The `<bdo>` tag forces text direction, overriding the natural direction:
+
+```tsx
+// Force RTL
+<HTMLText html="<p>Normal <bdo dir='rtl'>forced RTL</bdo> normal</p>" />
+
+// Force LTR within RTL context
+<HTMLText html="<p dir='rtl'>عربي <bdo dir='ltr'>forced LTR</bdo> عربي</p>" />
+```
+
+### Mixed Content
+
+RTL text with embedded LTR content (numbers, brand names) is handled automatically:
+
+```tsx
+<HTMLText html="<p dir='rtl'>السعر: 123.45 دولار</p>" />
+<HTMLText html="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />
+```
+
+### RTL with Formatting
+
+All text formatting works with RTL:
+
+```tsx
+<HTMLText
+  html="<p dir='rtl'><strong>مهم:</strong> نص <em>مائل</em> و<u>تحته خط</u></p>"
+/>
+```
+
+### I18nManager Integration
+
+On React Native, the component respects `I18nManager.isRTL` as the default base direction when `writingDirection="auto"` (the default).
+
 ## Props
 
 | Prop | Type | Description |
@@ -174,6 +271,7 @@ Add NativeWind types to your project:
 | `detectEmails` | `boolean` | Auto-detect email addresses |
 | `numberOfLines` | `number` | Limit text to specified number of lines with animated height transitions (0 = no limit) |
 | `animationDuration` | `number` | Height animation duration in seconds (default: 0.2) |
+| `writingDirection` | `'auto' \| 'ltr' \| 'rtl'` | Text direction: auto-detect (default), left-to-right, or right-to-left |
 | `includeFontPadding` | `boolean` | Android: include font padding |
 
 ## Requirements

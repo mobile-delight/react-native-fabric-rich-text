@@ -24,6 +24,9 @@ namespace facebook::react {
 // List type enum for tracking ordered vs unordered lists
 enum class FabricHTMLListType { Ordered, Unordered };
 
+// Note: We use React Native's WritingDirection enum from primitives.h
+// which has: Natural, LeftToRight, RightToLeft
+
 // Context for tracking list state during HTML parsing
 struct FabricHTMLListContext {
   FabricHTMLListType type;
@@ -52,7 +55,86 @@ struct FabricHTMLTextSegment {
   bool followsInlineElement;  // True if this segment follows </strong>, </em>, etc.
   std::string parentTag;      // The innermost formatting tag (e.g., "strong", "em")
   std::string linkUrl;        // The href URL if this segment is inside an <a> tag
+
+  // RTL Support fields
+  WritingDirection writingDirection = WritingDirection::Natural;
+  bool isBdiIsolated = false;   // Content wrapped in <bdi> tag
+  bool isBdoOverride = false;   // Content wrapped in <bdo> tag
 };
+
+// Context for tracking direction during HTML parsing
+struct DirectionContext {
+  WritingDirection baseDirection = WritingDirection::Natural;
+  WritingDirection currentDirection = WritingDirection::Natural;
+  int isolationDepth = 0;  // Nesting level of <bdi> tags
+  int overrideDepth = 0;   // Nesting level of <bdo> tags
+
+  // Stack to track direction for each element level
+  std::vector<WritingDirection> directionStack;
+  std::vector<bool> isBdiStack;   // Track if current level is bdi
+  std::vector<bool> isBdoStack;   // Track if current level is bdo
+
+  /**
+   * Enter an HTML element, updating direction context.
+   * @param tag Element tag name (lowercase)
+   * @param dirAttr Value of dir attribute, or empty string if not present
+   * @param textContent Text content for dir="auto" detection (optional)
+   */
+  void enterElement(const std::string& tag, const std::string& dirAttr,
+                    const std::string& textContent = "");
+
+  /**
+   * Exit an HTML element, restoring previous direction context.
+   * @param tag Element tag name (lowercase)
+   */
+  void exitElement(const std::string& tag);
+
+  /**
+   * Get the effective direction for current context.
+   */
+  WritingDirection getEffectiveDirection() const;
+
+  /**
+   * Check if currently inside a bdi isolation scope.
+   */
+  bool isIsolated() const { return isolationDepth > 0; }
+
+  /**
+   * Check if currently inside a bdo override scope.
+   */
+  bool isOverride() const { return overrideDepth > 0; }
+};
+
+/**
+ * Detect writing direction from text content.
+ * Implements first strong directional character algorithm per Unicode UAX #9.
+ * @param text UTF-8 encoded text to analyze
+ * @return Detected direction, or LTR if no strong character found
+ */
+WritingDirection detectDirectionFromText(const std::string& text);
+
+/**
+ * Parse dir attribute value to WritingDirection.
+ * @param dirAttr Attribute value (case-insensitive: "ltr", "rtl", "auto")
+ * @return Parsed direction, or Natural if invalid/empty
+ */
+WritingDirection parseDirectionAttribute(const std::string& dirAttr);
+
+/**
+ * Check if a Unicode code point is a strong RTL character.
+ * Includes Hebrew, Arabic, Syriac, Thaana, N'Ko ranges.
+ * @param codepoint Unicode code point
+ * @return true if strong RTL character
+ */
+bool isStrongRTL(char32_t codepoint);
+
+/**
+ * Check if a Unicode code point is a strong LTR character.
+ * Includes Latin, Greek, Cyrillic, and other LTR script ranges.
+ * @param codepoint Unicode code point
+ * @return true if strong LTR character
+ */
+bool isStrongLTR(char32_t codepoint);
 
 /**
  * Shared HTML parser for cross-platform use.

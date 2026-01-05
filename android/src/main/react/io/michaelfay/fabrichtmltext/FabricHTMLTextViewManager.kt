@@ -168,6 +168,11 @@ class FabricHTMLTextViewManager : SimpleViewManager<FabricHTMLTextView>(),
     view?.setAnimationDuration(animationDuration)
   }
 
+  @ReactProp(name = "writingDirection")
+  override fun setWritingDirection(view: FabricHTMLTextView?, writingDirection: String?) {
+    view?.setWritingDirection(writingDirection)
+  }
+
   override fun getExportedCustomDirectEventTypeConstants(): Map<String, Any>? {
     return MapBuilder.builder<String, Any>()
       .put(LinkPressEvent.EVENT_NAME, MapBuilder.of("registrationName", "onLinkPress"))

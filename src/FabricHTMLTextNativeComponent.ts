@@ -53,6 +53,11 @@ interface NativeProps extends ViewProps {
   // numberOfLines feature props
   numberOfLines?: Int32 | undefined;
   animationDuration?: Float | undefined;
+
+  // RTL text direction prop
+  // 'ltr' = left-to-right, 'rtl' = right-to-left
+  // Note: 'auto' is resolved in JS to explicit direction before passing to native
+  writingDirection?: string | undefined;
 }
 
 export default codegenNativeComponent<NativeProps>(

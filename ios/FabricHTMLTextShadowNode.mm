@@ -143,7 +143,17 @@ void FabricHTMLTextShadowNode::layout(LayoutContext layoutContext) {
     // eliminating the need for duplicate HTML parsing in the view layer.
     int effectiveNumberOfLines = (props.numberOfLines > 0) ? props.numberOfLines : 0;
     Float animationDuration = (props.animationDuration > 0) ? props.animationDuration : 0.0f;
-    setStateData(FabricHTMLTextStateData{_attributedString, _linkUrls, effectiveNumberOfLines, animationDuration});
+
+    // Parse writingDirection from props (string: "ltr" or "rtl", defaults to LTR)
+    WritingDirectionState writingDirection = WritingDirectionState::LTR;
+    if (!props.writingDirection.empty()) {
+        if (props.writingDirection == "rtl") {
+            writingDirection = WritingDirectionState::RTL;
+        }
+        // "ltr" or any other value defaults to LTR
+    }
+
+    setStateData(FabricHTMLTextStateData{_attributedString, _linkUrls, effectiveNumberOfLines, animationDuration, writingDirection});
 
     ConcreteViewShadowNode::layout(layoutContext);
 }

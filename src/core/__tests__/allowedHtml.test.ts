@@ -42,6 +42,12 @@ describe('allowedHtml', () => {
       }
     });
 
+    it('contains bidirectional text elements', () => {
+      // RTL Support: bdi (isolation) and bdo (override) tags
+      expect(ALLOWED_TAGS).toContain('bdi');
+      expect(ALLOWED_TAGS).toContain('bdo');
+    });
+
     it('contains all expected list elements', () => {
       expect(ALLOWED_TAGS).toContain('ul');
       expect(ALLOWED_TAGS).toContain('ol');
@@ -73,9 +79,11 @@ describe('allowedHtml', () => {
 
     it('contains exactly the expected attributes', () => {
       // 'id' removed per YAGNI - not used in rendering (matches native sanitizers)
-      expect(ALLOWED_ATTR).toHaveLength(2);
+      // 'dir' added for RTL support (direction attribute on elements)
+      expect(ALLOWED_ATTR).toHaveLength(3);
       expect(ALLOWED_ATTR).toContain('href');
       expect(ALLOWED_ATTR).toContain('class');
+      expect(ALLOWED_ATTR).toContain('dir');
     });
 
     it('does not contain dangerous attributes', () => {

@@ -84,6 +84,9 @@ class FabricHTMLTextView : AppCompatTextView {
   private var numberOfLines: Int = 0  // 0 = no limit
   private var animationDuration: Float = 0.2f
 
+  // RTL text direction
+  private var isRTL: Boolean = false
+
   // Height animation state
   private var previousHeight: Int = 0
   private var hasInitializedLayout: Boolean = false
@@ -335,6 +338,15 @@ class FabricHTMLTextView : AppCompatTextView {
     animationDuration = if (duration < 0) 0f else duration
   }
 
+  fun setWritingDirection(direction: String?) {
+    val newIsRTL = direction == "rtl"
+    if (isRTL != newIsRTL) {
+      isRTL = newIsRTL
+      customLayout = null  // Force layout recreation
+      invalidate()
+    }
+  }
+
   /**
    * Apply auto-detection to the current text if any detection props are enabled.
    * Uses Android's Linkify to detect URLs, emails, and phone numbers.
@@ -455,18 +467,28 @@ class FabricHTMLTextView : AppCompatTextView {
     // Sync customTextPaint with view's paint settings
     customTextPaint.set(paint)
 
+    // Select text direction heuristic based on isRTL setting
+    val textDirectionHeuristic = if (isRTL) {
+      TextDirectionHeuristics.FIRSTSTRONG_RTL
+    } else {
+      TextDirectionHeuristics.FIRSTSTRONG_LTR
+    }
+
     // Check if text is "boring" (single line, no special features)
     // Matches TextLayoutManager.isBoring() behavior
     val boring = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
       BoringLayout.isBoring(text, customTextPaint)
     } else {
-      BoringLayout.isBoring(text, customTextPaint, TextDirectionHeuristics.FIRSTSTRONG_LTR, true, null)
+      BoringLayout.isBoring(text, customTextPaint, textDirectionHeuristic, true, null)
     }
 
     // TextLayoutManager alignment mapping
+    // In RTL mode, "left" maps to "start" (NORMAL=right in RTL) and "right" maps to "end" (OPPOSITE=left in RTL)
+    // This follows CSS logical properties: left/right become start/end relative to writing direction
     val alignment = when (baseTextAlign) {
       "center" -> Layout.Alignment.ALIGN_CENTER
-      "right" -> Layout.Alignment.ALIGN_OPPOSITE
+      "right" -> if (isRTL) Layout.Alignment.ALIGN_NORMAL else Layout.Alignment.ALIGN_OPPOSITE
+      "left" -> if (isRTL) Layout.Alignment.ALIGN_OPPOSITE else Layout.Alignment.ALIGN_NORMAL
       else -> Layout.Alignment.ALIGN_NORMAL
     }
 
@@ -495,6 +517,7 @@ class FabricHTMLTextView : AppCompatTextView {
       .setIncludePad(includeFontPadding)
       .setBreakStrategy(Layout.BREAK_STRATEGY_HIGH_QUALITY)
       .setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE)
+      .setTextDirection(textDirectionHeuristic)  // Apply RTL direction if set
 
     // Apply numberOfLines with ellipsis truncation
     if (numberOfLines > 0) {

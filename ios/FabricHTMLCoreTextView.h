@@ -47,6 +47,13 @@ typedef NS_ENUM(NSInteger, HTMLDetectedContentType) {
 /// Animation duration for height changes in seconds (0 = instant).
 @property (nonatomic, assign) CGFloat animationDuration;
 
+/// Whether to use right-to-left text direction. Defaults to NO.
+@property (nonatomic, assign) BOOL isRTL;
+
+/// Text alignment ("left", "right", "center", "justify", or nil for natural). Defaults to nil.
+/// In RTL mode, "left" and "right" are swapped automatically (left → end, right → start).
+@property (nonatomic, copy, nullable) NSString *textAlign;
+
 @end
 
 NS_ASSUME_NONNULL_END
