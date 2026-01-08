@@ -41,6 +41,18 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, readonly) NSString *linkText;
 
 /**
+ * The bounding rect of the link in the container view's local coordinate system.
+ * Used for dynamic accessibilityFrame calculation.
+ */
+@property (nonatomic, assign, readonly) CGRect boundingRect;
+
+/**
+ * Weak reference to the container view for coordinate conversion.
+ * Used to dynamically compute accessibilityFrame when VoiceOver requests it.
+ */
+@property (nonatomic, weak, readonly, nullable) UIView *containerView;
+
+/**
  * Initialize a new link accessibility element.
  *
  * @param container The parent accessibility container (FabricHTMLCoreTextView)
@@ -49,7 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
  * @param url The URL this link points to
  * @param contentType The type of content (link, email, phone)
  * @param linkText The visible text of the link
- * @param frame The accessibility frame in screen coordinates
+ * @param boundingRect The link bounds in local view coordinates (not screen coordinates)
+ * @param containerView The view used for coordinate conversion to screen space
  */
 - (instancetype)initWithAccessibilityContainer:(id)container
                                      linkIndex:(NSUInteger)linkIndex
@@ -57,7 +70,8 @@ NS_ASSUME_NONNULL_BEGIN
                                            url:(NSURL *)url
                                    contentType:(HTMLDetectedContentType)contentType
                                       linkText:(NSString *)linkText
-                                         frame:(CGRect)frame;
+                                   boundingRect:(CGRect)boundingRect
+                                  containerView:(UIView *)containerView;
 
 @end
 

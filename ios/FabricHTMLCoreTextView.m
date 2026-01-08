@@ -1,26 +1,41 @@
 #import "FabricHTMLCoreTextView.h"
 #import "FabricHTMLLinkAccessibilityElement.h"
 #import <CoreText/CoreText.h>
-#import <os/log.h>
 
 /// Custom attribute key to store the detected content type
 static NSString *const HTMLDetectedContentTypeKey = @"HTMLDetectedContentType";
 
+#pragma mark - Dynamic Text Accessibility Element
+
+/**
+ * Simple accessibility element that dynamically computes its frame.
+ * Used for the text content element so its frame stays accurate
+ * when the view moves (scrolling, layout changes, etc.).
+ *
+ * This follows the same pattern as FabricHTMLLinkAccessibilityElement.
+ */
+@interface FabricHTMLDynamicTextAccessibilityElement : UIAccessibilityElement
+@property (nonatomic, weak) UIView *containerView;
+@end
+
+@implementation FabricHTMLDynamicTextAccessibilityElement
+
+- (CGRect)accessibilityFrame
+{
+    if (self.containerView) {
+        // Use the container view's full bounds for the text element
+        return UIAccessibilityConvertFrameToScreenCoordinates(self.containerView.bounds, self.containerView);
+    }
+    return [super accessibilityFrame];
+}
+
+@end
+
 /// Accessibility debug logging - set to 0 for production
 #define A11Y_DEBUG 1
 
-/// os_log instance for accessibility logging
-static os_log_t a11y_log_coretext(void) {
-    static os_log_t log;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        log = os_log_create("io.michaelfay.fabrichtmltext", "CoreTextView");
-    });
-    return log;
-}
-
 #if A11Y_DEBUG
-#define A11Y_LOG(fmt, ...) os_log_with_type(a11y_log_coretext(), OS_LOG_TYPE_DEBUG, "[A11Y_FHTMLCTV] " fmt, ##__VA_ARGS__)
+#define A11Y_LOG(fmt, ...) NSLog(@"[A11Y_FHTMLCTV] " fmt, ##__VA_ARGS__)
 #else
 #define A11Y_LOG(fmt, ...) do { } while(0)
 #endif
@@ -222,13 +237,27 @@ static os_log_t a11y_log_coretext(void) {
       A11Y_LOG(@"PHONE DETECTION: matched phone='%@' at range=(%lu, %lu)",
                phoneNumber, (unsigned long)range.location, (unsigned long)range.length);
       if (phoneNumber) {
-        // Create tel: URL - remove all non-digit characters
+        // Create tel: URL - remove all non-digit characters, keep + for international
+        NSMutableCharacterSet *allowedChars = [NSMutableCharacterSet decimalDigitCharacterSet];
+        [allowedChars addCharactersInString:@"+"];
         NSString *cleanedPhone = [[phoneNumber componentsSeparatedByCharactersInSet:
-                                   [[NSCharacterSet decimalDigitCharacterSet] invertedSet]] componentsJoinedByString:@""];
-        NSString *telString = [NSString stringWithFormat:@"tel:%@", cleanedPhone];
-        url = [NSURL URLWithString:telString];
-        contentType = HTMLDetectedContentTypePhone;
-        A11Y_LOG(@"PHONE DETECTION: created tel URL='%@' from cleaned='%@'", url, cleanedPhone);
+                                   [allowedChars invertedSet]] componentsJoinedByString:@""];
+
+        if (cleanedPhone.length > 0) {
+          // URL-encode the phone number to handle any edge cases
+          NSString *encodedPhone = [cleanedPhone stringByAddingPercentEncodingWithAllowedCharacters:
+                                    [NSCharacterSet URLPathAllowedCharacterSet]];
+          NSString *telString = [NSString stringWithFormat:@"tel:%@", encodedPhone ?: cleanedPhone];
+          url = [NSURL URLWithString:telString];
+          contentType = HTMLDetectedContentTypePhone;
+          A11Y_LOG(@"PHONE DETECTION: created tel URL='%@' from cleaned='%@'", url, cleanedPhone);
+
+          if (!url) {
+            A11Y_LOG(@"PHONE DETECTION: WARNING - failed to create URL from telString='%@'", telString);
+          }
+        } else {
+          A11Y_LOG(@"PHONE DETECTION: WARNING - cleaned phone number is empty for input='%@'", phoneNumber);
+        }
       } else {
         A11Y_LOG(@"PHONE DETECTION: WARNING - phone number is nil!");
       }
@@ -303,6 +332,18 @@ static os_log_t a11y_log_coretext(void) {
   [super setBounds:bounds];
   if (!CGSizeEqualToSize(oldBounds.size, bounds.size)) {
     [self invalidateFrame];
+  }
+}
+
+- (void)layoutSubviews {
+  [super layoutSubviews];
+  // Notify VoiceOver that accessibility frames may have changed
+  // This is important because our accessibility elements compute their frames
+  // dynamically based on the view's current position. When the view moves
+  // (e.g., due to scrolling, keyboard appearing, or layout changes), VoiceOver
+  // needs to know to re-query the accessibility frames.
+  if (UIAccessibilityIsVoiceOverRunning()) {
+    UIAccessibilityPostNotification(UIAccessibilityLayoutChangedNotification, nil);
   }
 }
 
@@ -1178,7 +1219,10 @@ static BOOL kDebugDrawLineBounds = NO;
   // First element: the full text content so VoiceOver announces it
   NSMutableArray *elements = [NSMutableArray arrayWithCapacity:linkCount + 1];
 
-  UIAccessibilityElement *textElement = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+  // Use dynamic text element that computes accessibilityFrame on-demand
+  // This ensures the frame stays accurate when the view moves (scrolling, layout changes, etc.)
+  FabricHTMLDynamicTextAccessibilityElement *textElement = [[FabricHTMLDynamicTextAccessibilityElement alloc] initWithAccessibilityContainer:self];
+  textElement.containerView = self;
   // Use resolved accessibility label (built by C++ parser with proper pauses for list items)
   NSString *a11yLabel = _resolvedAccessibilityLabel;
   if (!a11yLabel || a11yLabel.length == 0) {
@@ -1186,9 +1230,8 @@ static BOOL kDebugDrawLineBounds = NO;
   }
   textElement.accessibilityLabel = a11yLabel;
   textElement.accessibilityTraits = UIAccessibilityTraitStaticText;
-  CGRect textScreenFrame = UIAccessibilityConvertFrameToScreenCoordinates(self.bounds, self);
-  textElement.accessibilityFrame = textScreenFrame;
-  A11Y_LOG(@"TEXT ELEMENT: label='%@...', frame=%@", [a11yLabel substringToIndex:MIN(30, a11yLabel.length)], NSStringFromCGRect(textScreenFrame));
+  // Note: accessibilityFrame is now computed dynamically in the getter
+  A11Y_LOG(@"TEXT ELEMENT: label='%@...', bounds=%@", [a11yLabel substringToIndex:MIN(30, a11yLabel.length)], NSStringFromCGRect(self.bounds));
   // No hint needed - VoiceOver navigation is standard behavior
 
   [elements addObject:textElement];
@@ -1243,13 +1286,12 @@ static BOOL kDebugDrawLineBounds = NO;
 
     // Get the bounds for this link in view coordinates
     CGRect linkBounds = [self boundsForLinkAtIndex:i];
+    A11Y_LOG(@"LINK[%lu] bounds: local=%@", (unsigned long)i, NSStringFromCGRect(linkBounds));
 
-    // Convert to screen coordinates using the proper accessibility API
-    // This handles transforms, scroll offsets, and safe area insets correctly
-    CGRect screenBounds = UIAccessibilityConvertFrameToScreenCoordinates(linkBounds, self);
-    A11Y_LOG(@"LINK[%lu] bounds: local=%@, screen=%@", (unsigned long)i, NSStringFromCGRect(linkBounds), NSStringFromCGRect(screenBounds));
-
-    // Create the accessibility element
+    // Create the accessibility element with local bounds
+    // The element will dynamically convert to screen coordinates when VoiceOver requests
+    // the accessibilityFrame. This ensures the frame stays accurate even when the view
+    // moves (scrolling, layout changes, keyboard appearing, etc.)
     FabricHTMLLinkAccessibilityElement *element = [[FabricHTMLLinkAccessibilityElement alloc]
       initWithAccessibilityContainer:self
                            linkIndex:i
@@ -1257,7 +1299,8 @@ static BOOL kDebugDrawLineBounds = NO;
                                  url:url ?: [NSURL URLWithString:@""]
                          contentType:contentType
                             linkText:linkText
-                               frame:screenBounds];
+                        boundingRect:linkBounds
+                       containerView:self];
 
     [elements addObject:element];
     A11Y_LOG(@"LINK[%lu] created element with label='%@'", (unsigned long)i, element.accessibilityLabel);

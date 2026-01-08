@@ -1,26 +1,37 @@
 #import "FabricHTMLLinkAccessibilityElement.h"
-#import <os/log.h>
 
 /// Accessibility debug logging - set to 0 for production
 #define A11Y_DEBUG 1
 
-/// os_log instance for accessibility logging
-static os_log_t a11y_log_link(void) {
-    static os_log_t log;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        log = os_log_create("io.michaelfay.fabrichtmltext", "LinkElement");
-    });
-    return log;
-}
-
 #if A11Y_DEBUG
-#define A11Y_LOG(fmt, ...) os_log_with_type(a11y_log_link(), OS_LOG_TYPE_DEBUG, "[A11Y_FHLinkElem] " fmt, ##__VA_ARGS__)
+#define A11Y_LOG(fmt, ...) NSLog(@"[A11Y_FHLinkElem] " fmt, ##__VA_ARGS__)
 #else
 #define A11Y_LOG(fmt, ...) do { } while(0)
 #endif
 
 @implementation FabricHTMLLinkAccessibilityElement
+
+#pragma mark - Dynamic Accessibility Frame
+
+/**
+ * Dynamically computes the accessibility frame in screen coordinates.
+ * This is called by VoiceOver each time it needs the frame, ensuring
+ * the frame stays accurate even when the view moves (scrolling, layout changes, etc.).
+ *
+ * This pattern follows TTTAttributedLabel's approach for handling accessibility
+ * frames in attributed text views with links.
+ */
+- (CGRect)accessibilityFrame
+{
+    if (self.containerView) {
+        CGRect screenFrame = UIAccessibilityConvertFrameToScreenCoordinates(self.boundingRect, self.containerView);
+        A11Y_LOG(@"accessibilityFrame: boundingRect=%@ -> screenFrame=%@",
+                 NSStringFromCGRect(self.boundingRect), NSStringFromCGRect(screenFrame));
+        return screenFrame;
+    }
+    A11Y_LOG(@"accessibilityFrame: containerView is nil, returning super");
+    return [super accessibilityFrame];
+}
 
 #pragma mark - Localization Helpers
 
@@ -92,11 +103,12 @@ static os_log_t a11y_log_link(void) {
                                            url:(NSURL *)url
                                    contentType:(HTMLDetectedContentType)contentType
                                       linkText:(NSString *)linkText
-                                         frame:(CGRect)frame
+                                   boundingRect:(CGRect)boundingRect
+                                  containerView:(UIView *)containerView
 {
-    A11Y_LOG(@"init: linkIndex=%lu/%lu, text='%@', url='%@', frame=%@",
+    A11Y_LOG(@"init: linkIndex=%lu/%lu, text='%@', url='%@', boundingRect=%@",
              (unsigned long)linkIndex, (unsigned long)totalLinkCount,
-             linkText, url.absoluteString, NSStringFromCGRect(frame));
+             linkText, url.absoluteString, NSStringFromCGRect(boundingRect));
     self = [super initWithAccessibilityContainer:container];
     if (self) {
         _linkIndex = linkIndex;
@@ -104,9 +116,12 @@ static os_log_t a11y_log_link(void) {
         _url = [url copy];
         _contentType = contentType;
         _linkText = [linkText copy];
+        _boundingRect = boundingRect;
+        _containerView = containerView;
 
-        // Set the accessibility frame
-        self.accessibilityFrame = frame;
+        // Note: accessibilityFrame is now computed dynamically in the getter
+        // using boundingRect and containerView. This ensures the frame stays
+        // accurate even when the view moves (scrolling, layout changes, etc.)
 
         // Configure accessibility properties
         [self configureAccessibilityProperties];
