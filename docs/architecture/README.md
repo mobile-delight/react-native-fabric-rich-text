@@ -1,6 +1,6 @@
-# FabricHTMLText Architecture
+# FabricRichText Architecture
 
-This document describes the architecture of the `react-native-fabric-html-text` library, a React Native Fabric component for rendering HTML text with full native performance across iOS, Android, and Web platforms.
+This document describes the architecture of the `react-native-fabric-rich-text` library, a React Native Fabric component for rendering HTML text with full native performance across iOS, Android, and Web platforms.
 
 > For comprehensive technical details on each system, see [SYSTEM-SPECIFICATION.md](./SYSTEM-SPECIFICATION.md).
 
@@ -53,17 +53,17 @@ The Shadow Tree is a lightweight C++ representation of the UI hierarchy that mir
 ```
 React Tree (JS)          Shadow Tree (C++)           Native Views
 +--------------+         +------------------+         +--------------+
-|  <HTMLText>  | ------> | FabricHTMLText   | ------> | UIView /     |
+|  <RichText>  | ------> | FabricRichText   | ------> | UIView /     |
 |   html="..."  |         |   ShadowNode     |         | Android View |
 +--------------+         +------------------+         +--------------+
 ```
 
 ### Custom Measurement with measureContent()
 
-The `FabricHTMLTextShadowNode` implements a custom `measureContent()` method that Yoga calls during layout:
+The `FabricRichTextShadowNode` implements a custom `measureContent()` method that Yoga calls during layout:
 
 ```cpp
-Size FabricHTMLTextShadowNode::measureContent(
+Size FabricRichTextShadowNode::measureContent(
     const LayoutContext& layoutContext,
     const LayoutConstraints& layoutConstraints) const {
 
@@ -92,9 +92,9 @@ This enables:
 After measurement, the parsed `AttributedString` is stored in **Fabric State** and passed to the native view:
 
 ```cpp
-void FabricHTMLTextShadowNode::layout(LayoutContext layoutContext) {
+void FabricRichTextShadowNode::layout(LayoutContext layoutContext) {
   // Pass parsed content to the native view via state
-  setStateData(FabricHTMLTextState{_attributedString, paragraphAttributes, _linkUrls});
+  setStateData(FabricRichTextState{_attributedString, paragraphAttributes, _linkUrls});
 }
 ```
 
@@ -120,14 +120,14 @@ On Android, this state is serialized to a `MapBuffer` (an efficient binary forma
 | Stage | Input | Output | Location |
 |-------|-------|--------|----------|
 | 0. NativeWind (Optional) | `className` string | Style object | `src/nativewind.ts` via `cssInterop` |
-| 1. Component | HTML string + style | Props object | `src/components/HTMLText.tsx` |
+| 1. Component | HTML string + style | Props object | `src/components/RichText.tsx` |
 | 2. Adapter | Props | Native props | `src/adapters/native.tsx` |
 | 3. Sanitize | Raw HTML | Safe HTML | Platform-specific sanitizers |
-| 4. Parse | Safe HTML | Text segments | `cpp/FabricHTMLParser.cpp` |
-| 5. Build | Segments | `AttributedString` | `cpp/FabricHTMLParser.cpp` |
+| 4. Parse | Safe HTML | Text segments | `cpp/FabricRichParser.cpp` |
+| 5. Build | Segments | `AttributedString` | `cpp/FabricRichParser.cpp` |
 | 6. Measure | `AttributedString` | Size | `TextLayoutManager` |
 | 7. State | `AttributedString` + URLs | State data | Platform ShadowNode |
-| 8. Convert | State data | Platform text | `FabricHTMLFragmentParser` |
+| 8. Convert | State data | Platform text | `FabricRichFragmentParser` |
 | 9. Render | Platform text | Pixels | CoreText / TextView / DOM |
 
 ## Native Bridge Architecture
@@ -203,9 +203,9 @@ The web implementation provides:
 Optional [NativeWind](https://www.nativewind.dev/) support enables Tailwind CSS styling:
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text/nativewind';
+import { RichText } from 'react-native-fabric-rich-text/nativewind';
 
-<HTMLText
+<RichText
   html="<p>Hello World</p>"
   className="text-blue-500 text-lg p-4"
 />
@@ -226,33 +226,33 @@ See [docs/nativewind-setup.md](../nativewind-setup.md) for configuration.
 | `index.tsx` | Public API exports |
 | `index.web.tsx` | Web platform exports |
 | `nativewind.ts` | NativeWind-compatible exports with `cssInterop` pre-applied |
-| `FabricHTMLTextNativeComponent.ts` | Codegen native component spec |
-| `components/HTMLText.tsx` | Main React component |
-| `components/HTMLText.web.tsx` | Web platform React component |
+| `FabricRichTextNativeComponent.ts` | Codegen native component spec |
+| `components/RichText.tsx` | Main React component |
+| `components/RichText.web.tsx` | Web platform React component |
 | `adapters/native.tsx` | Native platform adapter |
 | `adapters/web/StyleConverter.ts` | React Native style to CSS conversion |
 | `core/sanitize.ts` | Sanitization (pass-through to native) |
 | `core/sanitize.web.ts` | Web sanitization with DOMPurify |
 | `core/constants.ts` | Single source of truth for allowed HTML |
-| `types/HTMLTextNativeProps.ts` | TypeScript type definitions |
+| `types/RichTextNativeProps.ts` | TypeScript type definitions |
 
 #### C++ Shared Layer (`cpp/`)
 
 | File | Purpose |
 |------|---------|
-| `FabricHTMLParser.h` | HTML parser interface |
-| `FabricHTMLParser.cpp` | Cross-platform HTML parsing implementation |
+| `FabricRichParser.h` | HTML parser interface |
+| `FabricRichParser.cpp` | Cross-platform HTML parsing implementation |
 
 #### iOS Native Layer (`ios/`)
 
 | File | Purpose |
 |------|---------|
-| `FabricHTMLText.mm` | Fabric component view |
-| `FabricHTMLTextShadowNode.mm` | Measurement and state management |
-| `FabricHTMLTextComponentDescriptor.h` | Fabric component descriptor |
-| `FabricHTMLFragmentParser.mm` | C++ AttributedString to NSAttributedString conversion |
-| `FabricHTMLSanitizer.swift` | SwiftSoup HTML sanitizer |
-| `FabricHTMLCoreTextView.m` | CoreText-based rendering with truncation |
+| `FabricRichText.mm` | Fabric component view |
+| `FabricRichTextShadowNode.mm` | Measurement and state management |
+| `FabricRichTextComponentDescriptor.h` | Fabric component descriptor |
+| `FabricRichFragmentParser.mm` | C++ AttributedString to NSAttributedString conversion |
+| `FabricRichSanitizer.swift` | SwiftSoup HTML sanitizer |
+| `FabricRichCoreTextView.m` | CoreText-based rendering with truncation |
 | `FabricGeneratedConstants.swift` | Generated constants for styling |
 
 #### Android Layers
@@ -262,16 +262,16 @@ See [docs/nativewind-setup.md](../nativewind-setup.md) for configuration.
 | File | Purpose |
 |------|---------|
 | `ShadowNodes.cpp` | C++ shadow node implementation for measurement |
-| `FabricHTMLTextState.cpp` | State serialization to MapBuffer |
+| `FabricRichTextState.cpp` | State serialization to MapBuffer |
 
 **Kotlin Layer (`android/src/main/java/` and `react/`)**
 
 | File | Purpose | Path |
 |------|---------|------|
-| `FabricHTMLTextViewManager.kt` | React Native view manager | `react/` |
-| `FabricHTMLTextView.kt` | Custom TextView with state-based rendering | `java/` |
-| `FabricHTMLFragmentParser.kt` | MapBuffer to Spannable conversion | `react/` |
-| `FabricHTMLSanitizer.kt` | OWASP HTML sanitizer | `java/` |
+| `FabricRichTextViewManager.kt` | React Native view manager | `react/` |
+| `FabricRichTextView.kt` | Custom TextView with state-based rendering | `java/` |
+| `FabricRichFragmentParser.kt` | MapBuffer to Spannable conversion | `react/` |
+| `FabricRichSanitizer.kt` | OWASP HTML sanitizer | `java/` |
 | `FabricHtmlSpannableBuilder.kt` | Spannable construction | `java/` |
 | `FabricCustomLineHeightSpan.kt` | Custom line height span implementation | `java/` |
 | `FabricGeneratedConstants.kt` | Generated constants for styling | `java/` |
@@ -332,7 +332,7 @@ Links are handled through a multi-step process:
 Text styles are passed as React Native `TextStyle` props:
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Hello <strong>World</strong></p>"
   style={{
     fontSize: 16,
@@ -348,7 +348,7 @@ Text styles are passed as React Native `TextStyle` props:
 Override styles for specific HTML tags:
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Click <a href='#'>here</a></p>"
   tagStyles={{
     a: { color: '#007AFF', textDecorationLine: 'none' },

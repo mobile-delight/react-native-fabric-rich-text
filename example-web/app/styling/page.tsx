@@ -1,6 +1,6 @@
 'use client';
 
-import HTMLText from 'react-native-fabric-html-text';
+import RichText from 'react-native-fabric-rich-text';
 import DemoSection from '@/components/DemoSection';
 
 export default function StylingPage(): React.JSX.Element {
@@ -18,12 +18,12 @@ export default function StylingPage(): React.JSX.Element {
       <DemoSection
         title="Basic className"
         description="Apply a simple className to the container"
-        code={`<HTMLText
+        code={`<RichText
   html="<p>Text with custom className</p>"
   className="text-blue-600 dark:text-blue-400"
 />`}
       >
-        <HTMLText
+        <RichText
           html="<p>Text with custom className</p>"
           className="text-blue-600 dark:text-blue-400"
         />
@@ -32,12 +32,12 @@ export default function StylingPage(): React.JSX.Element {
       <DemoSection
         title="Multiple Tailwind Classes"
         description="Combine multiple Tailwind utilities"
-        code={`<HTMLText
+        code={`<RichText
   html="<p>Styled text content</p>"
   className="text-lg font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/50 p-4 rounded-lg"
 />`}
       >
-        <HTMLText
+        <RichText
           html="<p>Styled text content</p>"
           className="text-lg font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/50 p-4 rounded-lg"
         />
@@ -46,12 +46,12 @@ export default function StylingPage(): React.JSX.Element {
       <DemoSection
         title="Border and Shadow"
         description="Add borders and shadows via Tailwind"
-        code={`<HTMLText
+        code={`<RichText
   html="<p>Card-like styling with border and shadow</p>"
   className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md"
 />`}
       >
-        <HTMLText
+        <RichText
           html="<p>Card-like styling with border and shadow</p>"
           className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md"
         />
@@ -60,12 +60,12 @@ export default function StylingPage(): React.JSX.Element {
       <DemoSection
         title="Gradient Background"
         description="Apply gradient backgrounds"
-        code={`<HTMLText
+        code={`<RichText
   html="<p>Text with gradient background</p>"
   className="p-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg"
 />`}
       >
-        <HTMLText
+        <RichText
           html="<p>Text with gradient background</p>"
           className="p-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg"
         />
@@ -74,12 +74,12 @@ export default function StylingPage(): React.JSX.Element {
       <DemoSection
         title="Responsive Typography"
         description="Use responsive text sizes"
-        code={`<HTMLText
+        code={`<RichText
   html="<p>Responsive text that scales with screen size</p>"
   className="text-sm md:text-base lg:text-xl"
 />`}
       >
-        <HTMLText
+        <RichText
           html="<p>Responsive text that scales with screen size</p>"
           className="text-sm md:text-base lg:text-xl"
         />
@@ -88,12 +88,12 @@ export default function StylingPage(): React.JSX.Element {
       <DemoSection
         title="Hover Effects"
         description="Add hover states (inspect element to see)"
-        code={`<HTMLText
+        code={`<RichText
   html="<p>Hover over me!</p>"
   className="p-4 bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer rounded"
 />`}
       >
-        <HTMLText
+        <RichText
           html="<p>Hover over me!</p>"
           className="p-4 bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors cursor-pointer rounded"
         />
@@ -102,13 +102,13 @@ export default function StylingPage(): React.JSX.Element {
       <DemoSection
         title="Combining with numberOfLines"
         description="Style truncated text"
-        code={`<HTMLText
+        code={`<RichText
   html="<p>This is a long piece of text that will be truncated to 2 lines with custom styling applied. The truncation respects the styling context.</p>"
   numberOfLines={2}
   className="text-gray-600 dark:text-gray-300 bg-amber-50 dark:bg-amber-900/30 p-4 rounded border-l-4 border-amber-400 dark:border-amber-600"
 />`}
       >
-        <HTMLText
+        <RichText
           html="<p>This is a long piece of text that will be truncated to 2 lines with custom styling applied. The truncation respects the styling context.</p>"
           numberOfLines={2}
           className="text-gray-600 dark:text-gray-300 bg-amber-50 dark:bg-amber-900/30 p-4 rounded border-l-4 border-amber-400 dark:border-amber-600"
@@ -118,12 +118,12 @@ export default function StylingPage(): React.JSX.Element {
       <DemoSection
         title="Complex HTML with Styling"
         description="Style complex HTML content"
-        code={`<HTMLText
+        code={`<RichText
   html="<h2>Styled Heading</h2><p>With <strong>formatted</strong> content.</p>"
   className="prose prose-blue dark:prose-invert max-w-none"
 />`}
       >
-        <HTMLText
+        <RichText
           html="<h2>Styled Heading</h2><p>With <strong>formatted</strong> content.</p>"
           className="prose prose-blue dark:prose-invert max-w-none"
         />
@@ -149,14 +149,14 @@ export default function StylingPage(): React.JSX.Element {
         title="Container Query - Full Width"
         description="Text scales based on container width, not viewport"
         code={`<div className="@container w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg">
-  <HTMLText
+  <RichText
     html="<p>Inside a <strong>full-width container</strong>. Text responds to container size.</p>"
     className="text-sm @sm:text-base @md:text-lg @lg:text-xl leading-relaxed text-slate-700 dark:text-slate-300"
   />
 </div>`}
       >
         <div className="@container w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg">
-          <HTMLText
+          <RichText
             html="<p>Inside a <strong>full-width container</strong>. Text responds to container size.</p>"
             className="text-sm @sm:text-base @md:text-lg @lg:text-xl leading-relaxed text-slate-700 dark:text-slate-300"
           />
@@ -167,14 +167,14 @@ export default function StylingPage(): React.JSX.Element {
         title="Container Query - Half Width"
         description="Same classes, smaller container = different result"
         code={`<div className="@container w-1/2 bg-amber-100 dark:bg-amber-900/50 p-2 rounded-lg">
-  <HTMLText
+  <RichText
     html="<p>Inside a <strong>half-width container</strong>. Same classes, different result!</p>"
     className="text-sm @sm:text-base @md:text-lg @lg:text-xl leading-relaxed text-amber-800 dark:text-amber-200"
   />
 </div>`}
       >
         <div className="@container w-1/2 bg-amber-100 dark:bg-amber-900/50 p-2 rounded-lg">
-          <HTMLText
+          <RichText
             html="<p>Inside a <strong>half-width container</strong>. Same classes, different result!</p>"
             className="text-sm @sm:text-base @md:text-lg @lg:text-xl leading-relaxed text-amber-800 dark:text-amber-200"
           />
@@ -186,13 +186,13 @@ export default function StylingPage(): React.JSX.Element {
         description="Two containers adapting independently"
         code={`<div className="flex gap-2">
   <div className="@container flex-1 bg-emerald-100 dark:bg-emerald-900/50 p-2 rounded-lg">
-    <HTMLText
+    <RichText
       html="<p><strong>Left</strong> container adapts independently.</p>"
       className="text-xs @sm:text-sm @md:text-base leading-snug text-emerald-800 dark:text-emerald-200"
     />
   </div>
   <div className="@container flex-1 bg-violet-100 dark:bg-violet-900/50 p-2 rounded-lg">
-    <HTMLText
+    <RichText
       html="<p><strong>Right</strong> container adapts independently.</p>"
       className="text-xs @sm:text-sm @md:text-base leading-snug text-violet-800 dark:text-violet-200"
     />
@@ -201,13 +201,13 @@ export default function StylingPage(): React.JSX.Element {
       >
         <div className="flex gap-2">
           <div className="@container flex-1 bg-emerald-100 dark:bg-emerald-900/50 p-2 rounded-lg">
-            <HTMLText
+            <RichText
               html="<p><strong>Left</strong> container adapts independently.</p>"
               className="text-xs @sm:text-sm @md:text-base leading-snug text-emerald-800 dark:text-emerald-200"
             />
           </div>
           <div className="@container flex-1 bg-violet-100 dark:bg-violet-900/50 p-2 rounded-lg">
-            <HTMLText
+            <RichText
               html="<p><strong>Right</strong> container adapts independently.</p>"
               className="text-xs @sm:text-sm @md:text-base leading-snug text-violet-800 dark:text-violet-200"
             />
@@ -219,14 +219,14 @@ export default function StylingPage(): React.JSX.Element {
         title="Container Query - Named"
         description="Named containers for precise targeting (@container/card)"
         code={`<div className="@container/card w-full bg-rose-100 dark:bg-rose-900/50 p-3 rounded-lg">
-  <HTMLText
+  <RichText
     html="<p>Uses a <strong>named container</strong> (@container/card) for precise targeting.</p>"
     className="text-sm @sm/card:text-base @md/card:text-lg leading-relaxed text-rose-800 dark:text-rose-200"
   />
 </div>`}
       >
         <div className="@container/card w-full bg-rose-100 dark:bg-rose-900/50 p-3 rounded-lg">
-          <HTMLText
+          <RichText
             html="<p>Uses a <strong>named container</strong> (@container/card) for precise targeting.</p>"
             className="text-sm @sm/card:text-base @md/card:text-lg leading-relaxed text-rose-800 dark:text-rose-200"
           />
@@ -237,12 +237,12 @@ export default function StylingPage(): React.JSX.Element {
         title="Container Query - Nested"
         description="Nested containers each respond to their own size"
         code={`<div className="@container bg-sky-100 dark:bg-sky-900/50 p-3 rounded-lg">
-  <HTMLText
+  <RichText
     html="<p><strong>Outer</strong> container text.</p>"
     className="text-sm @md:text-base leading-relaxed text-sky-800 dark:text-sky-200 mb-2"
   />
   <div className="@container bg-sky-200 dark:bg-sky-800/50 p-2 rounded">
-    <HTMLText
+    <RichText
       html="<p><strong>Inner</strong> container responds to its own size.</p>"
       className="text-xs @sm:text-sm leading-snug text-sky-900 dark:text-sky-100"
     />
@@ -250,12 +250,12 @@ export default function StylingPage(): React.JSX.Element {
 </div>`}
       >
         <div className="@container bg-sky-100 dark:bg-sky-900/50 p-3 rounded-lg">
-          <HTMLText
+          <RichText
             html="<p><strong>Outer</strong> container text.</p>"
             className="text-sm @md:text-base leading-relaxed text-sky-800 dark:text-sky-200 mb-2"
           />
           <div className="@container bg-sky-200 dark:bg-sky-800/50 p-2 rounded">
-            <HTMLText
+            <RichText
               html="<p><strong>Inner</strong> container responds to its own size.</p>"
               className="text-xs @sm:text-sm leading-snug text-sky-900 dark:text-sky-100"
             />

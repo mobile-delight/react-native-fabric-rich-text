@@ -1,0 +1,383 @@
+/**
+ * Custom ShadowNodes.cpp for FabricRichTextSpec
+ *
+ * This provides the FabricRichTextShadowNode implementation with
+ * measureContent() for proper Yoga layout measurement.
+ *
+ * Uses the shared FabricRichParser module for cross-platform HTML parsing.
+ */
+
+#include "ShadowNodes.h"
+#include "FabricRichTextState.h"
+#include "FabricRichParser.h"
+#include "FabricRichParserLibxml2.h"
+
+#include <react/renderer/components/view/ViewShadowNode.h>
+#include <android/log.h>
+
+// ============================================================================
+// Parser Selection Flags
+// Set USE_LIBXML2_PARSER to 1 to use libxml2 parser instead of hand-rolled
+// Set COMPARE_PARSERS to 1 to run both parsers and log differences (debug only)
+// ============================================================================
+#define USE_LIBXML2_PARSER 0
+#define COMPARE_PARSERS 0
+
+// Debug flag for verbose measurement logging.
+// Set to 1 to enable detailed logging for HTML parsing and layout measurement.
+#define DEBUG_CPP_MEASUREMENT 0
+
+// Android NDK logging - outputs to logcat with tag "FabricRichText_CPP"
+// Use: adb logcat | grep FabricRichText_CPP
+#define HTML_LOG_TAG "FabricRichText_CPP"
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, HTML_LOG_TAG, __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, HTML_LOG_TAG, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, HTML_LOG_TAG, __VA_ARGS__)
+
+#if COMPARE_PARSERS
+static void compareParseResults(
+    const facebook::react::FabricRichParser::ParseResult& result1,
+    const facebook::react::FabricRichParser::ParseResult& result2,
+    const std::string& html) {
+
+  bool hasDifferences = false;
+
+  // Compare fragment counts
+  auto frags1 = result1.attributedString.getFragments();
+  auto frags2 = result2.attributedString.getFragments();
+
+  if (frags1.size() != frags2.size()) {
+    LOGE("PARSER_COMPARE: Fragment count mismatch - original: %zu, libxml2: %zu",
+         frags1.size(), frags2.size());
+    hasDifferences = true;
+  }
+
+  // Compare fragment content
+  size_t minFrags = std::min(frags1.size(), frags2.size());
+  for (size_t i = 0; i < minFrags; ++i) {
+    if (frags1[i].string != frags2[i].string) {
+      LOGE("PARSER_COMPARE: Fragment %zu text differs:", i);
+      LOGE("  original: '%s'", frags1[i].string.substr(0, 50).c_str());
+      LOGE("  libxml2:  '%s'", frags2[i].string.substr(0, 50).c_str());
+      hasDifferences = true;
+    }
+  }
+
+  // Compare link URLs
+  if (result1.linkUrls.size() != result2.linkUrls.size()) {
+    LOGE("PARSER_COMPARE: Link URL count mismatch - original: %zu, libxml2: %zu",
+         result1.linkUrls.size(), result2.linkUrls.size());
+    hasDifferences = true;
+  } else {
+    for (size_t i = 0; i < result1.linkUrls.size(); ++i) {
+      if (result1.linkUrls[i] != result2.linkUrls[i]) {
+        LOGE("PARSER_COMPARE: Link URL mismatch at index %zu", i);
+        hasDifferences = true;
+      }
+    }
+  }
+
+  // Compare accessibility labels
+  if (result1.accessibilityLabel != result2.accessibilityLabel) {
+    LOGE("PARSER_COMPARE: Accessibility label mismatch:");
+    LOGE("  original len: %zu, libxml2 len: %zu",
+         result1.accessibilityLabel.size(), result2.accessibilityLabel.size());
+    // Show first difference
+    for (size_t i = 0; i < std::min(result1.accessibilityLabel.size(), result2.accessibilityLabel.size()); ++i) {
+      if (result1.accessibilityLabel[i] != result2.accessibilityLabel[i]) {
+        LOGE("  first diff at pos %zu: orig='%c'(0x%02x) vs libxml2='%c'(0x%02x)",
+             i,
+             result1.accessibilityLabel[i], (unsigned char)result1.accessibilityLabel[i],
+             result2.accessibilityLabel[i], (unsigned char)result2.accessibilityLabel[i]);
+        break;
+      }
+    }
+    hasDifferences = true;
+  }
+
+  if (!hasDifferences) {
+    LOGD("PARSER_COMPARE: Results match for HTML length %zu", html.size());
+  }
+}
+#endif
+
+namespace facebook::react {
+
+// Component name definition
+extern const char FabricRichTextComponentName[] = "FabricRichText";
+
+// Static initialization to verify custom ShadowNodes are loaded
+namespace {
+  struct CustomShadowNodesInitializer {
+    CustomShadowNodesInitializer() {
+      __android_log_print(ANDROID_LOG_INFO, "FabricRichText_CPP",
+        "Custom ShadowNodes.cpp loaded");
+    }
+  };
+  static CustomShadowNodesInitializer _customInitializer;
+}
+
+// FabricRichTextShadowNode implementation
+
+FabricRichTextShadowNode::FabricRichTextShadowNode(
+    const ShadowNode& sourceShadowNode,
+    const ShadowNodeFragment& fragment)
+    : ConcreteViewShadowNode(sourceShadowNode, fragment) {}
+
+std::string FabricRichTextShadowNode::stripHtmlTags(const std::string& html) {
+  // Delegate to shared parser
+  return FabricRichParser::stripHtmlTags(html);
+}
+
+// NOTE: This method modifies _linkUrls and _accessibilityLabel. It must only be called while holding _mutex.
+AttributedString FabricRichTextShadowNode::parseHtmlToAttributedString(
+    const std::string& html,
+    Float fontSizeMultiplier) const {
+
+  if (html.empty()) {
+    _linkUrls.clear();
+    _accessibilityLabel.clear();
+    return AttributedString{};
+  }
+
+  const auto& props = getConcreteProps();
+
+  // Extract props for the shared parser
+  Float baseFontSize = 14.0f;
+  if (!std::isnan(props.fontSize) && props.fontSize > 0) {
+    baseFontSize = props.fontSize;
+  }
+
+  bool allowFontScaling = props.allowFontScaling;
+  Float maxFontSizeMultiplier = props.maxFontSizeMultiplier;
+  Float lineHeight = props.lineHeight;
+  int32_t color = props.color;
+
+  if (DEBUG_CPP_MEASUREMENT) {
+    LOGD("Props: fontSize=%f lineHeight=%f allowFontScaling=%d",
+         props.fontSize, props.lineHeight, allowFontScaling ? 1 : 0);
+    LOGD("Props: color=0x%08X (decimal=%d)", props.color, props.color);
+    LOGD("Props: tagStyles='%s'", props.tagStyles.substr(0, 100).c_str());
+  }
+
+  // Call parser with all props - get link URLs and accessibility label too
+#if COMPARE_PARSERS
+  // Run both parsers and compare results
+  auto originalResult = FabricRichParser::parseHtmlWithLinkUrls(
+      html,
+      baseFontSize,
+      fontSizeMultiplier,
+      allowFontScaling,
+      maxFontSizeMultiplier,
+      lineHeight,
+      props.fontWeight,
+      props.fontFamily,
+      props.fontStyle,
+      props.letterSpacing,
+      color,
+      props.tagStyles);
+
+  auto libxml2Result = FabricRichParserLibxml2::parseHtmlWithLinkUrls(
+      html,
+      baseFontSize,
+      fontSizeMultiplier,
+      allowFontScaling,
+      maxFontSizeMultiplier,
+      lineHeight,
+      props.fontWeight,
+      props.fontFamily,
+      props.fontStyle,
+      props.letterSpacing,
+      color,
+      props.tagStyles);
+
+  compareParseResults(originalResult, libxml2Result, html);
+
+  // Use the result based on USE_LIBXML2_PARSER flag
+  #if USE_LIBXML2_PARSER
+  auto& parseResult = libxml2Result;
+  #else
+  auto& parseResult = originalResult;
+  #endif
+#elif USE_LIBXML2_PARSER
+  // Use libxml2 parser only
+  auto parseResult = FabricRichParserLibxml2::parseHtmlWithLinkUrls(
+      html,
+      baseFontSize,
+      fontSizeMultiplier,
+      allowFontScaling,
+      maxFontSizeMultiplier,
+      lineHeight,
+      props.fontWeight,
+      props.fontFamily,
+      props.fontStyle,
+      props.letterSpacing,
+      color,
+      props.tagStyles);
+#else
+  // Use original hand-rolled parser
+  auto parseResult = FabricRichParser::parseHtmlWithLinkUrls(
+      html,
+      baseFontSize,
+      fontSizeMultiplier,
+      allowFontScaling,
+      maxFontSizeMultiplier,
+      lineHeight,
+      props.fontWeight,
+      props.fontFamily,
+      props.fontStyle,
+      props.letterSpacing,
+      color,
+      props.tagStyles);
+#endif
+
+  _linkUrls = std::move(parseResult.linkUrls);
+  _accessibilityLabel = std::move(parseResult.accessibilityLabel);
+  return parseResult.attributedString;
+}
+
+Size FabricRichTextShadowNode::measureContent(
+    const LayoutContext& layoutContext,
+    const LayoutConstraints& layoutConstraints) const {
+
+  const auto& props = getConcreteProps();
+
+  Float fontSizeMultiplier = 1.0;
+  if (layoutContext.fontSizeMultiplier > 0) {
+    fontSizeMultiplier = layoutContext.fontSizeMultiplier;
+  }
+
+  if (DEBUG_CPP_MEASUREMENT) {
+    LOGD("========== measureContent START ==========");
+    LOGD("HTML length: %zu", props.html.length());
+    LOGD("fontSizeMultiplier: %f", fontSizeMultiplier);
+    LOGD("Constraints: minW=%f maxW=%f minH=%f maxH=%f",
+         layoutConstraints.minimumSize.width, layoutConstraints.maximumSize.width,
+         layoutConstraints.minimumSize.height, layoutConstraints.maximumSize.height);
+  }
+
+  // Parse HTML and cache result under mutex protection.
+  // Use local variable for measurement to minimize lock duration.
+  AttributedString localAttributedString;
+  {
+    std::lock_guard<std::mutex> lock(_mutex);
+    localAttributedString = parseHtmlToAttributedString(props.html, fontSizeMultiplier);
+    _attributedString = localAttributedString;
+  }
+
+  if (localAttributedString.isEmpty()) {
+    if (DEBUG_CPP_MEASUREMENT) {
+      LOGD("Empty attributed string, returning 0x0");
+    }
+    return Size{0, 0};
+  }
+
+  if (DEBUG_CPP_MEASUREMENT) {
+    // Log fragment info
+    const auto& fragments = localAttributedString.getFragments();
+    LOGD("AttributedString has %zu fragments", fragments.size());
+    size_t totalTextLen = 0;
+    int lineBreakCount = 0;
+    for (size_t i = 0; i < fragments.size(); ++i) {
+      const auto& frag = fragments[i];
+      totalTextLen += frag.string.length();
+      for (char c : frag.string) {
+        if (c == '\n') lineBreakCount++;
+      }
+      LOGD("Fragment %zu: len=%zu fontSize=%f bold=%d",
+           i, frag.string.length(), frag.textAttributes.fontSize,
+           frag.textAttributes.fontWeight == FontWeight::Bold ? 1 : 0);
+    }
+    LOGD("Total text length: %zu, line breaks: %d", totalTextLen, lineBreakCount);
+  }
+
+  auto paragraphAttributes = ParagraphAttributes{};
+  // Use numberOfLines from props (0 or negative = no limit)
+  int numberOfLines = props.numberOfLines;
+  paragraphAttributes.maximumNumberOfLines = (numberOfLines > 0) ? numberOfLines : 0;
+  paragraphAttributes.ellipsizeMode = EllipsizeMode::Tail;
+
+  if (DEBUG_CPP_MEASUREMENT) {
+    LOGD("numberOfLines prop: %d, maximumNumberOfLines: %d",
+         props.numberOfLines, paragraphAttributes.maximumNumberOfLines);
+  }
+
+  TextLayoutContext textLayoutContext{};
+  textLayoutContext.pointScaleFactor = layoutContext.pointScaleFactor;
+
+  if (DEBUG_CPP_MEASUREMENT) {
+    LOGD("pointScaleFactor: %f", layoutContext.pointScaleFactor);
+  }
+
+  const auto textLayoutManager = std::make_shared<const TextLayoutManager>(
+      getContextContainer());
+
+  auto measuredSize = textLayoutManager->measure(
+      AttributedStringBox{localAttributedString},
+      paragraphAttributes,
+      textLayoutContext,
+      layoutConstraints);
+
+  if (DEBUG_CPP_MEASUREMENT) {
+    LOGW("TextLayoutManager result: %f x %f",
+         measuredSize.size.width, measuredSize.size.height);
+  }
+
+  return measuredSize.size;
+}
+
+void FabricRichTextShadowNode::layout(LayoutContext layoutContext) {
+  ensureUnsealed();
+
+  const auto& props = getConcreteProps();
+
+  // Create paragraph attributes for state
+  auto paragraphAttributes = ParagraphAttributes{};
+  int numberOfLines = props.numberOfLines;
+  paragraphAttributes.maximumNumberOfLines = (numberOfLines > 0) ? numberOfLines : 0;
+  paragraphAttributes.ellipsizeMode = EllipsizeMode::Tail;
+
+  // Copy cached data under mutex protection to avoid data races.
+  AttributedString localAttributedString;
+  std::vector<std::string> localLinkUrls;
+  std::string localAccessibilityLabel;
+  {
+    std::lock_guard<std::mutex> lock(_mutex);
+    localAttributedString = _attributedString;
+    localLinkUrls = _linkUrls;
+    localAccessibilityLabel = _accessibilityLabel;
+  }
+
+  // Get effective values for state
+  int effectiveNumberOfLines = (props.numberOfLines > 0) ? props.numberOfLines : 0;
+  Float animationDuration = (props.animationDuration > 0) ? props.animationDuration : 0.0f;
+
+  // Parse writingDirection from props (string: "ltr" or "rtl", defaults to LTR)
+  WritingDirectionState writingDirection = WritingDirectionState::LTR;
+  if (!props.writingDirection.empty()) {
+    if (props.writingDirection == "rtl") {
+      writingDirection = WritingDirectionState::RTL;
+    }
+    // "ltr" or any other value defaults to LTR
+  }
+
+  // Set state with the parsed AttributedString, link URLs, and layout props
+  // This passes the C++ parsed fragments to Kotlin via MapBuffer serialization,
+  // eliminating the need for duplicate HTML parsing in the view layer.
+  setStateData(FabricRichTextState{
+      localAttributedString,
+      paragraphAttributes,
+      localLinkUrls,
+      effectiveNumberOfLines,
+      animationDuration,
+      writingDirection,
+      localAccessibilityLabel});
+
+  if (DEBUG_CPP_MEASUREMENT) {
+    LOGD("layout() - State set with %zu fragments, %zu linkUrls, numberOfLines=%d, writingDirection=%s, a11yLabel=%zu chars",
+         localAttributedString.getFragments().size(), localLinkUrls.size(),
+         effectiveNumberOfLines, props.writingDirection.c_str(), localAccessibilityLabel.length());
+  }
+}
+
+} // namespace facebook::react

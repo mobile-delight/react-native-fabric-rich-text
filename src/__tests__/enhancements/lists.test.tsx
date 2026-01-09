@@ -6,7 +6,7 @@ jest.mock('../../adapters/native', () => {
   const { Text, View } = require('react-native');
 
   return {
-    HTMLTextNative: jest.fn(
+    RichTextNative: jest.fn(
       ({
         html,
         style,
@@ -75,8 +75,8 @@ jest.mock('../../adapters/native', () => {
   };
 });
 
-import { HTMLTextNative } from '../../adapters/native';
-import HTMLText from '../../components/HTMLText';
+import { RichTextNative } from '../../adapters/native';
+import RichText from '../../components/RichText';
 
 describe('Unordered List Rendering (T016)', () => {
   beforeEach(() => {
@@ -85,13 +85,13 @@ describe('Unordered List Rendering (T016)', () => {
 
   it('renders bullet markers for ul/li elements', () => {
     render(
-      <HTMLText
+      <RichText
         html="<ul><li>First</li><li>Second</li></ul>"
         testID="unordered-list"
       />
     );
 
-    expect(HTMLTextNative).toHaveBeenCalledWith(
+    expect(RichTextNative).toHaveBeenCalledWith(
       expect.objectContaining({
         html: expect.any(String),
       }),
@@ -104,7 +104,7 @@ describe('Unordered List Rendering (T016)', () => {
   });
 
   it('orphaned li renders as plain text without marker', () => {
-    render(<HTMLText html="<li>Orphan item</li>" testID="orphaned-li" />);
+    render(<RichText html="<li>Orphan item</li>" testID="orphaned-li" />);
 
     // The mock removes list markers for orphaned li
     const text = screen.getByText('Orphan item');
@@ -122,7 +122,7 @@ describe('Ordered List Rendering (T017)', () => {
 
   it('renders sequential numbers for ol/li elements', () => {
     render(
-      <HTMLText
+      <RichText
         html="<ol><li>First</li><li>Second</li><li>Third</li></ol>"
         testID="ordered-list"
       />
@@ -134,7 +134,7 @@ describe('Ordered List Rendering (T017)', () => {
 
   it('numbering restarts for separate ol elements', () => {
     render(
-      <HTMLText
+      <RichText
         html="<ol><li>A</li><li>B</li></ol><ol><li>X</li><li>Y</li></ol>"
         testID="separate-lists"
       />
@@ -164,7 +164,7 @@ describe('Nested List Rendering (T018)', () => {
     `;
 
     expect(() => {
-      render(<HTMLText html={nestedHtml} testID="nested-list" />);
+      render(<RichText html={nestedHtml} testID="nested-list" />);
     }).not.toThrow();
   });
 
@@ -188,13 +188,13 @@ describe('Nested List Rendering (T018)', () => {
     `;
 
     expect(() => {
-      render(<HTMLText html={deeplyNested} testID="deeply-nested" />);
+      render(<RichText html={deeplyNested} testID="deeply-nested" />);
     }).not.toThrow();
   });
 
   it('preserves accessibility with list semantics', () => {
     render(
-      <HTMLText
+      <RichText
         html="<ul><li>Accessible item</li></ul>"
         testID="accessible-list"
       />
@@ -218,7 +218,7 @@ describe('Mixed List and Link Content', () => {
     `;
 
     expect(() => {
-      render(<HTMLText html={htmlWithLinksInList} testID="link-in-list" />);
+      render(<RichText html={htmlWithLinksInList} testID="link-in-list" />);
     }).not.toThrow();
   });
 
@@ -230,7 +230,7 @@ describe('Mixed List and Link Content', () => {
     `;
 
     expect(() => {
-      render(<HTMLText html={htmlWithBoldInList} testID="bold-in-list" />);
+      render(<RichText html={htmlWithBoldInList} testID="bold-in-list" />);
     }).not.toThrow();
   });
 });

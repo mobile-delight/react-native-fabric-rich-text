@@ -22,7 +22,7 @@ export default function Navigation() {
             href="/"
             className="font-semibold text-lg text-gray-900 dark:text-gray-100"
           >
-            FabricHTMLText
+            FabricRichText
           </Link>
           <ul className="flex space-x-6">
             {navItems.map((item) => {

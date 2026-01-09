@@ -65,7 +65,7 @@ jobs:
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         with:
-          project: 'react-native-fabric-html-text'
+          project: 'react-native-fabric-rich-text'
           path: '.'
           format: 'HTML'
           args: >-

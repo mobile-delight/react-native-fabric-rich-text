@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import StylingPage from '@/app/styling/page';
 
-// Mock HTMLText component to test page structure
-jest.mock('react-native-fabric-html-text', () => {
+// Mock RichText component to test page structure
+jest.mock('react-native-fabric-rich-text', () => {
   // Import DOMPurify inside the mock factory for Jest module isolation
   const DOMPurify = jest.requireActual('dompurify');
-  return function MockHTMLText({
+  return function MockRichText({
     html,
     className,
     numberOfLines,
@@ -59,11 +59,11 @@ describe('Styling Page - Integration', () => {
     expect(screen.getByText('Complex HTML with Styling')).toBeInTheDocument();
   });
 
-  it('renders HTMLText components for each demo', () => {
+  it('renders RichText components for each demo', () => {
     render(<StylingPage />);
 
     const htmlTextComponents = screen.getAllByTestId('html-text');
-    // 8 styling demos + 7 container query HTMLText instances:
+    // 8 styling demos + 7 container query RichText instances:
     // full width (1), half width (1), side-by-side (2), named (1), nested (2)
     expect(htmlTextComponents.length).toBe(15);
   });
@@ -169,7 +169,7 @@ describe('Styling Page - Integration', () => {
     expect(htmlTexts[8]).toHaveClass('text-slate-700');
   });
 
-  it('side by side container query demo renders two HTMLText components', () => {
+  it('side by side container query demo renders two RichText components', () => {
     render(<StylingPage />);
 
     const htmlTexts = screen.getAllByTestId('html-text');

@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import HTMLText from 'react-native-fabric-html-text';
+import RichText from 'react-native-fabric-rich-text';
 
-describe('HTMLText - className Styling', () => {
+describe('RichText - className Styling', () => {
   it('applies className to the container element', () => {
     const { container } = render(
-      <HTMLText html="<p>Styled text</p>" className="custom-class" />
+      <RichText html="<p>Styled text</p>" className="custom-class" />
     );
     const wrapper = container.firstChild as HTMLElement;
     expect(wrapper).toHaveClass('custom-class');
@@ -12,7 +12,7 @@ describe('HTMLText - className Styling', () => {
 
   it('applies multiple className values', () => {
     const { container } = render(
-      <HTMLText
+      <RichText
         html="<p>Multi-class text</p>"
         className="class-one class-two class-three"
       />
@@ -25,7 +25,7 @@ describe('HTMLText - className Styling', () => {
 
   it('applies Tailwind utility classes', () => {
     const { container } = render(
-      <HTMLText
+      <RichText
         html="<p>Tailwind styled</p>"
         className="text-blue-600 bg-gray-100 p-4 rounded-lg"
       />
@@ -38,7 +38,7 @@ describe('HTMLText - className Styling', () => {
   });
 
   it('works without className (no class attribute)', () => {
-    const { container } = render(<HTMLText html="<p>No class</p>" />);
+    const { container } = render(<RichText html="<p>No class</p>" />);
     const wrapper = container.firstChild as HTMLElement;
     // Should not have a class attribute when className is not provided
     expect(wrapper.className).toBe('');
@@ -46,7 +46,7 @@ describe('HTMLText - className Styling', () => {
 
   it('combines className with inline style prop', () => {
     const { container } = render(
-      <HTMLText
+      <RichText
         html="<p>Combined styling</p>"
         className="text-lg"
         style={{ color: 'red' }}
@@ -59,7 +59,7 @@ describe('HTMLText - className Styling', () => {
 
   it('combines className with numberOfLines truncation', () => {
     const { container } = render(
-      <HTMLText
+      <RichText
         html="<p>Long text that will be truncated with styling applied.</p>"
         className="bg-amber-50 border-l-4"
         numberOfLines={2}
@@ -79,13 +79,13 @@ describe('HTMLText - className Styling', () => {
   });
 
   it('applies testID as data-testid attribute', () => {
-    render(<HTMLText html="<p>Test ID text</p>" testID="my-html-text" />);
+    render(<RichText html="<p>Test ID text</p>" testID="my-html-text" />);
     expect(screen.getByTestId('my-html-text')).toBeInTheDocument();
   });
 
   it('combines className and testID', () => {
     const { container } = render(
-      <HTMLText
+      <RichText
         html="<p>All props</p>"
         className="custom-style"
         testID="test-element"
@@ -97,10 +97,10 @@ describe('HTMLText - className Styling', () => {
   });
 });
 
-describe('HTMLText - Responsive Classes', () => {
+describe('RichText - Responsive Classes', () => {
   it('applies responsive breakpoint classes', () => {
     const { container } = render(
-      <HTMLText
+      <RichText
         html="<p>Responsive text</p>"
         className="text-sm md:text-base lg:text-xl"
       />
@@ -113,7 +113,7 @@ describe('HTMLText - Responsive Classes', () => {
 
   it('applies hover and focus state classes', () => {
     const { container } = render(
-      <HTMLText
+      <RichText
         html="<p>Interactive text</p>"
         className="hover:bg-blue-100 focus:ring-2"
       />
@@ -125,7 +125,7 @@ describe('HTMLText - Responsive Classes', () => {
 
   it('applies dark mode classes', () => {
     const { container } = render(
-      <HTMLText
+      <RichText
         html="<p>Dark mode text</p>"
         className="text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
       />

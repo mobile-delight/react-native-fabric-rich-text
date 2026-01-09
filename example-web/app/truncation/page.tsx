@@ -1,6 +1,6 @@
 'use client';
 
-import HTMLText from 'react-native-fabric-html-text';
+import RichText from 'react-native-fabric-rich-text';
 import DemoSection from '@/components/DemoSection';
 
 const longParagraph = `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>`;
@@ -23,77 +23,77 @@ export default function TruncationPage() {
       <DemoSection
         title="Single Line Truncation"
         description="Limit text to exactly 1 line with ellipsis"
-        code={`<HTMLText
+        code={`<RichText
   html="${longParagraph}"
   numberOfLines={1}
 />`}
       >
-        <HTMLText html={longParagraph} numberOfLines={1} />
+        <RichText html={longParagraph} numberOfLines={1} />
       </DemoSection>
 
       <DemoSection
         title="Two Line Truncation"
         description="Limit text to 2 lines"
-        code={`<HTMLText
+        code={`<RichText
   html="${longParagraph}"
   numberOfLines={2}
 />`}
       >
-        <HTMLText html={longParagraph} numberOfLines={2} />
+        <RichText html={longParagraph} numberOfLines={2} />
       </DemoSection>
 
       <DemoSection
         title="Three Line Truncation"
         description="Limit text to 3 lines"
-        code={`<HTMLText
+        code={`<RichText
   html="${longParagraph}"
   numberOfLines={3}
 />`}
       >
-        <HTMLText html={longParagraph} numberOfLines={3} />
+        <RichText html={longParagraph} numberOfLines={3} />
       </DemoSection>
 
       <DemoSection
         title="No Truncation (Full Text)"
         description="Without numberOfLines prop, text displays fully"
-        code={`<HTMLText
+        code={`<RichText
   html="${longParagraph}"
 />`}
       >
-        <HTMLText html={longParagraph} />
+        <RichText html={longParagraph} />
       </DemoSection>
 
       <DemoSection
         title="Truncation with Formatted Text"
         description="Truncation preserves HTML formatting"
-        code={`<HTMLText
+        code={`<RichText
   html="${formattedContent}"
   numberOfLines={2}
 />`}
       >
-        <HTMLText html={formattedContent} numberOfLines={2} />
+        <RichText html={formattedContent} numberOfLines={2} />
       </DemoSection>
 
       <DemoSection
         title="Truncation with Multiple Paragraphs"
         description="Truncation works across multiple paragraph elements"
-        code={`<HTMLText
+        code={`<RichText
   html="${multiParagraph}"
   numberOfLines={2}
 />`}
       >
-        <HTMLText html={multiParagraph} numberOfLines={2} />
+        <RichText html={multiParagraph} numberOfLines={2} />
       </DemoSection>
 
       <DemoSection
         title="numberOfLines={0} (No Truncation)"
         description="Setting numberOfLines to 0 disables truncation"
-        code={`<HTMLText
+        code={`<RichText
   html="${longParagraph}"
   numberOfLines={0}
 />`}
       >
-        <HTMLText html={longParagraph} numberOfLines={0} />
+        <RichText html={longParagraph} numberOfLines={0} />
       </DemoSection>
     </div>
   );

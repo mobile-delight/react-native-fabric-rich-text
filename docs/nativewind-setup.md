@@ -1,6 +1,6 @@
 # NativeWind Setup Guide
 
-This guide covers the configuration required to use `react-native-fabric-html-text` with [NativeWind](https://www.nativewind.dev/) for Tailwind CSS styling in React Native.
+This guide covers the configuration required to use `react-native-fabric-rich-text` with [NativeWind](https://www.nativewind.dev/) for Tailwind CSS styling in React Native.
 
 ## Prerequisites
 
@@ -109,7 +109,7 @@ module.exports = {
     './App.{js,jsx,ts,tsx}',
     './src/**/*.{js,jsx,ts,tsx}',
     // Include node_modules paths for libraries that use className
-    './node_modules/react-native-fabric-html-text/**/*.{js,jsx,ts,tsx}',
+    './node_modules/react-native-fabric-rich-text/**/*.{js,jsx,ts,tsx}',
   ],
   presets: [require('nativewind/preset')],
   theme: {
@@ -178,11 +178,11 @@ This adds the `className` prop type to React Native components.
 Import from the `/nativewind` subpath for zero-config className support:
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text/nativewind';
+import { RichText } from 'react-native-fabric-rich-text/nativewind';
 
 function MyComponent() {
   return (
-    <HTMLText
+    <RichText
       html="<p>Hello <strong>World</strong></p>"
       className="text-blue-500 text-lg font-medium p-4"
     />
@@ -195,15 +195,15 @@ function MyComponent() {
 For more control, apply `cssInterop` yourself:
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text';
+import { RichText } from 'react-native-fabric-rich-text';
 import { cssInterop } from 'nativewind';
 
 // Apply once at app startup
-cssInterop(HTMLText, { className: 'style' });
+cssInterop(RichText, { className: 'style' });
 
 function MyComponent() {
   return (
-    <HTMLText
+    <RichText
       html="<p>Hello World</p>"
       className="text-blue-500"
     />
@@ -216,7 +216,7 @@ function MyComponent() {
 ### Responsive Variants
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Responsive text</p>"
   className="text-sm md:text-base lg:text-lg"
 />
@@ -225,7 +225,7 @@ function MyComponent() {
 ### Dark Mode
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Theme-aware text</p>"
   className="text-gray-900 dark:text-gray-100"
 />
@@ -233,16 +233,16 @@ function MyComponent() {
 
 ### Container Queries
 
-Wrap HTMLText in a container to use container query variants:
+Wrap RichText in a container to use container query variants:
 
 ```tsx
 import { View } from 'react-native';
-import { HTMLText } from 'react-native-fabric-html-text/nativewind';
+import { RichText } from 'react-native-fabric-rich-text/nativewind';
 
 function ResponsiveCard() {
   return (
     <View className="@container">
-      <HTMLText
+      <RichText
         html="<p>Text adapts to container width</p>"
         className="text-sm @md:text-base @lg:text-lg"
       />
@@ -255,7 +255,7 @@ function ResponsiveCard() {
 
 ```tsx
 <View className="@container/card">
-  <HTMLText
+  <RichText
     html="<p>Named container</p>"
     className="text-sm @sm/card:text-base"
   />
