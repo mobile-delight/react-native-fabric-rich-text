@@ -1,6 +1,6 @@
 import {
-  FabricHTMLText,
-  HTMLText,
+  FabricRichText,
+  RichText,
   sanitize,
   ALLOWED_TAGS,
   ALLOWED_ATTR,
@@ -8,13 +8,13 @@ import {
 } from '../index';
 
 describe('Library exports', () => {
-  it('exports FabricHTMLText component', () => {
-    expect(FabricHTMLText).toBeDefined();
+  it('exports FabricRichText component', () => {
+    expect(FabricRichText).toBeDefined();
   });
 
-  it('exports HTMLText component', () => {
-    expect(HTMLText).toBeDefined();
-    expect(typeof HTMLText).toBe('function');
+  it('exports RichText component', () => {
+    expect(RichText).toBeDefined();
+    expect(typeof RichText).toBe('function');
   });
 
   it('exports sanitize function', () => {

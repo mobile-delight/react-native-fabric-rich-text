@@ -19,7 +19,7 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
     // Map to built web-specific entry point (includes sanitize, ALLOWED_TAGS, etc.)
     // This MUST come before tsconfig paths to override them
-    '^react-native-fabric-html-text$': libWebPath,
+    '^react-native-fabric-rich-text$': libWebPath,
     // Force all React imports to use example-web's React 18
     '^react$': reactPath,
     '^react/(.*)$': `${reactPath}/$1`,
@@ -51,7 +51,7 @@ module.exports = async () => {
   // Override the library path mapping (next/jest adds tsconfig paths)
   nextJestConfig.moduleNameMapper = {
     ...nextJestConfig.moduleNameMapper,
-    '^react-native-fabric-html-text$': libWebPath,
+    '^react-native-fabric-rich-text$': libWebPath,
   };
 
   return nextJestConfig;

@@ -1,12 +1,12 @@
-# FabricHTMLText System Specification
+# FabricRichText System Specification
 
-A comprehensive technical reference for the `react-native-fabric-html-text` library - a cross-platform HTML text rendering solution for React Native Fabric, React Native Web, and Next.js.
+A comprehensive technical reference for the `react-native-fabric-rich-text` library - a cross-platform HTML text rendering solution for React Native Fabric, React Native Web, and Next.js.
 
 ---
 
 ## Table of Contents
 
-1. [Core HTMLText Component](#1-core-htmltext-component)
+1. [Core RichText Component](#1-core-htmltext-component)
 2. [HTML Parsing & Sanitization](#2-html-parsing--sanitization)
 3. [Fabric/TurboModule Architecture](#3-fabricturbomodule-architecture)
 4. [C++ Shared Layer](#4-c-shared-layer)
@@ -19,11 +19,11 @@ A comprehensive technical reference for the `react-native-fabric-html-text` libr
 
 ---
 
-## 1. Core HTMLText Component
+## 1. Core RichText Component
 
 ### What It Is
 
-The `HTMLText` component is the public API for rendering sanitized HTML content as styled native text. It provides a React component interface that works identically across iOS, Android, and Web platforms.
+The `RichText` component is the public API for rendering sanitized HTML content as styled native text. It provides a React component interface that works identically across iOS, Android, and Web platforms.
 
 ### Why We Need It
 
@@ -32,7 +32,7 @@ React Native lacks built-in HTML rendering support. Existing solutions either:
 - Implement custom JS parsers (don't integrate with native text systems)
 - Require bridge crossing for measurement (async, causes layout jumps)
 
-HTMLText solves this by providing a true native text component that:
+RichText solves this by providing a true native text component that:
 - Renders HTML as native `Text` (not a WebView)
 - Measures synchronously in the Fabric Shadow Tree
 - Integrates with accessibility, fonts, and theming systems
@@ -40,9 +40,9 @@ HTMLText solves this by providing a true native text component that:
 ### How It Works
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text';
+import { RichText } from 'react-native-fabric-rich-text';
 
-<HTMLText
+<RichText
   html="<p>Hello <strong>World</strong></p>"
   style={{ fontSize: 16, color: '#333' }}
   numberOfLines={3}
@@ -67,12 +67,12 @@ The component:
 
 | File | Purpose |
 |------|---------|
-| `/src/components/HTMLText.tsx` | Main React component implementation |
-| `/src/components/HTMLText.web.tsx` | Web-specific implementation |
+| `/src/components/RichText.tsx` | Main React component implementation |
+| `/src/components/RichText.web.tsx` | Web-specific implementation |
 | `/src/index.tsx` | Public API exports for native |
 | `/src/index.web.tsx` | Public API exports for web |
-| `/src/FabricHTMLTextNativeComponent.ts` | Codegen native component specification |
-| `/src/types/HTMLTextNativeProps.ts` | TypeScript type definitions |
+| `/src/FabricRichTextNativeComponent.ts` | Codegen native component specification |
+| `/src/types/RichTextNativeProps.ts` | TypeScript type definitions |
 
 ---
 
@@ -95,8 +95,8 @@ HTML from external sources (APIs, CMS, user input) can contain:
 
 | Platform | Library | Location |
 |----------|---------|----------|
-| iOS | SwiftSoup | `/ios/FabricHTMLSanitizer.swift` |
-| Android | OWASP Java HTML Sanitizer | `/android/src/main/java/.../FabricHTMLSanitizer.kt` |
+| iOS | SwiftSoup | `/ios/FabricRichSanitizer.swift` |
+| Android | OWASP Java HTML Sanitizer | `/android/src/main/java/.../FabricRichSanitizer.kt` |
 | Web | DOMPurify 3.3.1 | `/src/core/sanitize.web.ts` |
 
 **Processing Pipeline:**
@@ -107,7 +107,7 @@ Raw HTML → Whitespace Normalization → Allowlist Sanitization → C++ Parsing
 
 1. **Whitespace Normalization**: Remove inter-tag whitespace from JSX formatting
 2. **Allowlist Sanitization**: Only allowed tags/attributes pass through
-3. **C++ Parsing**: `FabricHTMLParser` converts to React Native's `AttributedString`
+3. **C++ Parsing**: `FabricRichParser` converts to React Native's `AttributedString`
 4. **Platform Rendering**: Convert to NSAttributedString (iOS) or Spannable (Android)
 
 **Allowed Content (defined in `/src/core/constants.ts`):**
@@ -133,8 +133,8 @@ ALLOWED_PROTOCOLS = ['http', 'https', 'mailto', 'tel']
 | `/src/core/constants.ts` | Single source of truth for allowed tags/protocols |
 | `/src/core/sanitize.ts` | Native pass-through (sanitization in native layer) |
 | `/src/core/sanitize.web.ts` | DOMPurify-based web sanitization |
-| `/ios/FabricHTMLSanitizer.swift` | SwiftSoup iOS sanitizer |
-| `/android/.../FabricHTMLSanitizer.kt` | OWASP Android sanitizer |
+| `/ios/FabricRichSanitizer.swift` | SwiftSoup iOS sanitizer |
+| `/android/.../FabricRichSanitizer.kt` | OWASP Android sanitizer |
 | `/ios/FabricGeneratedConstants.swift` | Generated constants for iOS |
 | `/android/.../FabricGeneratedConstants.kt` | Generated constants for Android |
 
@@ -173,14 +173,14 @@ React Component → Props → ShadowNode → measureContent() → Yoga → Nativ
 ```
 
 1. **Props Phase**: JS passes props via codegen-generated spec
-2. **Layout Phase**: `FabricHTMLTextShadowNode::measureContent()` parses HTML and measures
+2. **Layout Phase**: `FabricRichTextShadowNode::measureContent()` parses HTML and measures
 3. **Commit Phase**: `layout()` calls `setStateData()` with parsed `AttributedString`
 4. **Mount Phase**: Native view receives state and renders
 
 **Codegen Specification:**
 
 ```typescript
-// FabricHTMLTextNativeComponent.ts
+// FabricRichTextNativeComponent.ts
 export interface NativeProps extends ViewProps {
   html: string;
   fontSize?: Float;
@@ -190,12 +190,12 @@ export interface NativeProps extends ViewProps {
   // ... more props
 }
 
-export default codegenNativeComponent<NativeProps>('FabricHTMLText');
+export default codegenNativeComponent<NativeProps>('FabricRichText');
 ```
 
 This generates:
-- C++ `FabricHTMLTextProps` struct
-- C++ `FabricHTMLTextEventEmitter` for callbacks
+- C++ `FabricRichTextProps` struct
+- C++ `FabricRichTextEventEmitter` for callbacks
 - Swift/Kotlin view protocol/interface
 
 ### Why This Approach
@@ -209,11 +209,11 @@ This generates:
 
 | File | Purpose |
 |------|---------|
-| `/src/FabricHTMLTextNativeComponent.ts` | Codegen component specification |
-| `/ios/FabricHTMLTextShadowNode.mm` | iOS shadow node with measureContent |
-| `/ios/FabricHTMLTextComponentDescriptor.h` | Fabric component descriptor |
+| `/src/FabricRichTextNativeComponent.ts` | Codegen component specification |
+| `/ios/FabricRichTextShadowNode.mm` | iOS shadow node with measureContent |
+| `/ios/FabricRichTextComponentDescriptor.h` | Fabric component descriptor |
 | `/android/.../jni/.../ShadowNodes.cpp` | Android shadow node with measureContent |
-| `/android/.../jni/.../FabricHTMLTextState.cpp` | State serialization to MapBuffer |
+| `/android/.../jni/.../FabricRichTextState.cpp` | State serialization to MapBuffer |
 
 ---
 
@@ -237,11 +237,11 @@ The shared C++ layer ensures:
 
 ### How It Works
 
-**FabricHTMLParser Interface:**
+**FabricRichParser Interface:**
 
 ```cpp
-// FabricHTMLParser.h
-class FabricHTMLParser {
+// FabricRichParser.h
+class FabricRichParser {
 public:
   static std::string stripHtmlTags(const std::string& html);
 
@@ -300,8 +300,8 @@ struct AttributedString {
 
 | File | Purpose |
 |------|---------|
-| `/cpp/FabricHTMLParser.h` | Parser interface and types |
-| `/cpp/FabricHTMLParser.cpp` | HTML parsing implementation |
+| `/cpp/FabricRichParser.h` | Parser interface and types |
+| `/cpp/FabricRichParser.cpp` | HTML parsing implementation |
 
 ---
 
@@ -324,9 +324,9 @@ iOS requires:
 **Rendering Pipeline:**
 
 ```
-C++ AttributedString → FabricHTMLFragmentParser → NSAttributedString → CoreText
+C++ AttributedString → FabricRichFragmentParser → NSAttributedString → CoreText
                                                          ↓
-                                              FabricHTMLCoreTextView
+                                              FabricRichCoreTextView
                                                          ↓
                                                    CTFrameDraw
 ```
@@ -334,11 +334,11 @@ C++ AttributedString → FabricHTMLFragmentParser → NSAttributedString → Cor
 **Component Structure:**
 
 ```objc
-// FabricHTMLText.mm - Fabric Component View
-@implementation FabricHTMLText
+// FabricRichText.mm - Fabric Component View
+@implementation FabricRichText
 - (void)updateState:(const State::Shared&)state {
   // Convert C++ fragments to NSAttributedString
-  NSAttributedString *nsAttrString = [FabricHTMLFragmentParser
+  NSAttributedString *nsAttrString = [FabricRichFragmentParser
     buildAttributedStringFromCppAttributedString:stateData.attributedString
     withLinkUrls:stateData.linkUrls];
 
@@ -350,7 +350,7 @@ C++ AttributedString → FabricHTMLFragmentParser → NSAttributedString → Cor
 **CoreText Rendering:**
 
 ```objc
-// FabricHTMLCoreTextView.m
+// FabricRichCoreTextView.m
 - (void)drawRect:(CGRect)rect {
   CGContextRef context = UIGraphicsGetCurrentContext();
 
@@ -379,11 +379,11 @@ C++ AttributedString → FabricHTMLFragmentParser → NSAttributedString → Cor
 
 | File | Purpose |
 |------|---------|
-| `/ios/FabricHTMLText.mm` | Fabric component view |
-| `/ios/FabricHTMLTextShadowNode.mm` | Shadow node with measurement |
-| `/ios/FabricHTMLFragmentParser.mm` | C++ to NSAttributedString conversion |
-| `/ios/FabricHTMLCoreTextView.m` | CoreText-based rendering view |
-| `/ios/FabricHTMLSanitizer.swift` | SwiftSoup HTML sanitizer |
+| `/ios/FabricRichText.mm` | Fabric component view |
+| `/ios/FabricRichTextShadowNode.mm` | Shadow node with measurement |
+| `/ios/FabricRichFragmentParser.mm` | C++ to NSAttributedString conversion |
+| `/ios/FabricRichCoreTextView.m` | CoreText-based rendering view |
+| `/ios/FabricRichSanitizer.swift` | SwiftSoup HTML sanitizer |
 
 ---
 
@@ -406,8 +406,8 @@ Android requires:
 **State Transfer via MapBuffer:**
 
 ```cpp
-// FabricHTMLTextState.cpp
-MapBuffer FabricHTMLTextState::getMapBuffer() const {
+// FabricRichTextState.cpp
+MapBuffer FabricRichTextState::getMapBuffer() const {
   auto builder = MapBufferBuilder();
   builder.putMapBuffer(HTML_STATE_KEY_ATTRIBUTED_STRING,
                        toMapBuffer(attributedString));
@@ -419,7 +419,7 @@ MapBuffer FabricHTMLTextState::getMapBuffer() const {
 **Kotlin Fragment Parser:**
 
 ```kotlin
-// FabricHTMLFragmentParser.kt
+// FabricRichFragmentParser.kt
 fun buildSpannableFromFragments(fragments: List<TextFragment>): Spannable {
   val builder = SpannableStringBuilder()
 
@@ -440,7 +440,7 @@ fun buildSpannableFromFragments(fragments: List<TextFragment>): Spannable {
 **Custom Layout Creation:**
 
 ```kotlin
-// FabricHTMLTextView.kt
+// FabricRichTextView.kt
 private fun createCustomLayout(text: Spannable, availableWidth: Int): Layout {
   // Must match TextLayoutManager.createLayout() parameters exactly
   return StaticLayout.Builder.obtain(text, 0, text.length, customTextPaint, layoutWidth)
@@ -464,11 +464,11 @@ private fun createCustomLayout(text: Spannable, availableWidth: Int): Layout {
 | File | Purpose |
 |------|---------|
 | `/android/.../jni/.../ShadowNodes.cpp` | Shadow node with measureContent |
-| `/android/.../jni/.../FabricHTMLTextState.cpp` | MapBuffer serialization |
-| `/android/.../react/.../FabricHTMLFragmentParser.kt` | MapBuffer to Spannable |
-| `/android/.../java/.../FabricHTMLTextView.kt` | Custom rendering view |
-| `/android/.../java/.../FabricHTMLSanitizer.kt` | OWASP HTML sanitizer |
-| `/android/.../react/.../FabricHTMLTextViewManager.kt` | React Native view manager |
+| `/android/.../jni/.../FabricRichTextState.cpp` | MapBuffer serialization |
+| `/android/.../react/.../FabricRichFragmentParser.kt` | MapBuffer to Spannable |
+| `/android/.../java/.../FabricRichTextView.kt` | Custom rendering view |
+| `/android/.../java/.../FabricRichSanitizer.kt` | OWASP HTML sanitizer |
+| `/android/.../react/.../FabricRichTextViewManager.kt` | React Native view manager |
 
 ---
 
@@ -481,7 +481,7 @@ A Next.js/SSR-compatible web implementation that renders sanitized HTML using na
 ### Why We Need It
 
 For universal React Native apps (via React Native Web or shared codebases), we need:
-- Web-compatible HTMLText component
+- Web-compatible RichText component
 - SSR support for Next.js
 - Same API as native implementation
 - Consistent security model
@@ -505,8 +505,8 @@ For universal React Native apps (via React Native Web or shared codebases), we n
 **Web Component:**
 
 ```tsx
-// HTMLText.web.tsx
-export const HTMLText: React.FC<HTMLTextProps> = ({
+// RichText.web.tsx
+export const RichText: React.FC<RichTextProps> = ({
   html,
   style,
   numberOfLines,
@@ -563,7 +563,7 @@ export function convertStyle(style?: TextStyle): CSSProperties {
 | File | Purpose |
 |------|---------|
 | `/src/index.web.tsx` | Web-specific exports |
-| `/src/components/HTMLText.web.tsx` | Web component implementation |
+| `/src/components/RichText.web.tsx` | Web component implementation |
 | `/src/core/sanitize.web.ts` | DOMPurify sanitization |
 | `/src/adapters/web/StyleConverter.ts` | RN TextStyle to CSS conversion |
 | `/example-web/` | Next.js demo application |
@@ -583,7 +583,7 @@ Many React Native apps use NativeWind for:
 - Utility-first styling approach
 - Consistent styling with web codebases
 
-HTMLText should work seamlessly in NativeWind projects.
+RichText should work seamlessly in NativeWind projects.
 
 ### How It Works
 
@@ -592,20 +592,20 @@ HTMLText should work seamlessly in NativeWind projects.
 ```typescript
 // src/nativewind.ts
 import { cssInterop } from 'nativewind';
-import { HTMLText as BaseHTMLText } from './index';
+import { RichText as BaseRichText } from './index';
 
 // Apply cssInterop to map className to style
-cssInterop(BaseHTMLText, { className: 'style' });
+cssInterop(BaseRichText, { className: 'style' });
 
-export { BaseHTMLText as HTMLText };
+export { BaseRichText as RichText };
 ```
 
 **Usage:**
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text/nativewind';
+import { RichText } from 'react-native-fabric-rich-text/nativewind';
 
-<HTMLText
+<RichText
   html="<p>Hello World</p>"
   className="text-lg text-blue-500 p-4"
 />
@@ -652,7 +652,7 @@ Long HTML content often needs truncation for:
 **Props:**
 
 ```tsx
-<HTMLText
+<RichText
   html={longContent}
   numberOfLines={3}        // 0 = unlimited
   animationDuration={0.2}  // Height animation in seconds
@@ -678,7 +678,7 @@ auto measuredSize = textLayoutManager->measure(
 **iOS Rendering:**
 
 ```objc
-// FabricHTMLCoreTextView.m
+// FabricRichCoreTextView.m
 - (void)drawTruncatedFrame:(CTFrameRef)frame maxLines:(NSInteger)maxLines {
   // Get all lines, draw all but last
   for (i = 0; i < lineCount - 1; i++) {
@@ -695,7 +695,7 @@ auto measuredSize = textLayoutManager->measure(
 **Android Rendering:**
 
 ```kotlin
-// FabricHTMLTextView.kt
+// FabricRichTextView.kt
 val builder = StaticLayout.Builder.obtain(text, 0, text.length, paint, width)
   .setMaxLines(numberOfLines)
   .setEllipsize(TextUtils.TruncateAt.END)
@@ -730,9 +730,9 @@ Both iOS and Android animate height changes when `animationDuration > 0`:
 
 | File | Purpose |
 |------|---------|
-| `/ios/FabricHTMLCoreTextView.m` | `drawTruncatedFrame:` implementation |
-| `/android/.../FabricHTMLTextView.kt` | StaticLayout with maxLines |
-| `/src/components/HTMLText.web.tsx` | CSS line-clamp |
+| `/ios/FabricRichCoreTextView.m` | `drawTruncatedFrame:` implementation |
+| `/android/.../FabricRichTextView.kt` | StaticLayout with maxLines |
+| `/src/components/RichText.web.tsx` | CSS line-clamp |
 
 ---
 
@@ -832,13 +832,13 @@ None of these can execute JavaScript.
 | File | Purpose |
 |------|---------|
 | `/src/core/constants.ts` | Single source of truth for allowlists |
-| `/ios/FabricHTMLSanitizer.swift` | SwiftSoup configuration |
-| `/android/.../FabricHTMLSanitizer.kt` | OWASP configuration |
+| `/ios/FabricRichSanitizer.swift` | SwiftSoup configuration |
+| `/android/.../FabricRichSanitizer.kt` | OWASP configuration |
 | `/src/core/sanitize.web.ts` | DOMPurify configuration |
-| `/ios/FabricHTMLFragmentParser.mm` | URL scheme validation |
-| `/android/.../FabricHTMLFragmentParser.kt` | URL scheme validation |
-| `/ios/FabricHTMLCoreTextView.m` | Final URL validation on tap |
-| `/android/.../FabricHTMLTextView.kt` | Final URL validation on tap |
+| `/ios/FabricRichFragmentParser.mm` | URL scheme validation |
+| `/android/.../FabricRichFragmentParser.kt` | URL scheme validation |
+| `/ios/FabricRichCoreTextView.m` | Final URL validation on tap |
+| `/android/.../FabricRichTextView.kt` | Final URL validation on tap |
 
 ---
 
@@ -862,7 +862,7 @@ For visual reference, see the SVG diagrams in this directory:
 
 ## Summary
 
-The `react-native-fabric-html-text` library is a modern, secure, cross-platform HTML rendering solution that:
+The `react-native-fabric-rich-text` library is a modern, secure, cross-platform HTML rendering solution that:
 
 1. **Leverages Fabric Architecture**: Synchronous measurement, no bridge overhead, type-safe codegen
 2. **Shares C++ Logic**: Identical parsing on iOS and Android ensures consistency

@@ -1,5 +1,5 @@
 {
-  "name": "react-native-fabric-html-text-example",
+  "name": "react-native-fabric-rich-text-example",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,13 +10,14 @@
     "test": "jest",
     "build:android": "react-native build-android --extra-params \"--no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a\"",
     "build:ios": "react-native build-ios --mode Debug --buildFolder ios/build",
-    "build:ios:e2e": "cd ios && FORCE_BUNDLING=1 xcodebuild -workspace FabricHtmlTextExample.xcworkspace -scheme FabricHtmlTextExample -configuration Debug -sdk iphonesimulator -derivedDataPath build build",
+    "build:ios:e2e": "cd ios && FORCE_BUNDLING=1 xcodebuild -workspace FabricRichTextExample.xcworkspace -scheme FabricRichTextExample -configuration Debug -sdk iphonesimulator -derivedDataPath build build",
     "clean": "rm -rf android/app/build android/app/.cxx android/.gradle ../android/build ../android/.cxx ios/build ios/Pods ios/Podfile.lock && echo 'Example build artifacts cleaned'"
   },
   "dependencies": {
     "nativewind": "^4.2.0",
     "react": "19.1.0",
     "react-native": "0.81.0",
+    "react-native-fabric-rich-text": "workspace:*",
     "react-native-reanimated": "^4.2.1",
     "react-native-worklets": "^0.7.1"
   },

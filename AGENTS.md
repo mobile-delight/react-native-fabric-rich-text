@@ -6,7 +6,7 @@ This document enforces the project constitution for AI agents. Read `.specify/me
 
 A Fabric-first HTML text renderer for React Native. This library parses HTML strings and renders them as native Text components with proper styling, using React Native's new architecture (Fabric).
 
-**Architecture**: This is primarily a **native library** built on Fabric's component model. Each platform has a custom ShadowNode implementation for layout measurement, using Fabric's `ConcreteComponentDescriptor` and shadow tree infrastructure. A shared C++ HTML parser (`cpp/FabricHTMLParser`) produces `AttributedString` fragments consumed by platform-specific renderers (CoreText on iOS, Spannable on Android). The React/TypeScript layer provides the JavaScript interface but rendering and measurement happen in native code.
+**Architecture**: This is primarily a **native library** built on Fabric's component model. Each platform has a custom ShadowNode implementation for layout measurement, using Fabric's `ConcreteComponentDescriptor` and shadow tree infrastructure. A shared C++ HTML parser (`cpp/FabricRichParser`) produces `AttributedString` fragments consumed by platform-specific renderers (CoreText on iOS, Spannable on Android). The React/TypeScript layer provides the JavaScript interface but rendering and measurement happen in native code.
 
 **Security context**: This library renders user-provided HTML content. XSS prevention and proper sanitization are critical security requirements.
 
@@ -155,13 +155,13 @@ yarn example android   # Run Android example
 ```text
 # NATIVE CORE (primary implementation)
 cpp/                             # Shared C++ HTML parser
-└── FabricHTMLParser.cpp/h       # HTML → AttributedString conversion
+└── FabricRichParser.cpp/h       # HTML → AttributedString conversion
 
 ios/                             # iOS Fabric component
-├── FabricHTMLTextShadowNode.*   # Custom ShadowNode for measurement
-├── FabricHTMLTextComponentDescriptor.h  # Fabric ComponentDescriptor
-├── FabricHTMLText.mm            # Objective-C++ view bridge
-├── FabricHTMLCoreTextView.*     # CoreText rendering
+├── FabricRichTextShadowNode.*   # Custom ShadowNode for measurement
+├── FabricRichTextComponentDescriptor.h  # Fabric ComponentDescriptor
+├── FabricRichText.mm            # Objective-C++ view bridge
+├── FabricRichCoreTextView.*     # CoreText rendering
 └── *.swift                      # Swift utilities (sanitizer, etc.)
 
 android/                         # Android Fabric component
@@ -173,10 +173,10 @@ android/                         # Android Fabric component
 src/
 ├── index.tsx                    # Public exports
 ├── nativewind.ts                # NativeWind cssInterop wrapper
-├── FabricHTMLTextNativeComponent.ts  # Codegen native component spec
+├── FabricRichTextNativeComponent.ts  # Codegen native component spec
 ├── components/
-│   ├── HTMLText.tsx             # Native adapter router
-│   └── HTMLText.web.tsx         # Web implementation (standalone)
+│   ├── RichText.tsx             # Native adapter router
+│   └── RichText.web.tsx         # Web implementation (standalone)
 ├── adapters/
 │   ├── native.tsx               # Native (iOS/Android) adapter
 │   └── web/
@@ -187,7 +187,7 @@ src/
 │   ├── allowedHtml.ts           # Tag/attribute allowlists
 │   └── constants.ts             # Shared constants
 ├── types/
-│   ├── HTMLTextNativeProps.ts   # Component prop types
+│   ├── RichTextNativeProps.ts   # Component prop types
 │   └── codegen.d.ts             # Codegen type declarations
 └── __tests__/                   # Co-located tests
 

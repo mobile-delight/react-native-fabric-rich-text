@@ -1,14 +1,14 @@
 export {
-  default as FabricHTMLText,
+  default as FabricRichText,
   type DetectedContentType,
-} from './FabricHTMLTextNativeComponent';
+} from './FabricRichTextNativeComponent';
 
-export { default as HTMLText, type HTMLTextProps } from './components/HTMLText';
+export { default as RichText, type RichTextProps } from './components/RichText';
 export { sanitize, ALLOWED_TAGS, ALLOWED_ATTR } from './core/sanitize';
-export type { WritingDirection } from './types/HTMLTextNativeProps';
+export type { WritingDirection } from './types/RichTextNativeProps';
 
 // Accessibility link focus types
 export type {
   LinkFocusEvent,
   LinkFocusType,
-} from './types/HTMLTextNativeProps';
+} from './types/RichTextNativeProps';

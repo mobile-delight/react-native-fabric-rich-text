@@ -3,7 +3,7 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['react-native-fabric-html-text'],
+  transpilePackages: ['react-native-fabric-rich-text'],
   experimental: {
     // Keep sanitize-html as external for server components (Node.js native)
     serverComponentsExternalPackages: ['sanitize-html'],
@@ -21,7 +21,7 @@ const nextConfig = {
     // Alias the package to use the web-specific entry point
     config.resolve.alias = {
       ...config.resolve.alias,
-      'react-native-fabric-html-text': path.resolve(
+      'react-native-fabric-rich-text': path.resolve(
         __dirname,
         '../lib/module/index.web.js'
       ),

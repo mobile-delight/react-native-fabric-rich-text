@@ -1,11 +1,11 @@
 import { render, screen, within } from '@testing-library/react';
 import BasicPage from '@/app/basic/page';
 
-// Mock HTMLText component since we're testing page structure, not component internals
-jest.mock('react-native-fabric-html-text', () => {
+// Mock RichText component since we're testing page structure, not component internals
+jest.mock('react-native-fabric-rich-text', () => {
   // Import DOMPurify inside the mock factory for Jest module isolation
   const DOMPurify = jest.requireActual('dompurify');
-  return function MockHTMLText({
+  return function MockRichText({
     html,
     onLinkPress,
   }: {
@@ -62,10 +62,10 @@ describe('Basic Page - Integration', () => {
     expect(screen.getByText('Preformatted Text')).toBeInTheDocument();
   });
 
-  it('renders HTMLText components for each demo', () => {
+  it('renders RichText components for each demo', () => {
     render(<BasicPage />);
 
-    // Should have 9 HTMLText instances (one per demo section)
+    // Should have 9 RichText instances (one per demo section)
     const htmlTextComponents = screen.getAllByTestId('html-text');
     expect(htmlTextComponents.length).toBe(9);
   });

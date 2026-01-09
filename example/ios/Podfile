@@ -16,7 +16,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'FabricHtmlTextExample' do
+target 'FabricRichTextExample' do
   config = use_native_modules!
 
   use_react_native!(
@@ -25,7 +25,7 @@ target 'FabricHtmlTextExample' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'FabricHtmlTextTests' do
+  target 'FabricRichTextExampleTests' do
     inherit! :complete
   end
 

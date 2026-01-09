@@ -1,16 +1,16 @@
 import { render } from '@testing-library/react-native';
-import { HTMLTextNative } from '../../adapters/native';
+import { RichTextNative } from '../../adapters/native';
 
-describe('HTMLTextNative Integration', () => {
+describe('RichTextNative Integration', () => {
   describe('html prop', () => {
     it('should render component with html prop', () => {
-      const { toJSON } = render(<HTMLTextNative html="<p>Hello World</p>" />);
+      const { toJSON } = render(<RichTextNative html="<p>Hello World</p>" />);
       expect(toJSON()).toBeTruthy();
     });
 
     it('should pass html prop to native view', () => {
       const { toJSON } = render(
-        <HTMLTextNative html="<strong>Bold</strong>" />
+        <RichTextNative html="<strong>Bold</strong>" />
       );
       const tree = toJSON();
       expect(tree).toBeTruthy();
@@ -21,7 +21,7 @@ describe('HTMLTextNative Integration', () => {
 
     it('should handle complex HTML with multiple tags', () => {
       const html = '<p><strong>Bold</strong> and <em>italic</em></p>';
-      const { toJSON } = render(<HTMLTextNative html={html} />);
+      const { toJSON } = render(<RichTextNative html={html} />);
       const tree = toJSON();
       expect(tree).toBeTruthy();
       if (tree && !Array.isArray(tree)) {
@@ -34,7 +34,7 @@ describe('HTMLTextNative Integration', () => {
     it('should forward style prop to native view', () => {
       const style = { fontSize: 16, color: 'red' };
       const { toJSON } = render(
-        <HTMLTextNative html="<p>Test</p>" style={style} />
+        <RichTextNative html="<p>Test</p>" style={style} />
       );
       const tree = toJSON();
       expect(tree).toBeTruthy();
@@ -45,7 +45,7 @@ describe('HTMLTextNative Integration', () => {
 
     it('should accept undefined style prop', () => {
       const { toJSON } = render(
-        <HTMLTextNative html="<p>Test</p>" style={undefined} />
+        <RichTextNative html="<p>Test</p>" style={undefined} />
       );
       expect(toJSON()).toBeTruthy();
     });
@@ -54,14 +54,14 @@ describe('HTMLTextNative Integration', () => {
   describe('testID prop', () => {
     it('should forward testID prop to native view', () => {
       const { getByTestId } = render(
-        <HTMLTextNative html="<p>Test</p>" testID="my-test-id" />
+        <RichTextNative html="<p>Test</p>" testID="my-test-id" />
       );
       expect(getByTestId('my-test-id')).toBeTruthy();
     });
 
     it('should accept undefined testID prop', () => {
       const { toJSON } = render(
-        <HTMLTextNative html="<p>Test</p>" testID={undefined} />
+        <RichTextNative html="<p>Test</p>" testID={undefined} />
       );
       expect(toJSON()).toBeTruthy();
     });
@@ -69,12 +69,12 @@ describe('HTMLTextNative Integration', () => {
 
   describe('empty input handling', () => {
     it('should render without errors for empty html', () => {
-      const { toJSON } = render(<HTMLTextNative html="" />);
+      const { toJSON } = render(<RichTextNative html="" />);
       expect(toJSON()).toBeTruthy();
     });
 
     it('should pass empty string to native view', () => {
-      const { toJSON } = render(<HTMLTextNative html="" />);
+      const { toJSON } = render(<RichTextNative html="" />);
       const tree = toJSON();
       expect(tree).toBeTruthy();
       if (tree && !Array.isArray(tree)) {
@@ -86,7 +86,7 @@ describe('HTMLTextNative Integration', () => {
   describe('combined props', () => {
     it('should accept all props together', () => {
       const { toJSON, getByTestId } = render(
-        <HTMLTextNative
+        <RichTextNative
           html="<h1>Title</h1>"
           style={{ fontSize: 24 }}
           testID="title-component"
@@ -107,7 +107,7 @@ describe('HTMLTextNative Integration', () => {
   describe('security - XSS vectors', () => {
     it('should handle script tags in html prop', () => {
       const { toJSON } = render(
-        <HTMLTextNative html="<script>alert('xss')</script>Safe text" />
+        <RichTextNative html="<script>alert('xss')</script>Safe text" />
       );
       const tree = toJSON();
       expect(tree).toBeTruthy();
@@ -118,7 +118,7 @@ describe('HTMLTextNative Integration', () => {
 
     it('should handle event handler attributes', () => {
       const { toJSON } = render(
-        <HTMLTextNative html='<p onclick="alert(1)">Click me</p>' />
+        <RichTextNative html='<p onclick="alert(1)">Click me</p>' />
       );
       const tree = toJSON();
       expect(tree).toBeTruthy();
@@ -129,7 +129,7 @@ describe('HTMLTextNative Integration', () => {
 
     it('should handle javascript URLs', () => {
       const { toJSON } = render(
-        <HTMLTextNative html='<a href="javascript:void(0)">Link</a>' />
+        <RichTextNative html='<a href="javascript:void(0)">Link</a>' />
       );
       const tree = toJSON();
       expect(tree).toBeTruthy();
@@ -137,7 +137,7 @@ describe('HTMLTextNative Integration', () => {
 
     it('should handle iframe tags', () => {
       const { toJSON } = render(
-        <HTMLTextNative html='<iframe src="malicious.com"></iframe>Safe' />
+        <RichTextNative html='<iframe src="malicious.com"></iframe>Safe' />
       );
       const tree = toJSON();
       expect(tree).toBeTruthy();
@@ -145,7 +145,7 @@ describe('HTMLTextNative Integration', () => {
 
     it('should handle nested malicious content in allowed tags', () => {
       const { toJSON } = render(
-        <HTMLTextNative html="<p><script>evil()</script>Safe</p>" />
+        <RichTextNative html="<p><script>evil()</script>Safe</p>" />
       );
       const tree = toJSON();
       expect(tree).toBeTruthy();

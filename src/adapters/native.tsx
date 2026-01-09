@@ -1,9 +1,9 @@
 import { useCallback, useMemo, type ReactElement } from 'react';
 import { processColor, StyleSheet, type TextStyle } from 'react-native';
-import FabricHTMLText, {
+import FabricRichText, {
   type DetectedContentType,
-} from '../FabricHTMLTextNativeComponent';
-import type { HTMLTextNativeProps } from '../types/HTMLTextNativeProps';
+} from '../FabricRichTextNativeComponent';
+import type { RichTextNativeProps } from '../types/RichTextNativeProps';
 
 interface LinkPressEvent {
   nativeEvent: {
@@ -21,7 +21,7 @@ interface LinkFocusChangeNativeEvent {
   };
 }
 
-export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
+export function RichTextNative(props: RichTextNativeProps): ReactElement {
   const {
     html,
     style,
@@ -101,7 +101,7 @@ export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
       return JSON.stringify(tagStyles);
     } catch (error) {
       if (__DEV__) {
-        console.error('[HTMLText] Failed to serialize tagStyles:', error);
+        console.error('[RichText] Failed to serialize tagStyles:', error);
       }
       return undefined;
     }
@@ -140,7 +140,7 @@ export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
   const effectiveAnimationDuration = animationDuration ?? 0.2;
 
   return (
-    <FabricHTMLText
+    <FabricRichText
       html={html}
       style={style}
       testID={testID}
