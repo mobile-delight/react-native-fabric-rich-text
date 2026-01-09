@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'FabricHTMLText Web Demo',
-  description: 'Example app demonstrating FabricHTMLText web platform support',
+  title: 'FabricRichText Web Demo',
+  description: 'Example app demonstrating FabricRichText web platform support',
 };
 
 export default function RootLayout({

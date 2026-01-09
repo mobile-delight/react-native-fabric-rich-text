@@ -17,7 +17,7 @@
     "next": "^14.2.32",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-native-fabric-html-text": "workspace:*",
+    "react-native-fabric-rich-text": "workspace:*",
     "sanitize-html": "^2.17.0"
   },
   "devDependencies": {

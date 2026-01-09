@@ -1,4 +1,4 @@
-# react-native-fabric-html-text
+# react-native-fabric-rich-text
 
 Fabric-first HTML text renderer for React Native with iOS, Android, and web support.
 
@@ -15,9 +15,9 @@ Fabric-first HTML text renderer for React Native with iOS, Android, and web supp
 ## Installation
 
 ```sh
-npm install react-native-fabric-html-text
+npm install react-native-fabric-rich-text
 # or
-yarn add react-native-fabric-html-text
+yarn add react-native-fabric-rich-text
 ```
 
 ### iOS
@@ -29,11 +29,11 @@ cd ios && pod install
 ## Usage
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text';
+import { RichText } from 'react-native-fabric-rich-text';
 
 export default function App() {
   return (
-    <HTMLText
+    <RichText
       html="<p>Hello <strong>world</strong></p>"
       style={{ fontSize: 16 }}
     />
@@ -44,7 +44,7 @@ export default function App() {
 ### With Links
 
 ```tsx
-<HTMLText
+<RichText
   html='<p>Visit <a href="https://example.com">our site</a></p>'
   onLinkPress={(url, type) => {
     console.log(`Pressed ${type}: ${url}`);
@@ -55,7 +55,7 @@ export default function App() {
 ### With Custom Styles
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Normal <strong>bold red</strong> and <em>italic blue</em></p>"
   tagStyles={{
     strong: { color: '#CC0000' },
@@ -67,7 +67,7 @@ export default function App() {
 ### Auto-Detection
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Call 555-123-4567 or email support@example.com</p>"
   detectPhoneNumbers
   detectEmails
@@ -96,11 +96,11 @@ npm install -D tailwindcss@">=3.3.0 <4.0.0"
 Import from the `/nativewind` subpath for zero-config Tailwind CSS support:
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text/nativewind';
+import { RichText } from 'react-native-fabric-rich-text/nativewind';
 
 function MyComponent() {
   return (
-    <HTMLText
+    <RichText
       html="<p>Hello <strong>World</strong></p>"
       className="text-blue-500 text-lg font-medium p-4"
     />
@@ -111,7 +111,7 @@ function MyComponent() {
 ### Responsive Variants
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Responsive text</p>"
   className="text-sm md:text-base lg:text-lg"
 />
@@ -120,7 +120,7 @@ function MyComponent() {
 ### Dark Mode
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Theme-aware text</p>"
   className="text-gray-900 dark:text-gray-100"
 />
@@ -131,15 +131,15 @@ function MyComponent() {
 For more control, apply `cssInterop` yourself:
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text';
+import { RichText } from 'react-native-fabric-rich-text';
 import { cssInterop } from 'nativewind';
 
 // Apply once at app startup
-cssInterop(HTMLText, { className: 'style' });
+cssInterop(RichText, { className: 'style' });
 
 function MyComponent() {
   return (
-    <HTMLText
+    <RichText
       html="<p>Hello World</p>"
       className="text-blue-500"
     />
@@ -170,8 +170,8 @@ Full support for RTL languages including Arabic, Hebrew, and Persian.
 RTL scripts are automatically detected and rendered correctly:
 
 ```tsx
-<HTMLText html="<p>مرحباً بالعالم!</p>" />
-<HTMLText html="<p>שלום עולם!</p>" />
+<RichText html="<p>مرحباً بالعالم!</p>" />
+<RichText html="<p>שלום עולם!</p>" />
 ```
 
 ### Direction Attribute
@@ -180,13 +180,13 @@ Use the `dir` attribute to control text direction:
 
 ```tsx
 // Explicit RTL
-<HTMLText html="<p dir='rtl'>Right-to-left paragraph</p>" />
+<RichText html="<p dir='rtl'>Right-to-left paragraph</p>" />
 
 // Explicit LTR
-<HTMLText html="<p dir='ltr'>Left-to-right paragraph</p>" />
+<RichText html="<p dir='ltr'>Left-to-right paragraph</p>" />
 
 // Auto-detect from first strong character
-<HTMLText html="<p dir='auto'>مرحباً - detects as RTL</p>" />
+<RichText html="<p dir='auto'>مرحباً - detects as RTL</p>" />
 ```
 
 ### writingDirection Prop
@@ -195,19 +195,19 @@ Control direction at the component level:
 
 ```tsx
 // Force RTL for entire component
-<HTMLText
+<RichText
   html="<p>This will render RTL</p>"
   writingDirection="rtl"
 />
 
 // Force LTR
-<HTMLText
+<RichText
   html="<p>مرحباً</p>"
   writingDirection="ltr"
 />
 
 // Auto-detect (default)
-<HTMLText
+<RichText
   html="<p>Text</p>"
   writingDirection="auto"
 />
@@ -218,8 +218,8 @@ Control direction at the component level:
 The `<bdi>` tag isolates bidirectional text to prevent it from affecting surrounding content. Useful for user-generated content:
 
 ```tsx
-<HTMLText html="<p>User: <bdi>محمد</bdi> logged in</p>" />
-<HTMLText html="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi></p>" />
+<RichText html="<p>User: <bdi>محمد</bdi> logged in</p>" />
+<RichText html="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi></p>" />
 ```
 
 ### BDO Element (Bidirectional Override)
@@ -228,10 +228,10 @@ The `<bdo>` tag forces text direction, overriding the natural direction:
 
 ```tsx
 // Force RTL
-<HTMLText html="<p>Normal <bdo dir='rtl'>forced RTL</bdo> normal</p>" />
+<RichText html="<p>Normal <bdo dir='rtl'>forced RTL</bdo> normal</p>" />
 
 // Force LTR within RTL context
-<HTMLText html="<p dir='rtl'>عربي <bdo dir='ltr'>forced LTR</bdo> عربي</p>" />
+<RichText html="<p dir='rtl'>عربي <bdo dir='ltr'>forced LTR</bdo> عربي</p>" />
 ```
 
 ### Mixed Content
@@ -239,8 +239,8 @@ The `<bdo>` tag forces text direction, overriding the natural direction:
 RTL text with embedded LTR content (numbers, brand names) is handled automatically:
 
 ```tsx
-<HTMLText html="<p dir='rtl'>السعر: 123.45 دولار</p>" />
-<HTMLText html="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />
+<RichText html="<p dir='rtl'>السعر: 123.45 دولار</p>" />
+<RichText html="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />
 ```
 
 ### RTL with Formatting
@@ -248,7 +248,7 @@ RTL text with embedded LTR content (numbers, brand names) is handled automatical
 All text formatting works with RTL:
 
 ```tsx
-<HTMLText
+<RichText
   html="<p dir='rtl'><strong>مهم:</strong> نص <em>مائل</em> و<u>تحته خط</u></p>"
 />
 ```

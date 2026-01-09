@@ -1,7 +1,7 @@
 {
-  "name": "react-native-fabric-html-text",
+  "name": "react-native-fabric-rich-text",
   "version": "1.0.0-alpha.0",
-  "description": "Fabric-first HTML text renderer for React Native with NativeWind/Tailwind CSS support",
+  "description": "Fabric-first rich text renderer for React Native with NativeWind/Tailwind CSS support",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
   "exports": {
@@ -42,7 +42,7 @@
     "!**/.*"
   ],
   "scripts": {
-    "example": "yarn workspace react-native-fabric-html-text-example",
+    "example": "yarn workspace react-native-fabric-rich-text-example",
     "clean": "del-cli android/build lib node_modules",
     "clean:all": "yarn workspaces foreach -Rpt run clean && rm -rf android/build android/.gradle lib node_modules example/node_modules e2e/node_modules example-web/node_modules && echo 'All workspaces cleaned'",
     "prepare": "bob build",
@@ -71,7 +71,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/michael-fay/react-native-fabric-html-text.git"
+    "url": "git+https://github.com/michael-fay/react-native-fabric-rich-text.git"
   },
   "author": "Michael Fay <michael@example.com> (https://github.com/michael-fay)",
   "license": "MIT",
@@ -79,9 +79,9 @@
     "node": ">=24.12.0"
   },
   "bugs": {
-    "url": "https://github.com/michael-fay/react-native-fabric-html-text/issues"
+    "url": "https://github.com/michael-fay/react-native-fabric-rich-text/issues"
   },
-  "homepage": "https://github.com/michael-fay/react-native-fabric-html-text#readme",
+  "homepage": "https://github.com/michael-fay/react-native-fabric-rich-text#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -162,15 +162,15 @@
     ]
   },
   "codegenConfig": {
-    "name": "FabricHTMLTextSpec",
+    "name": "FabricRichTextSpec",
     "type": "all",
     "jsSrcsDir": "src",
     "android": {
-      "javaPackageName": "io.michaelfay.fabrichtmltext"
+      "javaPackageName": "io.michaelfay.fabricrichtext"
     },
     "ios": {
       "componentProvider": {
-        "FabricHTMLText": "FabricHTMLText"
+        "FabricRichText": "FabricRichText"
       }
     }
   },

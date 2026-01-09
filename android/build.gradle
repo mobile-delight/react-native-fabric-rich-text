@@ -4,8 +4,8 @@ buildscript {
       return rootProject.ext.get(name)
     } else if (rootProject.hasProperty(name)) {
       return rootProject.properties[name]
-    } else if (project.hasProperty('FabricHtmlText_' + name)) {
-      return project.properties['FabricHtmlText_' + name]
+    } else if (project.hasProperty('FabricRichText_' + name)) {
+      return project.properties['FabricRichText_' + name]
     }
     // Sensible defaults
     def defaults = [kotlinVersion: '2.0.21']
@@ -39,8 +39,8 @@ def getExtOrIntegerDefault(name) {
     return rootProject.ext.get(name)
   } else if (rootProject.hasProperty(name)) {
     return rootProject.properties[name].toInteger()
-  } else if (project.hasProperty("FabricHtmlText_" + name)) {
-    return project.properties["FabricHtmlText_" + name].toInteger()
+  } else if (project.hasProperty("FabricRichText_" + name)) {
+    return project.properties["FabricRichText_" + name].toInteger()
   }
   // Sensible defaults for library builds (minSdk 24 required by React Native 0.81+)
   def defaults = [compileSdkVersion: 35, minSdkVersion: 24, targetSdkVersion: 35]
@@ -48,7 +48,7 @@ def getExtOrIntegerDefault(name) {
 }
 
 android {
-  namespace "io.michaelfay.fabrichtmltext"
+  namespace "io.michaelfay.fabricrichtext"
 
   compileSdk 35
 

@@ -15,7 +15,7 @@ describe('Sanitize - SSR Compatibility', () => {
   // These tests verify the output is correct regardless of which sanitizer is used
 
   it('sanitizes script tags consistently', async () => {
-    const { sanitize } = await import('react-native-fabric-html-text');
+    const { sanitize } = await import('react-native-fabric-rich-text');
     const malicious = '<p>Safe</p><script>alert("xss")</script>';
     const result = sanitize(malicious);
 
@@ -25,7 +25,7 @@ describe('Sanitize - SSR Compatibility', () => {
   });
 
   it('sanitizes event handlers consistently', async () => {
-    const { sanitize } = await import('react-native-fabric-html-text');
+    const { sanitize } = await import('react-native-fabric-rich-text');
     const malicious = '<p onclick="alert(1)" onmouseover="evil()">Click me</p>';
     const result = sanitize(malicious);
 
@@ -36,7 +36,7 @@ describe('Sanitize - SSR Compatibility', () => {
   });
 
   it('preserves safe HTML tags', async () => {
-    const { sanitize } = await import('react-native-fabric-html-text');
+    const { sanitize } = await import('react-native-fabric-rich-text');
     const safe = '<p>Hello <strong>bold</strong> and <em>italic</em></p>';
     const result = sanitize(safe);
 
@@ -49,7 +49,7 @@ describe('Sanitize - SSR Compatibility', () => {
   });
 
   it('handles empty/null input consistently', async () => {
-    const { sanitize } = await import('react-native-fabric-html-text');
+    const { sanitize } = await import('react-native-fabric-rich-text');
 
     expect(sanitize('')).toBe('');
     expect(sanitize(null as unknown as string)).toBe('');
@@ -57,7 +57,7 @@ describe('Sanitize - SSR Compatibility', () => {
   });
 
   it('preserves safe links', async () => {
-    const { sanitize } = await import('react-native-fabric-html-text');
+    const { sanitize } = await import('react-native-fabric-rich-text');
     const html = '<a href="https://example.com">Link</a>';
     const result = sanitize(html);
 
@@ -66,7 +66,7 @@ describe('Sanitize - SSR Compatibility', () => {
   });
 
   it('strips javascript: URLs', async () => {
-    const { sanitize } = await import('react-native-fabric-html-text');
+    const { sanitize } = await import('react-native-fabric-rich-text');
     const malicious = '<a href="javascript:alert(1)">Click</a>';
     const result = sanitize(malicious);
 
@@ -76,7 +76,7 @@ describe('Sanitize - SSR Compatibility', () => {
   });
 
   it('handles complex nested HTML', async () => {
-    const { sanitize } = await import('react-native-fabric-html-text');
+    const { sanitize } = await import('react-native-fabric-rich-text');
     const complex = `
       <div>
         <h1>Title</h1>
@@ -100,7 +100,7 @@ describe('Sanitize - SSR Compatibility', () => {
 
 describe('Sanitize - Allowed Tags Export', () => {
   it('exports ALLOWED_TAGS array', async () => {
-    const { ALLOWED_TAGS } = await import('react-native-fabric-html-text');
+    const { ALLOWED_TAGS } = await import('react-native-fabric-rich-text');
 
     expect(Array.isArray(ALLOWED_TAGS)).toBe(true);
     expect(ALLOWED_TAGS).toContain('p');
@@ -113,7 +113,7 @@ describe('Sanitize - Allowed Tags Export', () => {
   });
 
   it('exports ALLOWED_ATTR array', async () => {
-    const { ALLOWED_ATTR } = await import('react-native-fabric-html-text');
+    const { ALLOWED_ATTR } = await import('react-native-fabric-rich-text');
 
     expect(Array.isArray(ALLOWED_ATTR)).toBe(true);
     expect(ALLOWED_ATTR).toContain('href');

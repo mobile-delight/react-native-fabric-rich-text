@@ -3,9 +3,9 @@
  *
  * @example
  * ```tsx
- * import { HTMLText } from 'react-native-fabric-html-text/nativewind';
+ * import { RichText } from 'react-native-fabric-rich-text/nativewind';
  *
- * <HTMLText
+ * <RichText
  *   html="<p>Hello World</p>"
  *   className="text-blue-500 text-lg"
  * />
@@ -16,17 +16,17 @@
 
 import { cssInterop } from 'nativewind';
 import {
-  HTMLText as BaseHTMLText,
-  FabricHTMLText as BaseFabricHTMLText,
+  RichText as BaseRichText,
+  FabricRichText as BaseFabricRichText,
 } from './index';
 
 // Apply cssInterop to map className → style
-cssInterop(BaseHTMLText, { className: 'style' });
-cssInterop(BaseFabricHTMLText, { className: 'style' });
+cssInterop(BaseRichText, { className: 'style' });
+cssInterop(BaseFabricRichText, { className: 'style' });
 
 // Re-export with cssInterop applied
-export { BaseHTMLText as HTMLText, BaseFabricHTMLText as FabricHTMLText };
+export { BaseRichText as RichText, BaseFabricRichText as FabricRichText };
 
 // Re-export types and utilities
-export type { HTMLTextProps, DetectedContentType } from './index';
+export type { RichTextProps, DetectedContentType } from './index';
 export { sanitize, ALLOWED_TAGS, ALLOWED_ATTR } from './index';

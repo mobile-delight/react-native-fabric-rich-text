@@ -1,6 +1,6 @@
 # Web Integration Guide
 
-This guide covers the configuration required to use `react-native-fabric-html-text` in web applications built with Next.js, Create React App, or other React web frameworks.
+This guide covers the configuration required to use `react-native-fabric-rich-text` in web applications built with Next.js, Create React App, or other React web frameworks.
 
 ## Prerequisites
 
@@ -13,10 +13,10 @@ This guide covers the configuration required to use `react-native-fabric-html-te
 ### 1. Install the Library
 
 ```bash
-npm install react-native-fabric-html-text
+npm install react-native-fabric-rich-text
 
 # Or with yarn
-yarn add react-native-fabric-html-text
+yarn add react-native-fabric-rich-text
 ```
 
 ### 2. Install Sanitization Dependencies
@@ -62,7 +62,7 @@ const nextConfig = {
   reactStrictMode: true,
 
   // Transpile the library for Next.js
-  transpilePackages: ['react-native-fabric-html-text'],
+  transpilePackages: ['react-native-fabric-rich-text'],
 
   // Keep sanitize-html as external for server components (Node.js native)
   experimental: {
@@ -82,9 +82,9 @@ const nextConfig = {
     // Alias the package to use the web-specific entry point
     config.resolve.alias = {
       ...config.resolve.alias,
-      'react-native-fabric-html-text': path.resolve(
+      'react-native-fabric-rich-text': path.resolve(
         __dirname,
-        'node_modules/react-native-fabric-html-text/lib/module/index.web.js'
+        'node_modules/react-native-fabric-rich-text/lib/module/index.web.js'
       ),
     };
 
@@ -102,17 +102,17 @@ module.exports = nextConfig;
 
 ### With App Router (Recommended)
 
-For Next.js App Router, components using `HTMLText` should be Client Components:
+For Next.js App Router, components using `RichText` should be Client Components:
 
 ```tsx
 // app/page.tsx
 'use client';
 
-import { HTMLText } from 'react-native-fabric-html-text';
+import { RichText } from 'react-native-fabric-rich-text';
 
 export default function Page() {
   return (
-    <HTMLText
+    <RichText
       html="<p>Hello <strong>World</strong></p>"
       className="text-blue-500"
     />
@@ -126,11 +126,11 @@ For Pages Router, no special configuration is needed beyond the webpack config:
 
 ```tsx
 // pages/index.tsx
-import { HTMLText } from 'react-native-fabric-html-text';
+import { RichText } from 'react-native-fabric-rich-text';
 
 export default function Home() {
   return (
-    <HTMLText html="<p>Hello World</p>" />
+    <RichText html="<p>Hello World</p>" />
   );
 }
 ```
@@ -158,9 +158,9 @@ module.exports = {
       // Alias to web entry point
       config.resolve.alias = {
         ...config.resolve.alias,
-        'react-native-fabric-html-text': path.resolve(
+        'react-native-fabric-rich-text': path.resolve(
           __dirname,
-          'node_modules/react-native-fabric-html-text/lib/module/index.web.js'
+          'node_modules/react-native-fabric-rich-text/lib/module/index.web.js'
         ),
       };
 
@@ -175,11 +175,11 @@ module.exports = {
 ### Basic HTML Rendering
 
 ```tsx
-import { HTMLText } from 'react-native-fabric-html-text';
+import { RichText } from 'react-native-fabric-rich-text';
 
 function MyComponent() {
   return (
-    <HTMLText html="<p>Hello <strong>World</strong></p>" />
+    <RichText html="<p>Hello <strong>World</strong></p>" />
   );
 }
 ```
@@ -189,7 +189,7 @@ function MyComponent() {
 The `className` prop is fully supported on web:
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Styled content</p>"
   className="text-lg font-semibold text-blue-600 bg-blue-50 p-4 rounded-lg"
 />
@@ -201,13 +201,13 @@ Use `numberOfLines` to truncate text with CSS `-webkit-line-clamp`:
 
 ```tsx
 // Single line with ellipsis
-<HTMLText
+<RichText
   html="<p>Very long text that will be truncated...</p>"
   numberOfLines={1}
 />
 
 // Multiple lines
-<HTMLText
+<RichText
   html="<p>Long paragraph that spans multiple lines...</p>"
   numberOfLines={3}
 />
@@ -218,7 +218,7 @@ Use `numberOfLines` to truncate text with CSS `-webkit-line-clamp`:
 Handle link clicks with the `onLinkPress` callback:
 
 ```tsx
-<HTMLText
+<RichText
   html='<p>Visit <a href="https://example.com">our site</a></p>'
   onLinkPress={(url, type) => {
     console.log(`Link clicked: ${url} (type: ${type})`);
@@ -232,7 +232,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 ### Combining Features
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>This is a <strong>styled</strong> and <em>truncated</em> piece of content with custom link handling.</p>"
   className="text-gray-700 bg-amber-50 p-4 rounded border-l-4 border-amber-400"
   numberOfLines={2}
@@ -246,7 +246,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 ### Responsive Variants (Tailwind)
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Responsive text</p>"
   className="text-sm md:text-base lg:text-xl"
 />
@@ -255,7 +255,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 ### Dark Mode
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Theme-aware text</p>"
   className="text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
 />
@@ -264,7 +264,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 ### Hover Effects
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Interactive text</p>"
   className="bg-gray-100 hover:bg-blue-100 transition-colors cursor-pointer"
 />
@@ -273,7 +273,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 ### Gradient Backgrounds
 
 ```tsx
-<HTMLText
+<RichText
   html="<p>Gradient text</p>"
   className="p-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg"
 />
@@ -313,15 +313,15 @@ The library sanitizes all HTML input to prevent XSS attacks:
 
 ```tsx
 // Script tags are removed
-<HTMLText html='<p>Safe</p><script>alert("xss")</script>' />
+<RichText html='<p>Safe</p><script>alert("xss")</script>' />
 // Renders: <p>Safe</p>
 
 // Event handlers are stripped
-<HTMLText html='<p onclick="alert(1)">Click me</p>' />
+<RichText html='<p onclick="alert(1)">Click me</p>' />
 // Renders: <p>Click me</p>
 
 // javascript: URLs are removed
-<HTMLText html='<a href="javascript:alert(1)">Link</a>' />
+<RichText html='<a href="javascript:alert(1)">Link</a>' />
 // Renders: <a>Link</a> (href removed)
 ```
 
@@ -343,7 +343,7 @@ By default, the following tags are allowed:
 You can access the allowed lists:
 
 ```tsx
-import { ALLOWED_TAGS, ALLOWED_ATTR } from 'react-native-fabric-html-text';
+import { ALLOWED_TAGS, ALLOWED_ATTR } from 'react-native-fabric-rich-text';
 
 console.log(ALLOWED_TAGS); // ['p', 'span', 'br', ...]
 console.log(ALLOWED_ATTR); // ['class', 'href', ...]
@@ -360,16 +360,16 @@ This error occurs when the web bundler tries to import the native entry point. E
 
 ```javascript
 config.resolve.alias = {
-  'react-native-fabric-html-text': path.resolve(
+  'react-native-fabric-rich-text': path.resolve(
     __dirname,
-    'node_modules/react-native-fabric-html-text/lib/module/index.web.js'
+    'node_modules/react-native-fabric-rich-text/lib/module/index.web.js'
   ),
 };
 ```
 
 ### "sanitize is not a function"
 
-This happens when importing from the wrong entry point. Make sure your alias points to `index.web.js`, not `HTMLText.web.js`.
+This happens when importing from the wrong entry point. Make sure your alias points to `index.web.js`, not `RichText.web.js`.
 
 ### SSR Errors with sanitize-html
 
@@ -418,7 +418,7 @@ These are automatically applied when `numberOfLines > 0`. If truncation isn't wo
 ```javascript
 content: [
   './app/**/*.{js,ts,jsx,tsx}',
-  './node_modules/react-native-fabric-html-text/**/*.{js,ts,jsx,tsx}',
+  './node_modules/react-native-fabric-rich-text/**/*.{js,ts,jsx,tsx}',
 ],
 ```
 
@@ -436,7 +436,7 @@ See the [example-web](../example-web/) directory for a complete Next.js implemen
 
 ## API Reference
 
-### HTMLText Props (Web)
+### RichText Props (Web)
 
 | Prop | Type | Description |
 |------|------|-------------|
@@ -451,17 +451,17 @@ See the [example-web](../example-web/) directory for a complete Next.js implemen
 
 ```tsx
 import {
-  HTMLText,           // Main component
+  RichText,           // Main component
   sanitize,           // Sanitization function
   ALLOWED_TAGS,       // Array of allowed HTML tags
   ALLOWED_ATTR,       // Array of allowed attributes
-} from 'react-native-fabric-html-text';
+} from 'react-native-fabric-rich-text';
 
 // Type imports
 import type {
-  HTMLTextProps,
+  RichTextProps,
   DetectedContentType,
-} from 'react-native-fabric-html-text';
+} from 'react-native-fabric-rich-text';
 ```
 
 ## Additional Resources

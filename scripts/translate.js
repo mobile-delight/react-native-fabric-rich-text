@@ -3,7 +3,10 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID || process.env.GCLOUD_PROJECT || '971094294542';
+const projectId =
+  process.env.GOOGLE_CLOUD_PROJECT_ID ||
+  process.env.GCLOUD_PROJECT ||
+  '971094294542';
 const location = 'global';
 const translationClient = new TranslationServiceClient();
 
@@ -14,7 +17,9 @@ const translationsJsonPath = path.join(__dirname, 'translations.json');
 
 // Load source strings and translation tracking
 const sourceData = JSON.parse(fs.readFileSync(stringsJsonPath, 'utf8'));
-const translationsData = JSON.parse(fs.readFileSync(translationsJsonPath, 'utf8'));
+const translationsData = JSON.parse(
+  fs.readFileSync(translationsJsonPath, 'utf8')
+);
 
 const sourceVersion = sourceData.version;
 const sourceStrings = sourceData.strings;
@@ -25,7 +30,10 @@ async function translateText(text, targetLanguage) {
   const placeholderRegex = /(%\d+\$[ds@]|%[ds@])/g;
 
   // Wrap placeholders in notranslate tags
-  const protectedText = text.replace(placeholderRegex, '<span class="notranslate">$1</span>');
+  const protectedText = text.replace(
+    placeholderRegex,
+    '<span class="notranslate">$1</span>'
+  );
 
   const request = {
     parent: `projects/${projectId}/locations/${location}`,
@@ -41,7 +49,10 @@ async function translateText(text, targetLanguage) {
     // Strip the protective tags
     return translatedText.replace(/<\/?span[^>]*>/g, '');
   } catch (error) {
-    console.error(`Translation error for "${text}" to ${targetLanguage}:`, error.message);
+    console.error(
+      `Translation error for "${text}" to ${targetLanguage}:`,
+      error.message
+    );
     throw error;
   }
 }
@@ -53,14 +64,17 @@ async function translateStrings(targetLanguage) {
     console.log(`  Translating "${key}": "${value}"`);
     translated[key] = await translateText(value, targetLanguage);
     // Small delay to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
 
   return translated;
 }
 
 function writeAndroidStrings(androidLocale, strings) {
-  const dirPath = path.join(rootDir, `android/src/main/res/values-${androidLocale}`);
+  const dirPath = path.join(
+    rootDir,
+    `android/src/main/res/values-${androidLocale}`
+  );
   const filePath = path.join(dirPath, 'strings.xml');
 
   fs.mkdirSync(dirPath, { recursive: true });
@@ -128,17 +142,25 @@ async function generateAllTranslations() {
   console.log('✓ English files generated\n');
 
   // Translate other languages
-  for (const [iosLocale, localeInfo] of Object.entries(translationsData.localeMapping)) {
+  for (const [iosLocale, localeInfo] of Object.entries(
+    translationsData.localeMapping
+  )) {
     const currentVersion = translationsData.languages[iosLocale]?.version || 0;
 
     if (currentVersion >= sourceVersion) {
-      console.log(`Skipping ${iosLocale} (already at version ${currentVersion})\n`);
+      console.log(
+        `Skipping ${iosLocale} (already at version ${currentVersion})\n`
+      );
       continue;
     }
 
     console.log('='.repeat(60));
-    console.log(`Translating to ${iosLocale} (Google: ${localeInfo.google}, Android: ${localeInfo.android})`);
-    console.log(`Current version: ${currentVersion} -> Target version: ${sourceVersion}`);
+    console.log(
+      `Translating to ${iosLocale} (Google: ${localeInfo.google}, Android: ${localeInfo.android})`
+    );
+    console.log(
+      `Current version: ${currentVersion} -> Target version: ${sourceVersion}`
+    );
     console.log('='.repeat(60));
 
     try {
@@ -151,7 +173,10 @@ async function generateAllTranslations() {
 
       // Update version
       translationsData.languages[iosLocale].version = sourceVersion;
-      fs.writeFileSync(translationsJsonPath, JSON.stringify(translationsData, null, 2));
+      fs.writeFileSync(
+        translationsJsonPath,
+        JSON.stringify(translationsData, null, 2)
+      );
 
       console.log(`✓ Completed ${iosLocale}\n`);
     } catch (error) {

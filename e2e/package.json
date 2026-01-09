@@ -1,8 +1,8 @@
 {
-  "name": "react-native-fabric-html-text-e2e",
+  "name": "react-native-fabric-rich-text-e2e",
   "version": "0.0.1",
   "private": true,
-  "description": "End-to-end tests for react-native-fabric-html-text iOS",
+  "description": "End-to-end tests for react-native-fabric-rich-text iOS",
   "scripts": {
     "build": "./scripts/build-ios.sh",
     "build:device": "./scripts/build-ios.sh",

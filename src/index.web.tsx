@@ -1,10 +1,10 @@
 // Web-specific entry point - excludes native components that require react-native
-import HTMLTextComponent from './components/HTMLText.web';
-export type { HTMLTextProps } from './components/HTMLText';
+import RichTextComponent from './components/RichText.web';
+export type { RichTextProps } from './components/RichText';
 
 // Export both as named and default for flexibility
-export const HTMLText = HTMLTextComponent;
-export default HTMLTextComponent;
+export const RichText = RichTextComponent;
+export default RichTextComponent;
 
 export { sanitize, ALLOWED_TAGS, ALLOWED_ATTR } from './core/sanitize.web';
 
@@ -15,11 +15,11 @@ export type DetectedContentType = 'link' | 'email' | 'phone';
 export type {
   LinkFocusEvent,
   LinkFocusType,
-} from './types/HTMLTextNativeProps';
+} from './types/RichTextNativeProps';
 
-// FabricHTMLText is not available on web - provide a helpful error if accessed
-export const FabricHTMLText = (): never => {
+// FabricRichText is not available on web - provide a helpful error if accessed
+export const FabricRichText = (): never => {
   throw new Error(
-    'FabricHTMLText is not available on web. Use HTMLText instead.'
+    'FabricRichText is not available on web. Use RichText instead.'
   );
 };

@@ -8,10 +8,10 @@ module.exports = {
     'node_modules/(?!(react-native|@react-native|react-native-.*|@react-native-community)/)',
   ],
   moduleNameMapper: {
-    '^react-native-fabric-html-text$':
-      '<rootDir>/__mocks__/react-native-fabric-html-text.js',
-    '^react-native-fabric-html-text/nativewind$':
-      '<rootDir>/__mocks__/react-native-fabric-html-text-nativewind.js',
+    '^react-native-fabric-rich-text$':
+      '<rootDir>/__mocks__/react-native-fabric-rich-text.js',
+    '^react-native-fabric-rich-text/nativewind$':
+      '<rootDir>/__mocks__/react-native-fabric-rich-text-nativewind.js',
     '\\.css$': '<rootDir>/__mocks__/styleMock.js',
   },
 };

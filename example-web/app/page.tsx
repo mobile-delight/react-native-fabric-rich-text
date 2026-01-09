@@ -23,7 +23,7 @@ export default function HomePage() {
     <div>
       <section className="mb-12">
         <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100">
-          FabricHTMLText Web Demo
+          FabricRichText Web Demo
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
           A cross-platform HTML text renderer for React Native with full web
@@ -59,7 +59,7 @@ export default function HomePage() {
           Installation
         </h2>
         <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
-          <code>yarn add react-native-fabric-html-text</code>
+          <code>yarn add react-native-fabric-rich-text</code>
         </pre>
       </section>
 
@@ -76,7 +76,7 @@ export default function HomePage() {
         </p>
         <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
           <code>{`const nextConfig = {
-  transpilePackages: ['react-native-fabric-html-text'],
+  transpilePackages: ['react-native-fabric-rich-text'],
   webpack: (config) => {
     config.resolve.extensions = [
       '.web.tsx', '.web.ts', '.web.js',
@@ -95,11 +95,11 @@ export default function HomePage() {
         <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
           <code>{`'use client';
 
-import { HTMLText } from 'react-native-fabric-html-text';
+import { RichText } from 'react-native-fabric-rich-text';
 
 export default function MyComponent() {
   return (
-    <HTMLText
+    <RichText
       html="<p>Hello <strong>world</strong>!</p>"
     />
   );
