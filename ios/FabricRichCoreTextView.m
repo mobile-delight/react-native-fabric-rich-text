@@ -1515,8 +1515,16 @@ static BOOL kDebugDrawLineBounds = NO;
 /**
  * Returns the text content for VoiceOver to announce when this view is a single element.
  * When content is truncated, returns only the visible portion.
+ * Returns nil when acting as a container (with links) to avoid VoiceOver reading the full text
+ * when navigating backward from links.
  */
 - (NSString *)accessibilityLabel {
+  // Only provide a label when this view is an accessibility element itself
+  // When acting as a container (with links), return nil
+  if (![self isAccessibilityElement]) {
+    A11Y_LOG(@"accessibilityLabel: acting as container, returning nil");
+    return nil;
+  }
   NSString *label = [self visibleTextForAccessibility];
   A11Y_LOG(@"accessibilityLabel: '%@...'", [label substringToIndex:MIN(30, label.length)]);
   return label;
@@ -1525,8 +1533,15 @@ static BOOL kDebugDrawLineBounds = NO;
 /**
  * Returns the accessibility hint for this view.
  * When content is truncated, indicates that content is truncated.
+ * Returns nil when acting as a container (with links).
  */
 - (NSString *)accessibilityHint {
+  // Only provide a hint when this view is an accessibility element itself
+  // When acting as a container (with links), return nil
+  if (![self isAccessibilityElement]) {
+    A11Y_LOG(@"accessibilityHint: acting as container, returning nil");
+    return nil;
+  }
   if ([self isContentTruncated]) {
     A11Y_LOG(@"accessibilityHint: returning truncation hint");
     return NSLocalizedString(@"Content is truncated", @"Accessibility hint for truncated text");
@@ -1537,8 +1552,15 @@ static BOOL kDebugDrawLineBounds = NO;
 
 /**
  * Returns static text traits for this view when it's a single element.
+ * Returns UIAccessibilityTraitNone when acting as a container (with links).
  */
 - (UIAccessibilityTraits)accessibilityTraits {
+  // Only provide traits when this view is an accessibility element itself
+  // When acting as a container (with links), return UIAccessibilityTraitNone
+  if (![self isAccessibilityElement]) {
+    A11Y_LOG(@"accessibilityTraits: acting as container, returning UIAccessibilityTraitNone");
+    return UIAccessibilityTraitNone;
+  }
   A11Y_LOG(@"accessibilityTraits: returning UIAccessibilityTraitStaticText");
   return UIAccessibilityTraitStaticText;
 }
