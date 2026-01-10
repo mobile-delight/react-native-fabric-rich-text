@@ -20,7 +20,7 @@ describe('RichText.web Accessibility', () => {
     it('should have aria-label with link count when links present', () => {
       const { container } = render(
         <RichText
-          html='<p>Visit <a href="https://a.com">First</a> and <a href="https://b.com">Second</a></p>'
+          text='<p>Visit <a href="https://a.com">First</a> and <a href="https://b.com">Second</a></p>'
           testID="html-text"
         />
       );
@@ -35,7 +35,7 @@ describe('RichText.web Accessibility', () => {
     it('should not have aria-label when no links present', () => {
       const { container } = render(
         <RichText
-          html="<p>Just plain text with no links.</p>"
+          text="<p>Just plain text with no links.</p>"
           testID="html-text"
         />
       );
@@ -49,7 +49,7 @@ describe('RichText.web Accessibility', () => {
 
     it('should have role="group" when multiple links present', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://a.com">First</a> and <a href="https://b.com">Second</a></p>' />
+        <RichText text='<p><a href="https://a.com">First</a> and <a href="https://b.com">Second</a></p>' />
       );
 
       const rootElement = container.firstChild as HTMLElement;
@@ -64,7 +64,7 @@ describe('RichText.web Accessibility', () => {
   describe('Link semantic HTML', () => {
     it('should render links as real <a> elements with href', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://example.com">Example Link</a></p>' />
+        <RichText text='<p><a href="https://example.com">Example Link</a></p>' />
       );
 
       const link = container.querySelector('a');
@@ -74,7 +74,7 @@ describe('RichText.web Accessibility', () => {
 
     it('should preserve link text as accessible name', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://example.com">Click Here</a></p>' />
+        <RichText text='<p><a href="https://example.com">Click Here</a></p>' />
       );
 
       const link = container.querySelector('a');
@@ -83,7 +83,7 @@ describe('RichText.web Accessibility', () => {
 
     it('should maintain multiple links as distinct elements', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://a.com">First</a>, <a href="https://b.com">Second</a>, and <a href="https://c.com">Third</a></p>' />
+        <RichText text='<p><a href="https://a.com">First</a>, <a href="https://b.com">Second</a>, and <a href="https://c.com">Third</a></p>' />
       );
 
       const links = container.querySelectorAll('a');
@@ -99,7 +99,7 @@ describe('RichText.web Accessibility', () => {
   describe('Link position information', () => {
     it('should add aria-describedby for link position (link 1 of 3)', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://a.com">First</a> <a href="https://b.com">Second</a> <a href="https://c.com">Third</a></p>' />
+        <RichText text='<p><a href="https://a.com">First</a> <a href="https://b.com">Second</a> <a href="https://c.com">Third</a></p>' />
       );
 
       const links = container.querySelectorAll('a');
@@ -122,7 +122,7 @@ describe('RichText.web Accessibility', () => {
     it('should update position info when links are filtered by truncation', () => {
       const { container } = render(
         <RichText
-          html='<p><a href="https://a.com">First Link</a> <a href="https://b.com">Second Link</a></p>'
+          text='<p><a href="https://a.com">First Link</a> <a href="https://b.com">Second Link</a></p>'
           numberOfLines={1}
         />
       );
@@ -142,7 +142,7 @@ describe('RichText.web Accessibility', () => {
   describe('Focus management', () => {
     it('should have tabIndex={0} on container for keyboard access', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://example.com">Link</a></p>' />
+        <RichText text='<p><a href="https://example.com">Link</a></p>' />
       );
 
       const rootElement = container.firstChild as HTMLElement;
@@ -152,7 +152,7 @@ describe('RichText.web Accessibility', () => {
 
     it('links should be natively focusable', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://example.com">Focusable Link</a></p>' />
+        <RichText text='<p><a href="https://example.com">Focusable Link</a></p>' />
       );
 
       const link = container.querySelector('a') as HTMLAnchorElement;
@@ -172,7 +172,7 @@ describe('RichText.web Accessibility', () => {
   describe('Link type accessibility', () => {
     it('should preserve mailto: links for email actions', () => {
       const { container } = render(
-        <RichText html='<p>Email: <a href="mailto:test@example.com">test@example.com</a></p>' />
+        <RichText text='<p>Email: <a href="mailto:test@example.com">test@example.com</a></p>' />
       );
 
       const link = container.querySelector('a');
@@ -181,7 +181,7 @@ describe('RichText.web Accessibility', () => {
 
     it('should preserve tel: links for phone actions', () => {
       const { container } = render(
-        <RichText html='<p>Call: <a href="tel:+1234567890">+1 234 567 890</a></p>' />
+        <RichText text='<p>Call: <a href="tel:+1234567890">+1 234 567 890</a></p>' />
       );
 
       const link = container.querySelector('a');
@@ -193,14 +193,14 @@ describe('RichText.web Accessibility', () => {
 
   describe('Empty state accessibility', () => {
     it('should not have link-related ARIA when no links', () => {
-      const { container } = render(<RichText html="<p>No links here.</p>" />);
+      const { container } = render(<RichText text="<p>No links here.</p>" />);
 
       const links = container.querySelectorAll('a');
       expect(links.length).toBe(0);
     });
 
     it('should handle empty HTML gracefully', () => {
-      const { container } = render(<RichText html="" />);
+      const { container } = render(<RichText text="" />);
       expect(container.firstChild).toBeNull();
     });
   });
@@ -211,7 +211,7 @@ describe('RichText.web Accessibility', () => {
     it('should not have hidden links when content is not truncated', () => {
       const { container } = render(
         <RichText
-          html='<p><a href="https://example.com">Visible Link</a></p>'
+          text='<p><a href="https://example.com">Visible Link</a></p>'
           numberOfLines={0}
         />
       );
@@ -228,7 +228,7 @@ describe('RichText.web Accessibility', () => {
   describe('Nested link content accessibility', () => {
     it('should preserve nested formatting inside links for screen readers', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://example.com"><strong>Bold</strong> Link</a></p>' />
+        <RichText text='<p><a href="https://example.com"><strong>Bold</strong> Link</a></p>' />
       );
 
       const link = container.querySelector('a');
@@ -240,7 +240,7 @@ describe('RichText.web Accessibility', () => {
 
     it('should maintain link semantics with nested elements', () => {
       const { container } = render(
-        <RichText html='<p><a href="https://example.com"><em>Emphasized</em> text</a></p>' />
+        <RichText text='<p><a href="https://example.com"><em>Emphasized</em> text</a></p>' />
       );
 
       const link = container.querySelector('a');

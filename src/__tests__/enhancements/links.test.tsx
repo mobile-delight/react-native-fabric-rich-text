@@ -8,22 +8,22 @@ jest.mock('../../adapters/native', () => {
   return {
     RichTextNative: jest.fn(
       ({
-        html,
+        text,
         style,
         testID,
         onLinkPress,
       }: {
-        html: string;
+        text: string;
         style?: object;
         testID?: string;
         onLinkPress?: (href: string) => void;
       }) => {
         // Simple link detection for testing
-        const linkMatch = html.match(/<a\s+href="([^"]*)"[^>]*>([^<]*)<\/a>/i);
+        const linkMatch = text.match(/<a\s+href="([^"]*)"[^>]*>([^<]*)<\/a>/i);
         if (linkMatch && onLinkPress) {
-          const [, href, text] = linkMatch;
+          const [, href, linkText] = linkMatch;
           if (href === undefined) {
-            return mockReact.createElement(Text, { style, testID }, html);
+            return mockReact.createElement(Text, { style, testID }, text);
           }
           return mockReact.createElement(
             View,
@@ -43,13 +43,13 @@ jest.mock('../../adapters/native', () => {
                     { color: '#0000EE', textDecorationLine: 'underline' },
                   ],
                 },
-                text
+                linkText
               )
             )
           );
         }
         // No link or no callback
-        return mockReact.createElement(Text, { style, testID }, html);
+        return mockReact.createElement(Text, { style, testID }, text);
       }
     ),
   };
@@ -67,7 +67,7 @@ describe('Link Rendering (FR-001, FR-005)', () => {
     const onLinkPress = jest.fn();
     render(
       <RichText
-        html='<a href="https://example.com">Link</a>'
+        text='<a href="https://example.com">Link</a>'
         onLinkPress={onLinkPress}
         testID="html-with-link"
       />
@@ -85,7 +85,7 @@ describe('Link Rendering (FR-001, FR-005)', () => {
     const onLinkPress = jest.fn();
     render(
       <RichText
-        html='<a href="https://example.com">Click me</a>'
+        text='<a href="https://example.com">Click me</a>'
         onLinkPress={onLinkPress}
         testID="styled-link"
       />
@@ -100,7 +100,7 @@ describe('Link Rendering (FR-001, FR-005)', () => {
     const onLinkPress = jest.fn();
     render(
       <RichText
-        html='<a href="https://example.com">Accessible link</a>'
+        text='<a href="https://example.com">Accessible link</a>'
         onLinkPress={onLinkPress}
         testID="accessible-link"
       />
@@ -121,7 +121,7 @@ describe('Link Interaction (FR-002, FR-003, FR-004)', () => {
     const onLinkPress = jest.fn();
     render(
       <RichText
-        html='<a href="https://example.com/page">Tap me</a>'
+        text='<a href="https://example.com/page">Tap me</a>'
         onLinkPress={onLinkPress}
         testID="tappable-link"
       />
@@ -138,7 +138,7 @@ describe('Link Interaction (FR-002, FR-003, FR-004)', () => {
     const onLinkPress = jest.fn();
     render(
       <RichText
-        html='<a href="/relative/path">Relative link</a>'
+        text='<a href="/relative/path">Relative link</a>'
         onLinkPress={onLinkPress}
         testID="relative-link"
       />
@@ -154,7 +154,7 @@ describe('Link Interaction (FR-002, FR-003, FR-004)', () => {
     const onLinkPress = jest.fn();
     render(
       <RichText
-        html='<a href="#section">Jump to section</a>'
+        text='<a href="#section">Jump to section</a>'
         onLinkPress={onLinkPress}
         testID="anchor-link"
       />
@@ -170,7 +170,7 @@ describe('Link Interaction (FR-002, FR-003, FR-004)', () => {
     // This should not crash - graceful no-op
     const { toJSON } = render(
       <RichText
-        html='<a href="https://example.com">No handler</a>'
+        text='<a href="https://example.com">No handler</a>'
         testID="no-handler-link"
       />
     );
@@ -182,7 +182,7 @@ describe('Link Interaction (FR-002, FR-003, FR-004)', () => {
   it('works without onLinkPress prop', () => {
     // Render without passing onLinkPress at all
     expect(() => {
-      render(<RichText html='<a href="https://example.com">Safe</a>' />);
+      render(<RichText text='<a href="https://example.com">Safe</a>' />);
     }).not.toThrow();
   });
 });
@@ -196,7 +196,7 @@ describe('onLinkPress Prop Type', () => {
     expect(() => {
       render(
         <RichText
-          html='<a href="https://example.com">Type check</a>'
+          text='<a href="https://example.com">Type check</a>'
           onLinkPress={handler}
         />
       );
@@ -206,7 +206,7 @@ describe('onLinkPress Prop Type', () => {
   it('onLinkPress is optional', () => {
     // This should compile and render without issues
     expect(() => {
-      render(<RichText html="<p>No links here</p>" />);
+      render(<RichText text="<p>No links here</p>" />);
     }).not.toThrow();
   });
 });

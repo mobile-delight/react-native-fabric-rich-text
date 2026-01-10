@@ -1,7 +1,7 @@
 /**
- * FabricHTMLRTLTests.mm
+ * FabricRichRTLTests.mm
  *
- * Tests for RTL (Right-to-Left) text direction support in FabricHTMLParser.
+ * Tests for RTL (Right-to-Left) text direction support in FabricMarkupParser.
  * Tests cover:
  * - Basic RTL text rendering (Arabic, Hebrew, Persian)
  * - bdi/bdo HTML elements
@@ -11,19 +11,19 @@
  */
 
 #import <XCTest/XCTest.h>
-#import "../../../cpp/FabricHTMLParser.h"
+#import "../../../cpp/FabricMarkupParser.h"
 
 using namespace facebook::react;
 
-@interface FabricHTMLRTLTests : XCTestCase
+@interface FabricRichRTLTests : XCTestCase
 @end
 
-@implementation FabricHTMLRTLTests
+@implementation FabricRichRTLTests
 
 #pragma mark - Basic RTL Text Rendering
 
 - (void)testParseHtml_ArabicText {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>مرحبا بالعالم</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -37,7 +37,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_HebrewText {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>שלום עולם</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -51,7 +51,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_PersianText {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>سلام دنیا</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -67,7 +67,7 @@ using namespace facebook::react;
 #pragma mark - bdi Element (Bidirectional Isolation)
 
 - (void)testParseHtml_BdiTagIsAllowed {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>User: <bdi>אורח</bdi> logged in</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -83,7 +83,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_BdiIsolatesRTLInLTRContext {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>Welcome, <bdi>محمد</bdi>!</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -98,7 +98,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_MultipleBdiElements {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p><bdi>עברית</bdi> and <bdi>العربية</bdi></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -115,7 +115,7 @@ using namespace facebook::react;
 
 - (void)testParseHtml_BdiInsertsUnicodeIsolates {
     // Verify FSI (U+2068) and PDI (U+2069) are inserted
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p><bdi>Test</bdi></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -136,7 +136,7 @@ using namespace facebook::react;
 #pragma mark - bdo Element (Bidirectional Override)
 
 - (void)testParseHtml_BdoWithDirRtl {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p><bdo dir=\"rtl\">Hello</bdo></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -150,7 +150,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_BdoWithDirLtr {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p><bdo dir=\"ltr\">مرحبا</bdo></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -165,7 +165,7 @@ using namespace facebook::react;
 
 - (void)testParseHtml_BdoWithoutDir {
     // Per HTML5 spec, bdo without dir has no directional effect
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p><bdo>Normal text</bdo></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -185,7 +185,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_BdoRtlInsertsOverrideChars {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p><bdo dir=\"rtl\">Test</bdo></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -204,7 +204,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_BdoLtrInsertsOverrideChars {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p><bdo dir=\"ltr\">Test</bdo></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -225,7 +225,7 @@ using namespace facebook::react;
 #pragma mark - dir Attribute
 
 - (void)testParseHtml_DirRtlOnParagraph {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"rtl\">Right to left paragraph</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -239,7 +239,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_DirLtrOnParagraph {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"ltr\">Left to right paragraph</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -253,7 +253,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_DirAutoOnParagraph {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"auto\">Auto direction paragraph</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -267,7 +267,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_DirAttributeOnSpan {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>Normal <span dir=\"rtl\">RTL span</span> text</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -284,7 +284,7 @@ using namespace facebook::react;
 #pragma mark - Mixed Directional Content
 
 - (void)testParseHtml_MixedArabicEnglish {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>مرحبا Hello عالم World</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -299,7 +299,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_RTLWithNumbers {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>السعر: 123.45</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -314,7 +314,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_RTLWithBrandNames {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"rtl\">أنا أستخدم iPhone كل يوم</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -331,7 +331,7 @@ using namespace facebook::react;
 #pragma mark - RTL with Formatting
 
 - (void)testParseHtml_RTLWithBold {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"rtl\"><strong>مهم:</strong> رسالة</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -348,7 +348,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_RTLWithItalic {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"rtl\"><em>تأكيد</em> نص عادي</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -365,7 +365,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_RTLWithLink {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"rtl\">زيارة <a href=\"https://example.com\">موقعنا</a></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -386,7 +386,7 @@ using namespace facebook::react;
 #pragma mark - Edge Cases
 
 - (void)testParseHtml_NestedDirectionChanges {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"rtl\">عربي <span dir=\"ltr\">English</span> عربي</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -401,7 +401,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_EmptyBdiElement {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>Before <bdi></bdi> After</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -416,7 +416,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_EmptyBdoElement {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p>Before <bdo dir=\"rtl\"></bdo> After</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -433,7 +433,7 @@ using namespace facebook::react;
 #pragma mark - Security with RTL
 
 - (void)testParseHtml_RTLWithSanitizedScript {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"rtl\">مرحبا<script>alert('xss')</script></p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -459,7 +459,7 @@ using namespace facebook::react;
 - (void)testParseHtml_RTLParagraphSetsWritingDirection {
     // Verify that dir="rtl" sets the segment's writingDirection
     // This is tested through the full parsing flow - the segment struct should have the direction set
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<p dir=\"rtl\">Test</p>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -477,7 +477,7 @@ using namespace facebook::react;
 - (void)testPerformance_RTLContent {
     [self measureBlock:^{
         for (int i = 0; i < 100; i++) {
-            FabricHTMLParser::parseHtmlToAttributedString(
+            FabricMarkupParser::parseMarkupToAttributedString(
                 "<p dir=\"rtl\">مرحبا <strong>بالعالم</strong> هذا <bdi>Test</bdi> نص</p>",
                 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
         }

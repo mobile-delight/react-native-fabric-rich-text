@@ -6,11 +6,11 @@ jest.mock('react-native-fabric-rich-text', () => {
   // Import DOMPurify inside the mock factory for Jest module isolation
   const DOMPurify = jest.requireActual('dompurify');
   return function MockRichText({
-    html,
+    text,
     className,
     numberOfLines,
   }: {
-    html: string;
+    text: string;
     className?: string;
     numberOfLines?: number;
   }) {
@@ -20,7 +20,7 @@ jest.mock('react-native-fabric-rich-text', () => {
         className={className}
         data-numberoflines={numberOfLines}
         // nosemgrep: no-dangerous-innerhtml-without-sanitization
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }}
       />
     );
   };

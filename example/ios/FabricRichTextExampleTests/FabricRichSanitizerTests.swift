@@ -2,17 +2,17 @@ import XCTest
 @testable import FabricRichText
 
 /**
- * Unit tests for FabricHTMLSanitizer.
+ * Unit tests for FabricRichSanitizer.
  *
  * Verifies that all OWASP XSS vectors are neutralized and
  * safe content passes through unchanged.
  */
-final class FabricHTMLSanitizerTests: XCTestCase {
-    private var sanitizer: FabricHTMLSanitizer!
+final class FabricRichSanitizerTests: XCTestCase {
+    private var sanitizer: FabricRichSanitizer!
 
     override func setUp() {
         super.setUp()
-        sanitizer = FabricHTMLSanitizer()
+        sanitizer = FabricRichSanitizer()
     }
 
     override func tearDown() {

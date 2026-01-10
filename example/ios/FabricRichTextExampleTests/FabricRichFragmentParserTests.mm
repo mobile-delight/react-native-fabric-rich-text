@@ -1,27 +1,27 @@
 /**
- * FabricHTMLFragmentParserTests.mm
+ * FabricRichFragmentParserTests.mm
  *
- * Tests for FabricHTMLFragmentParser which converts C++ AttributedString to NSAttributedString.
+ * Tests for FabricRichFragmentParser which converts C++ AttributedString to NSAttributedString.
  * This tests the iOS rendering path that receives parsed data from the C++ layer.
  */
 
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
-#import "../../../ios/FabricHTMLFragmentParser.h"
-#import "../../../cpp/FabricHTMLParser.h"
+#import "../../../ios/FabricRichFragmentParser.h"
+#import "../../../cpp/FabricMarkupParser.h"
 
 using namespace facebook::react;
 
-@interface FabricHTMLFragmentParserTests : XCTestCase
+@interface FabricRichFragmentParserTests : XCTestCase
 @end
 
-@implementation FabricHTMLFragmentParserTests
+@implementation FabricRichFragmentParserTests
 
 #pragma mark - Helper Methods
 
 - (AttributedString)parseHTML:(NSString *)html {
     std::string htmlStr = [html UTF8String] ?: "";
-    return FabricHTMLParser::parseHtmlToAttributedString(
+    return FabricMarkupParser::parseMarkupToAttributedString(
         htmlStr, 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 }
 
@@ -29,21 +29,21 @@ using namespace facebook::react;
 
 - (void)testEmptyAttributedString {
     AttributedString empty;
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:empty];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:empty];
     XCTAssertNotNil(result);
     XCTAssertEqual(result.length, 0UL);
 }
 
 - (void)testPlainText {
     AttributedString cpp = [self parseHTML:@"Hello world"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     XCTAssertEqualObjects(result.string, @"Hello world");
 }
 
 - (void)testBoldText {
     AttributedString cpp = [self parseHTML:@"<strong>Bold</strong>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     XCTAssertTrue([result.string containsString:@"Bold"]);
 
@@ -66,7 +66,7 @@ using namespace facebook::react;
 
 - (void)testItalicText {
     AttributedString cpp = [self parseHTML:@"<em>Italic</em>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     XCTAssertTrue([result.string containsString:@"Italic"]);
 
@@ -88,7 +88,7 @@ using namespace facebook::react;
 
 - (void)testBoldItalicText {
     AttributedString cpp = [self parseHTML:@"<strong><em>Both</em></strong>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     [result enumerateAttribute:NSFontAttributeName
                        inRange:NSMakeRange(0, result.length)
@@ -109,7 +109,7 @@ using namespace facebook::react;
 
 - (void)testFontSize {
     AttributedString cpp = [self parseHTML:@"<h1>Heading</h1>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     __block BOOL foundLargeFont = NO;
     [result enumerateAttribute:NSFontAttributeName
@@ -129,7 +129,7 @@ using namespace facebook::react;
 
 - (void)testUnderlineText {
     AttributedString cpp = [self parseHTML:@"<u>Underlined</u>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     __block BOOL foundUnderline = NO;
     [result enumerateAttribute:NSUnderlineStyleAttributeName
@@ -149,7 +149,7 @@ using namespace facebook::react;
 
 - (void)testStrikethroughText {
     AttributedString cpp = [self parseHTML:@"<s>Strikethrough</s>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     __block BOOL foundStrikethrough = NO;
     [result enumerateAttribute:NSStrikethroughStyleAttributeName
@@ -172,10 +172,10 @@ using namespace facebook::react;
 - (void)testForegroundColor {
     // Parse with red foreground color (0xFFFF0000 = ARGB red)
     std::string html = "Red text";
-    AttributedString cpp = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString cpp = FabricMarkupParser::parseMarkupToAttributedString(
         html, 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFFFF0000, "");
 
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     UIColor *color = [result attribute:NSForegroundColorAttributeName atIndex:0 effectiveRange:nil];
     XCTAssertNotNil(color, @"Should have foreground color");
@@ -191,10 +191,10 @@ using namespace facebook::react;
 
 - (void)testLetterSpacing {
     std::string html = "Spaced";
-    AttributedString cpp = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString cpp = FabricMarkupParser::parseMarkupToAttributedString(
         html, 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 2.0f, 0xFF000000, "");
 
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     NSNumber *kern = [result attribute:NSKernAttributeName atIndex:0 effectiveRange:nil];
     XCTAssertNotNil(kern, @"Should have kern attribute");
@@ -205,7 +205,7 @@ using namespace facebook::react;
 
 - (void)testUnorderedList {
     AttributedString cpp = [self parseHTML:@"<ul><li>Item 1</li><li>Item 2</li></ul>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     XCTAssertTrue([result.string containsString:@"Item 1"], @"Should contain first item");
     XCTAssertTrue([result.string containsString:@"Item 2"], @"Should contain second item");
@@ -213,7 +213,7 @@ using namespace facebook::react;
 
 - (void)testOrderedList {
     AttributedString cpp = [self parseHTML:@"<ol><li>First</li><li>Second</li></ol>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     XCTAssertTrue([result.string containsString:@"First"], @"Should contain first item");
     XCTAssertTrue([result.string containsString:@"Second"], @"Should contain second item");
@@ -223,7 +223,7 @@ using namespace facebook::react;
 
 - (void)testMixedFormatting {
     AttributedString cpp = [self parseHTML:@"<p>Normal <strong>bold</strong> and <em>italic</em> text</p>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     XCTAssertTrue([result.string containsString:@"Normal"], @"Should contain normal text");
     XCTAssertTrue([result.string containsString:@"bold"], @"Should contain bold text");
@@ -232,7 +232,7 @@ using namespace facebook::react;
 
 - (void)testMultipleParagraphs {
     AttributedString cpp = [self parseHTML:@"<p>First paragraph</p><p>Second paragraph</p>"];
-    NSAttributedString *result = [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+    NSAttributedString *result = [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
 
     XCTAssertTrue([result.string containsString:@"First"], @"Should contain first paragraph");
     XCTAssertTrue([result.string containsString:@"Second"], @"Should contain second paragraph");
@@ -246,7 +246,7 @@ using namespace facebook::react;
 
     [self measureBlock:^{
         for (int i = 0; i < 1000; i++) {
-            [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+            [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
         }
     }];
 }
@@ -257,7 +257,7 @@ using namespace facebook::react;
     [self measureBlock:^{
         for (int i = 0; i < 100; i++) {
             AttributedString cpp = [self parseHTML:html];
-            [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:cpp];
+            [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:cpp];
         }
     }];
 }

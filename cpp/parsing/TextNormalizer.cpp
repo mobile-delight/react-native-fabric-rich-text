@@ -80,9 +80,9 @@ std::string normalizeInterTagWhitespace(const std::string& html) {
   return result;
 }
 
-std::string stripHtmlTags(const std::string& html) {
+std::string stripMarkupTags(const std::string& markup) {
   std::string result;
-  result.reserve(html.size());
+  result.reserve(markup.size());
 
   bool inTag = false;
   bool inScript = false;
@@ -90,8 +90,8 @@ std::string stripHtmlTags(const std::string& html) {
   std::vector<FabricRichListContext> listStack;
   std::string tagName;
 
-  for (size_t i = 0; i < html.size(); ++i) {
-    char c = html[i];
+  for (size_t i = 0; i < markup.size(); ++i) {
+    char c = markup[i];
 
     if (c == '<') {
       inTag = true;

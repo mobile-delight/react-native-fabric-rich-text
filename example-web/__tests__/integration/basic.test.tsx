@@ -6,17 +6,17 @@ jest.mock('react-native-fabric-rich-text', () => {
   // Import DOMPurify inside the mock factory for Jest module isolation
   const DOMPurify = jest.requireActual('dompurify');
   return function MockRichText({
-    html,
+    text,
     onLinkPress,
   }: {
-    html: string;
+    text: string;
     onLinkPress?: (url: string, type: string) => void;
   }) {
     return (
       <div
         data-testid="html-text"
         // nosemgrep: no-dangerous-innerhtml-without-sanitization
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }}
         onClick={(e) => {
           if (onLinkPress) {
             const target = e.target as HTMLElement;

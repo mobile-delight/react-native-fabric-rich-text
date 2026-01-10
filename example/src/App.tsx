@@ -86,14 +86,14 @@ function StyleSheetExamples({
     <>
       <Text style={styles.sectionTitle}>Basic Formatting</Text>
       <RichText
-        html="<h1>Hello World</h1><p>This is <strong>bold</strong> and <em>italic</em> text.</p>"
+        text="<h1>Hello World</h1><p>This is <strong>bold</strong> and <em>italic</em> text.</p>"
         style={styles.text}
         testID="basic-formatting"
       />
 
       <Text style={styles.sectionTitle}>Links</Text>
       <RichText
-        html='<p>Visit <a href="https://example.com">Example.com</a> or <a href="https://react-native.dev">React Native Docs</a>.</p>'
+        text='<p>Visit <a href="https://example.com">Example.com</a> or <a href="https://react-native.dev">React Native Docs</a>.</p>'
         style={styles.text}
         onLinkPress={onLinkPress}
         testID="links-example"
@@ -101,28 +101,28 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>Unordered List</Text>
       <RichText
-        html="<ul><li>First item</li><li>Second item</li><li>Third item</li></ul>"
+        text="<ul><li>First item</li><li>Second item</li><li>Third item</li></ul>"
         style={styles.text}
         testID="unordered-list"
       />
 
       <Text style={styles.sectionTitle}>Ordered List</Text>
       <RichText
-        html="<ol><li>Step one</li><li>Step two</li><li>Step three</li></ol>"
+        text="<ol><li>Step one</li><li>Step two</li><li>Step three</li></ol>"
         style={styles.text}
         testID="ordered-list"
       />
 
       <Text style={styles.sectionTitle}>Nested Lists</Text>
       <RichText
-        html="<ul><li>Parent item<ul><li>Child item 1</li><li>Child item 2</li></ul></li><li>Another parent</li></ul>"
+        text="<ul><li>Parent item<ul><li>Child item 1</li><li>Child item 2</li></ul></li><li>Another parent</li></ul>"
         style={styles.text}
         testID="nested-lists"
       />
 
       <Text style={styles.sectionTitle}>Custom Tag Styles</Text>
       <RichText
-        html="<p>Normal text with <strong>custom red bold</strong> and <em>custom blue italic</em>.</p>"
+        text="<p>Normal text with <strong>custom red bold</strong> and <em>custom blue italic</em>.</p>"
         style={styles.text}
         tagStyles={{
           strong: { color: '#CC0000' },
@@ -133,14 +133,14 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>Native HTML Text Decoration</Text>
       <RichText
-        html="<p>Text with <u>underline tag</u> and <s>strikethrough tag</s> using native HTML.</p>"
+        text="<p>Text with <u>underline tag</u> and <s>strikethrough tag</s> using native HTML.</p>"
         style={styles.text}
         testID="native-text-decoration"
       />
 
       <Text style={styles.sectionTitle}>Phone Detection</Text>
       <RichText
-        html="<p>Call us at 555-123-4567 for support.</p>"
+        text="<p>Call us at 555-123-4567 for support.</p>"
         style={styles.text}
         detectPhoneNumbers
         onLinkPress={onLinkPress}
@@ -149,7 +149,7 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>Email Detection</Text>
       <RichText
-        html="<p>Contact support@example.com for help.</p>"
+        text="<p>Contact support@example.com for help.</p>"
         style={styles.text}
         detectEmails
         onLinkPress={onLinkPress}
@@ -158,7 +158,7 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>Phone Links (href)</Text>
       <RichText
-        html='<p>Call <a href="tel:+15551234567">+1 (555) 123-4567</a> for support.</p>'
+        text='<p>Call <a href="tel:+15551234567">+1 (555) 123-4567</a> for support.</p>'
         style={styles.text}
         onLinkPress={onLinkPress}
         testID="phone-href"
@@ -166,7 +166,7 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>Email Links (href)</Text>
       <RichText
-        html='<p>Email <a href="mailto:support@example.com">support@example.com</a> for help.</p>'
+        text='<p>Email <a href="mailto:support@example.com">support@example.com</a> for help.</p>'
         style={styles.text}
         onLinkPress={onLinkPress}
         testID="email-href"
@@ -174,7 +174,7 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>All Detection Types</Text>
       <RichText
-        html='<p>Visit <a href="https://example.com">our site</a>, call 555-987-6543, or email info@test.com.</p>'
+        text='<p>Visit <a href="https://example.com">our site</a>, call 555-987-6543, or email info@test.com.</p>'
         style={styles.text}
         detectLinks
         detectPhoneNumbers
@@ -185,7 +185,7 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>XSS Security Test</Text>
       <RichText
-        html='<p>Malicious: <a href="javascript:alert(1)">javascript link</a> should be blocked.</p>'
+        text='<p>Malicious: <a href="javascript:alert(1)">javascript link</a> should be blocked.</p>'
         style={styles.text}
         onLinkPress={onLinkPress}
         testID="xss-security-test"
@@ -193,7 +193,7 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>Complex Content</Text>
       <RichText
-        html={`
+        text={`
           <h2>Feature Overview</h2>
           <p>The <strong>RichText</strong> component supports:</p>
           <ul>
@@ -214,7 +214,7 @@ function StyleSheetExamples({
       <Text style={styles.sectionTitle}>Expand/Collapse</Text>
       <View>
         <RichText
-          html="<p>This is a <strong>much longer paragraph</strong> that demonstrates the <em>numberOfLines</em> feature with actual truncation behavior. When collapsed, only the first 2 lines are visible, and the remaining content is hidden from view. This paragraph contains enough text to span multiple lines, ensuring that TalkBack users will experience the truncation indicator. The text includes various formatting like <strong>bold text</strong>, <em>italic text</em>, and continues for several more sentences to guarantee it exceeds two lines on most screen sizes. Additional content here to make absolutely sure this gets truncated when numberOfLines is set to 2.</p>"
+          text="<p>This is a <strong>much longer paragraph</strong> that demonstrates the <em>numberOfLines</em> feature with actual truncation behavior. When collapsed, only the first 2 lines are visible, and the remaining content is hidden from view. This paragraph contains enough text to span multiple lines, ensuring that TalkBack users will experience the truncation indicator. The text includes various formatting like <strong>bold text</strong>, <em>italic text</em>, and continues for several more sentences to guarantee it exceeds two lines on most screen sizes. Additional content here to make absolutely sure this gets truncated when numberOfLines is set to 2.</p>"
           style={styles.text}
           numberOfLines={expandedText ? 0 : 2}
           animationDuration={0.3}
@@ -234,7 +234,7 @@ function StyleSheetExamples({
       <Text style={styles.sectionTitle}>Dynamic numberOfLines</Text>
       <View>
         <RichText
-          html="<p>This example cycles through <strong>numberOfLines</strong> values: 1, 2, 3, unlimited. Each tap changes the limit with smooth animation.</p>"
+          text="<p>This example cycles through <strong>numberOfLines</strong> values: 1, 2, 3, unlimited. Each tap changes the limit with smooth animation.</p>"
           style={styles.text}
           numberOfLines={numberOfLinesDemo}
           animationDuration={0.2}
@@ -257,7 +257,7 @@ function StyleSheetExamples({
       <Text style={styles.sectionTitle}>Line Count Display</Text>
       <View>
         <RichText
-          html="<p>This paragraph uses the <strong>onRichTextMeasurement</strong> callback to report line counts. The text below shows the measured (total) and visible line counts. Try resizing the window or changing orientation to see values update.</p>"
+          text="<p>This paragraph uses the <strong>onRichTextMeasurement</strong> callback to report line counts. The text below shows the measured (total) and visible line counts. Try resizing the window or changing orientation to see values update.</p>"
           style={styles.text}
           numberOfLines={3}
           onRichTextMeasurement={onMeasurement}
@@ -283,7 +283,7 @@ function StyleSheetExamples({
       <Text style={styles.sectionTitle}>Smart "Read More" Pattern</Text>
       <View>
         <RichText
-          html="<p>This demonstrates a common UX pattern: showing a <strong>Read more</strong> button only when content is actually truncated. The button appears conditionally based on the measurement callback. This paragraph contains enough text to ensure it exceeds two lines on most screen sizes, triggering the truncation and revealing the expand option. Without the measurement callback, you'd have to guess whether content was truncated.</p>"
+          text="<p>This demonstrates a common UX pattern: showing a <strong>Read more</strong> button only when content is actually truncated. The button appears conditionally based on the measurement callback. This paragraph contains enough text to ensure it exceeds two lines on most screen sizes, triggering the truncation and revealing the expand option. Without the measurement callback, you'd have to guess whether content was truncated.</p>"
           style={styles.text}
           numberOfLines={readMoreExpanded ? 0 : 2}
           animationDuration={0.25}
@@ -308,70 +308,70 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>Arabic Text</Text>
       <RichText
-        html="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>"
+        text="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>"
         style={styles.text}
         testID="rtl-arabic"
       />
 
       <Text style={styles.sectionTitle}>Hebrew Text</Text>
       <RichText
-        html="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>"
+        text="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>"
         style={styles.text}
         testID="rtl-hebrew"
       />
 
       <Text style={styles.sectionTitle}>Persian Text</Text>
       <RichText
-        html="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>"
+        text="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>"
         style={styles.text}
         testID="rtl-persian"
       />
 
       <Text style={styles.sectionTitle}>Mixed Directional Content</Text>
       <RichText
-        html="<p>مرحباً Hello عالم World!</p>"
+        text="<p>مرحباً Hello عالم World!</p>"
         style={styles.text}
         testID="rtl-mixed"
       />
 
       <Text style={styles.sectionTitle}>RTL with Embedded Numbers</Text>
       <RichText
-        html="<p dir='rtl'>السعر: 123.45 دولار</p>"
+        text="<p dir='rtl'>السعر: 123.45 دولار</p>"
         style={styles.text}
         testID="rtl-numbers"
       />
 
       <Text style={styles.sectionTitle}>BDI Isolation</Text>
       <RichText
-        html="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>"
+        text="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>"
         style={styles.text}
         testID="rtl-bdi"
       />
 
       <Text style={styles.sectionTitle}>BDO Override (RTL)</Text>
       <RichText
-        html="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>"
+        text="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>"
         style={styles.text}
         testID="rtl-bdo-rtl"
       />
 
       <Text style={styles.sectionTitle}>BDO Override (LTR)</Text>
       <RichText
-        html="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>"
+        text="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>"
         style={styles.text}
         testID="rtl-bdo-ltr"
       />
 
       <Text style={styles.sectionTitle}>Direction Attribute</Text>
       <RichText
-        html="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>"
+        text="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>"
         style={styles.text}
         testID="rtl-dir-attr"
       />
 
       <Text style={styles.sectionTitle}>writingDirection Prop (RTL)</Text>
       <RichText
-        html="<p>This English text is forced RTL via writingDirection prop.</p>"
+        text="<p>This English text is forced RTL via writingDirection prop.</p>"
         style={styles.text}
         writingDirection="rtl"
         testID="rtl-writing-direction"
@@ -379,14 +379,14 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>RTL with Formatting</Text>
       <RichText
-        html="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>"
+        text="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>"
         style={styles.text}
         testID="rtl-formatting"
       />
 
       <Text style={styles.sectionTitle}>RTL with Links</Text>
       <RichText
-        html='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
+        text='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
         style={styles.text}
         onLinkPress={onLinkPress}
         testID="rtl-links"
@@ -394,14 +394,14 @@ function StyleSheetExamples({
 
       <Text style={styles.sectionTitle}>RTL Unordered List</Text>
       <RichText
-        html="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>"
+        text="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>"
         style={styles.text}
         testID="rtl-ul"
       />
 
       <Text style={styles.sectionTitle}>RTL Ordered List</Text>
       <RichText
-        html="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>"
+        text="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>"
         style={styles.text}
         testID="rtl-ol"
       />
@@ -440,14 +440,14 @@ function NativeWindExamples({
     <>
       <Text style={styles.sectionTitle}>Basic Formatting</Text>
       <NativeWindRichText
-        html="<h1>Hello World</h1><p>This is <strong>bold</strong> and <em>italic</em> text.</p>"
+        text="<h1>Hello World</h1><p>This is <strong>bold</strong> and <em>italic</em> text.</p>"
         className="text-base leading-6"
         testID="nw-basic-formatting"
       />
 
       <Text style={styles.sectionTitle}>Links</Text>
       <NativeWindRichText
-        html='<p>Visit <a href="https://example.com">Example.com</a> or <a href="https://react-native.dev">React Native Docs</a>.</p>'
+        text='<p>Visit <a href="https://example.com">Example.com</a> or <a href="https://react-native.dev">React Native Docs</a>.</p>'
         className="text-base leading-6"
         onLinkPress={onLinkPress}
         testID="nw-links-example"
@@ -455,21 +455,21 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>Unordered List</Text>
       <NativeWindRichText
-        html="<ul><li>First item</li><li>Second item</li><li>Third item</li></ul>"
+        text="<ul><li>First item</li><li>Second item</li><li>Third item</li></ul>"
         className="text-base leading-6"
         testID="nw-unordered-list"
       />
 
       <Text style={styles.sectionTitle}>Ordered List</Text>
       <NativeWindRichText
-        html="<ol><li>Step one</li><li>Step two</li><li>Step three</li></ol>"
+        text="<ol><li>Step one</li><li>Step two</li><li>Step three</li></ol>"
         className="text-base leading-6"
         testID="nw-ordered-list"
       />
 
       <Text style={styles.sectionTitle}>Nested Lists</Text>
       <NativeWindRichText
-        html="<ul><li>Parent item<ul><li>Child item 1</li><li>Child item 2</li></ul></li><li>Another parent</li></ul>"
+        text="<ul><li>Parent item<ul><li>Child item 1</li><li>Child item 2</li></ul></li><li>Another parent</li></ul>"
         className="text-base leading-6"
         testID="nw-nested-lists"
       />
@@ -478,7 +478,7 @@ function NativeWindExamples({
         Custom Tag Styles (tagStyles prop)
       </Text>
       <NativeWindRichText
-        html="<p>Normal text with <strong>custom red bold</strong> and <em>custom blue italic</em>.</p>"
+        text="<p>Normal text with <strong>custom red bold</strong> and <em>custom blue italic</em>.</p>"
         className="text-base leading-6"
         tagStyles={{
           strong: { color: '#CC0000' },
@@ -489,14 +489,14 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>Native HTML Text Decoration</Text>
       <NativeWindRichText
-        html="<p>Text with <u>underline tag</u> and <s>strikethrough tag</s> using native HTML.</p>"
+        text="<p>Text with <u>underline tag</u> and <s>strikethrough tag</s> using native HTML.</p>"
         className="text-base leading-6"
         testID="nw-native-text-decoration"
       />
 
       <Text style={styles.sectionTitle}>Phone Detection</Text>
       <NativeWindRichText
-        html="<p>Call us at 555-123-4567 for support.</p>"
+        text="<p>Call us at 555-123-4567 for support.</p>"
         className="text-base leading-6"
         detectPhoneNumbers
         onLinkPress={onLinkPress}
@@ -505,7 +505,7 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>Email Detection</Text>
       <NativeWindRichText
-        html="<p>Contact support@example.com for help.</p>"
+        text="<p>Contact support@example.com for help.</p>"
         className="text-base leading-6"
         detectEmails
         onLinkPress={onLinkPress}
@@ -514,7 +514,7 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>Phone Links (href)</Text>
       <NativeWindRichText
-        html='<p>Call <a href="tel:+15551234567">+1 (555) 123-4567</a> for support.</p>'
+        text='<p>Call <a href="tel:+15551234567">+1 (555) 123-4567</a> for support.</p>'
         className="text-base leading-6"
         onLinkPress={onLinkPress}
         testID="nw-phone-href"
@@ -522,7 +522,7 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>Email Links (href)</Text>
       <NativeWindRichText
-        html='<p>Email <a href="mailto:support@example.com">support@example.com</a> for help.</p>'
+        text='<p>Email <a href="mailto:support@example.com">support@example.com</a> for help.</p>'
         className="text-base leading-6"
         onLinkPress={onLinkPress}
         testID="nw-email-href"
@@ -530,7 +530,7 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>All Detection Types</Text>
       <NativeWindRichText
-        html='<p>Visit <a href="https://example.com">our site</a>, call 555-987-6543, or email info@test.com.</p>'
+        text='<p>Visit <a href="https://example.com">our site</a>, call 555-987-6543, or email info@test.com.</p>'
         className="text-base leading-6"
         detectLinks
         detectPhoneNumbers
@@ -541,7 +541,7 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>XSS Security Test</Text>
       <NativeWindRichText
-        html='<p>Malicious: <a href="javascript:alert(1)">javascript link</a> should be blocked.</p>'
+        text='<p>Malicious: <a href="javascript:alert(1)">javascript link</a> should be blocked.</p>'
         className="text-base leading-6"
         onLinkPress={onLinkPress}
         testID="nw-xss-security-test"
@@ -549,7 +549,7 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>Complex Content</Text>
       <NativeWindRichText
-        html={`
+        text={`
           <h2>Feature Overview</h2>
           <p>The <strong>RichText</strong> component supports:</p>
           <ul>
@@ -570,7 +570,7 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Expand/Collapse</Text>
       <View>
         <NativeWindRichText
-          html="<p>This is a <strong>much longer paragraph</strong> that demonstrates the <em>numberOfLines</em> feature with actual truncation behavior. When collapsed, only the first 2 lines are visible, and the remaining content is hidden from view. This paragraph contains enough text to span multiple lines, ensuring that TalkBack users will experience the truncation indicator. The text includes various formatting like <strong>bold text</strong>, <em>italic text</em>, and continues for several more sentences to guarantee it exceeds two lines on most screen sizes. Additional content here to make absolutely sure this gets truncated when numberOfLines is set to 2.</p>"
+          text="<p>This is a <strong>much longer paragraph</strong> that demonstrates the <em>numberOfLines</em> feature with actual truncation behavior. When collapsed, only the first 2 lines are visible, and the remaining content is hidden from view. This paragraph contains enough text to span multiple lines, ensuring that TalkBack users will experience the truncation indicator. The text includes various formatting like <strong>bold text</strong>, <em>italic text</em>, and continues for several more sentences to guarantee it exceeds two lines on most screen sizes. Additional content here to make absolutely sure this gets truncated when numberOfLines is set to 2.</p>"
           className="text-base leading-6"
           numberOfLines={expandedText ? 0 : 2}
           animationDuration={0.3}
@@ -590,7 +590,7 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Dynamic numberOfLines</Text>
       <View>
         <NativeWindRichText
-          html="<p>This example cycles through <strong>numberOfLines</strong> values: 1, 2, 3, unlimited. Each tap changes the limit with smooth animation.</p>"
+          text="<p>This example cycles through <strong>numberOfLines</strong> values: 1, 2, 3, unlimited. Each tap changes the limit with smooth animation.</p>"
           className="text-base leading-6"
           numberOfLines={numberOfLinesDemo}
           animationDuration={0.2}
@@ -613,7 +613,7 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Line Count Display</Text>
       <View>
         <NativeWindRichText
-          html="<p>This paragraph uses the <strong>onRichTextMeasurement</strong> callback to report line counts. The text below shows the measured (total) and visible line counts.</p>"
+          text="<p>This paragraph uses the <strong>onRichTextMeasurement</strong> callback to report line counts. The text below shows the measured (total) and visible line counts.</p>"
           className="text-base leading-6"
           numberOfLines={3}
           onRichTextMeasurement={onMeasurement}
@@ -639,7 +639,7 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Smart "Read More" Pattern</Text>
       <View>
         <NativeWindRichText
-          html="<p>This demonstrates a common UX pattern: showing a <strong>Read more</strong> button only when content is actually truncated. The button appears conditionally based on the measurement callback. This paragraph contains enough text to ensure it exceeds two lines on most screen sizes.</p>"
+          text="<p>This demonstrates a common UX pattern: showing a <strong>Read more</strong> button only when content is actually truncated. The button appears conditionally based on the measurement callback. This paragraph contains enough text to ensure it exceeds two lines on most screen sizes.</p>"
           className="text-base leading-6"
           numberOfLines={readMoreExpanded ? 0 : 2}
           animationDuration={0.25}
@@ -663,7 +663,7 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>Viewport Responsive Text</Text>
       <NativeWindRichText
-        html="<p>This text scales based on <strong>viewport width</strong>: small on phones, medium on tablets, larger on desktop.</p>"
+        text="<p>This text scales based on <strong>viewport width</strong>: small on phones, medium on tablets, larger on desktop.</p>"
         className="text-sm md:text-base lg:text-lg leading-relaxed text-gray-700"
         testID="nw-responsive"
       />
@@ -671,7 +671,7 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Container Query - Full Width</Text>
       <View className="@container w-full bg-slate-100 p-2 rounded-lg">
         <NativeWindRichText
-          html="<p>Inside a <strong>full-width container</strong>. Text responds to container size, not viewport.</p>"
+          text="<p>Inside a <strong>full-width container</strong>. Text responds to container size, not viewport.</p>"
           className="text-sm @sm:text-base @md:text-lg @lg:text-xl leading-relaxed text-slate-700"
           testID="nw-container-full"
         />
@@ -680,7 +680,7 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Container Query - Half Width</Text>
       <View className="@container w-1/2 bg-amber-100 p-2 rounded-lg">
         <NativeWindRichText
-          html="<p>Inside a <strong>half-width container</strong>. Same classes, different result!</p>"
+          text="<p>Inside a <strong>half-width container</strong>. Same classes, different result!</p>"
           className="text-sm @sm:text-base @md:text-lg @lg:text-xl leading-relaxed text-amber-800"
           testID="nw-container-half"
         />
@@ -690,14 +690,14 @@ function NativeWindExamples({
       <View className="flex-row gap-2">
         <View className="@container flex-1 bg-emerald-100 p-2 rounded-lg">
           <NativeWindRichText
-            html="<p><strong>Left</strong> container adapts independently.</p>"
+            text="<p><strong>Left</strong> container adapts independently.</p>"
             className="text-xs @sm:text-sm @md:text-base leading-snug text-emerald-800"
             testID="nw-container-left"
           />
         </View>
         <View className="@container flex-1 bg-violet-100 p-2 rounded-lg">
           <NativeWindRichText
-            html="<p><strong>Right</strong> container adapts independently.</p>"
+            text="<p><strong>Right</strong> container adapts independently.</p>"
             className="text-xs @sm:text-sm @md:text-base leading-snug text-violet-800"
             testID="nw-container-right"
           />
@@ -707,7 +707,7 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Container Query - Named</Text>
       <View className="@container/card w-full bg-rose-100 p-3 rounded-lg">
         <NativeWindRichText
-          html="<p>This uses a <strong>named container</strong> (@container/card) for more precise targeting.</p>"
+          text="<p>This uses a <strong>named container</strong> (@container/card) for more precise targeting.</p>"
           className="text-sm @sm/card:text-base @md/card:text-lg leading-relaxed text-rose-800"
           testID="nw-container-named"
         />
@@ -716,13 +716,13 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Container Query - Nested</Text>
       <View className="@container bg-sky-100 p-3 rounded-lg">
         <NativeWindRichText
-          html="<p><strong>Outer</strong> container text.</p>"
+          text="<p><strong>Outer</strong> container text.</p>"
           className="text-sm @md:text-base leading-relaxed text-sky-800 mb-2"
           testID="nw-container-outer"
         />
         <View className="@container bg-sky-200 p-2 rounded">
           <NativeWindRichText
-            html="<p><strong>Inner</strong> container responds to its own size.</p>"
+            text="<p><strong>Inner</strong> container responds to its own size.</p>"
             className="text-xs @sm:text-sm leading-snug text-sky-900"
             testID="nw-container-inner"
           />
@@ -733,28 +733,28 @@ function NativeWindExamples({
         Dark Mode (current: {colorScheme ?? 'light'})
       </Text>
       <NativeWindRichText
-        html="<p>This text adapts to <strong>dark mode</strong>. Toggle your system theme to see colors change.</p>"
+        text="<p>This text adapts to <strong>dark mode</strong>. Toggle your system theme to see colors change.</p>"
         className="text-base leading-6 text-gray-900 dark:text-gray-100"
         testID="nw-dark-mode"
       />
 
       <Text style={styles.sectionTitle}>Color Utilities</Text>
       <NativeWindRichText
-        html="<p><strong>Primary theme:</strong> Using Tailwind's color palette for consistent styling.</p>"
+        text="<p><strong>Primary theme:</strong> Using Tailwind's color palette for consistent styling.</p>"
         className="text-base leading-6 text-blue-600 bg-blue-50 p-3 rounded-lg"
         testID="nw-colors"
       />
 
       <Text style={styles.sectionTitle}>Spacing Utilities</Text>
       <NativeWindRichText
-        html="<p>This text has <em>padding</em> and <strong>margin</strong> via Tailwind classes.</p>"
+        text="<p>This text has <em>padding</em> and <strong>margin</strong> via Tailwind classes.</p>"
         className="text-base leading-6 text-gray-800 p-4 m-2 bg-amber-100 rounded"
         testID="nw-spacing"
       />
 
       <Text style={styles.sectionTitle}>Typography Variants</Text>
       <NativeWindRichText
-        html="<p>Large, bold, indigo text with tracking.</p>"
+        text="<p>Large, bold, indigo text with tracking.</p>"
         className="text-xl font-bold text-indigo-600 tracking-wide"
         testID="nw-typography"
       />
@@ -764,70 +764,70 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>Arabic Text</Text>
       <NativeWindRichText
-        html="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>"
+        text="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>"
         className="text-base leading-6"
         testID="nw-rtl-arabic"
       />
 
       <Text style={styles.sectionTitle}>Hebrew Text</Text>
       <NativeWindRichText
-        html="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>"
+        text="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>"
         className="text-base leading-6"
         testID="nw-rtl-hebrew"
       />
 
       <Text style={styles.sectionTitle}>Persian Text</Text>
       <NativeWindRichText
-        html="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>"
+        text="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>"
         className="text-base leading-6"
         testID="nw-rtl-persian"
       />
 
       <Text style={styles.sectionTitle}>Mixed Directional Content</Text>
       <NativeWindRichText
-        html="<p>مرحباً Hello عالم World!</p>"
+        text="<p>مرحباً Hello عالم World!</p>"
         className="text-base leading-6"
         testID="nw-rtl-mixed"
       />
 
       <Text style={styles.sectionTitle}>RTL with Embedded Numbers</Text>
       <NativeWindRichText
-        html="<p dir='rtl'>السعر: 123.45 دولار</p>"
+        text="<p dir='rtl'>السعر: 123.45 دولار</p>"
         className="text-base leading-6"
         testID="nw-rtl-numbers"
       />
 
       <Text style={styles.sectionTitle}>BDI Isolation</Text>
       <NativeWindRichText
-        html="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>"
+        text="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>"
         className="text-base leading-6"
         testID="nw-rtl-bdi"
       />
 
       <Text style={styles.sectionTitle}>BDO Override (RTL)</Text>
       <NativeWindRichText
-        html="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>"
+        text="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>"
         className="text-base leading-6"
         testID="nw-rtl-bdo-rtl"
       />
 
       <Text style={styles.sectionTitle}>BDO Override (LTR)</Text>
       <NativeWindRichText
-        html="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>"
+        text="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>"
         className="text-base leading-6"
         testID="nw-rtl-bdo-ltr"
       />
 
       <Text style={styles.sectionTitle}>Direction Attribute</Text>
       <NativeWindRichText
-        html="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>"
+        text="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>"
         className="text-base leading-6"
         testID="nw-rtl-dir-attr"
       />
 
       <Text style={styles.sectionTitle}>writingDirection Prop (RTL)</Text>
       <NativeWindRichText
-        html="<p>This English text is forced RTL via writingDirection prop.</p>"
+        text="<p>This English text is forced RTL via writingDirection prop.</p>"
         className="text-base leading-6"
         writingDirection="rtl"
         testID="nw-rtl-writing-direction"
@@ -835,14 +835,14 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>RTL with Formatting</Text>
       <NativeWindRichText
-        html="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>"
+        text="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>"
         className="text-base leading-6"
         testID="nw-rtl-formatting"
       />
 
       <Text style={styles.sectionTitle}>RTL with Links</Text>
       <NativeWindRichText
-        html='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
+        text='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
         className="text-base leading-6"
         onLinkPress={onLinkPress}
         testID="nw-rtl-links"
@@ -850,14 +850,14 @@ function NativeWindExamples({
 
       <Text style={styles.sectionTitle}>RTL Unordered List</Text>
       <NativeWindRichText
-        html="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>"
+        text="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>"
         className="text-base leading-6"
         testID="nw-rtl-ul"
       />
 
       <Text style={styles.sectionTitle}>RTL Ordered List</Text>
       <NativeWindRichText
-        html="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>"
+        text="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>"
         className="text-base leading-6"
         testID="nw-rtl-ol"
       />

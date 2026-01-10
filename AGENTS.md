@@ -6,7 +6,7 @@ This document enforces the project constitution for AI agents. Read `.specify/me
 
 A Fabric-first HTML text renderer for React Native. This library parses HTML strings and renders them as native Text components with proper styling, using React Native's new architecture (Fabric).
 
-**Architecture**: This is primarily a **native library** built on Fabric's component model. Each platform has a custom ShadowNode implementation for layout measurement, using Fabric's `ConcreteComponentDescriptor` and shadow tree infrastructure. A shared C++ HTML parser (`cpp/FabricRichParser`) produces `AttributedString` fragments consumed by platform-specific renderers (CoreText on iOS, Spannable on Android). The React/TypeScript layer provides the JavaScript interface but rendering and measurement happen in native code.
+**Architecture**: This is primarily a **native library** built on Fabric's component model. Each platform has a custom ShadowNode implementation for layout measurement, using Fabric's `ConcreteComponentDescriptor` and shadow tree infrastructure. A shared C++ markup parser (`cpp/FabricMarkupParser`) produces `AttributedString` fragments consumed by platform-specific renderers (CoreText on iOS, Spannable on Android). The React/TypeScript layer provides the JavaScript interface but rendering and measurement happen in native code.
 
 **Security context**: This library renders user-provided HTML content. XSS prevention and proper sanitization are critical security requirements.
 
@@ -154,8 +154,8 @@ yarn example android   # Run Android example
 
 ```text
 # NATIVE CORE (primary implementation)
-cpp/                             # Shared C++ HTML parser
-└── FabricRichParser.cpp/h       # HTML → AttributedString conversion
+cpp/                             # Shared C++ markup parser
+└── FabricMarkupParser.cpp/h     # Markup → AttributedString conversion
 
 ios/                             # iOS Fabric component
 ├── FabricRichTextShadowNode.*   # Custom ShadowNode for measurement

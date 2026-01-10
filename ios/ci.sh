@@ -41,7 +41,7 @@ runtime_major = int(match.group(1)) if match else 18
 
 # Modern device types that work with recent iOS versions
 # Prefer iPhone models from the last few years
-preferred_patterns = ['iPhone-16', 'iPhone-15', 'iPhone-14', 'iPhone-13', 'iPhone-12']
+preferred_patterns = ['iPhone-17', 'iPhone-16', 'iPhone-15', 'iPhone-14', 'iPhone-13', 'iPhone-12']
 
 for pattern in preferred_patterns:
     for d in data['devicetypes']:

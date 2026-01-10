@@ -30,7 +30,7 @@ interface RichTextMeasurementNativeEvent {
 
 export function RichTextNative(props: RichTextNativeProps): ReactElement {
   const {
-    html,
+    text,
     style,
     testID,
     onLinkPress,
@@ -135,7 +135,7 @@ export function RichTextNative(props: RichTextNativeProps): ReactElement {
 
   return (
     <FabricRichText
-      html={html}
+      text={text}
       style={style}
       testID={testID}
       onLinkPress={handleLinkPress}

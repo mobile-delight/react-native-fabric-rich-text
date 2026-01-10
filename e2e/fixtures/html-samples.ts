@@ -11,7 +11,7 @@ export interface TestFixture {
   id: string;
   name: string;
   category: 'basic' | 'nested' | 'edge-case';
-  html: string;
+  text: string;
   expectedStyles: ExpectedStyle[];
   description: string;
 }
@@ -21,7 +21,7 @@ export const basicFixtures: TestFixture[] = [
     id: 'hello-world',
     name: 'Hello World',
     category: 'basic',
-    html: '<h1>Hello World</h1><p>This is <strong>bold</strong> and <em>italic</em> text.</p>',
+    text: '<h1>Hello World</h1><p>This is <strong>bold</strong> and <em>italic</em> text.</p>',
     expectedStyles: [
       { element: 'h1', properties: { fontWeight: 'bold' } },
       { element: 'strong', properties: { fontWeight: 'bold' } },
@@ -33,7 +33,7 @@ export const basicFixtures: TestFixture[] = [
     id: 'plain-text',
     name: 'Plain Text',
     category: 'basic',
-    html: '<p>Plain text paragraph</p>',
+    text: '<p>Plain text paragraph</p>',
     expectedStyles: [
       {
         element: 'p',
@@ -46,7 +46,7 @@ export const basicFixtures: TestFixture[] = [
     id: 'bold-only',
     name: 'Bold Text',
     category: 'basic',
-    html: '<strong>Bold text</strong>',
+    text: '<strong>Bold text</strong>',
     expectedStyles: [{ element: 'strong', properties: { fontWeight: 'bold' } }],
     description: 'Text with bold styling only',
   },
@@ -54,7 +54,7 @@ export const basicFixtures: TestFixture[] = [
     id: 'italic-only',
     name: 'Italic Text',
     category: 'basic',
-    html: '<em>Italic text</em>',
+    text: '<em>Italic text</em>',
     expectedStyles: [{ element: 'em', properties: { fontStyle: 'italic' } }],
     description: 'Text with italic styling only',
   },
@@ -62,7 +62,7 @@ export const basicFixtures: TestFixture[] = [
     id: 'underline-only',
     name: 'Underlined Text',
     category: 'basic',
-    html: '<u>Underlined text</u>',
+    text: '<u>Underlined text</u>',
     expectedStyles: [
       { element: 'u', properties: { textDecoration: 'underline' } },
     ],
@@ -75,7 +75,7 @@ export const nestedFixtures: TestFixture[] = [
     id: 'nested-2-bold-italic',
     name: 'Bold + Italic',
     category: 'nested',
-    html: '<strong><em>Bold and italic</em></strong>',
+    text: '<strong><em>Bold and italic</em></strong>',
     expectedStyles: [
       {
         element: 'strong>em',
@@ -88,7 +88,7 @@ export const nestedFixtures: TestFixture[] = [
     id: 'nested-2-italic-underline',
     name: 'Italic + Underline',
     category: 'nested',
-    html: '<em><u>Italic and underlined</u></em>',
+    text: '<em><u>Italic and underlined</u></em>',
     expectedStyles: [
       {
         element: 'em>u',
@@ -101,7 +101,7 @@ export const nestedFixtures: TestFixture[] = [
     id: 'nested-3-bold-italic-underline',
     name: 'Bold + Italic + Underline',
     category: 'nested',
-    html: '<strong><em><u>All three styles</u></em></strong>',
+    text: '<strong><em><u>All three styles</u></em></strong>',
     expectedStyles: [
       {
         element: 'strong>em>u',
@@ -118,7 +118,7 @@ export const nestedFixtures: TestFixture[] = [
     id: 'nested-4-all',
     name: 'All Four Styles',
     category: 'nested',
-    html: '<strong><em><u><s>Bold, italic, underlined, strikethrough</s></u></em></strong>',
+    text: '<strong><em><u><s>Bold, italic, underlined, strikethrough</s></u></em></strong>',
     expectedStyles: [
       {
         element: 'strong>em>u>s',
@@ -138,7 +138,7 @@ export const edgeCaseFixtures: TestFixture[] = [
     id: 'long-text',
     name: 'Long Text',
     category: 'edge-case',
-    html: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>',
+    text: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>',
     expectedStyles: [{ element: 'p', properties: { fontWeight: 'normal' } }],
     description: 'Long text that should wrap correctly',
   },
@@ -146,7 +146,7 @@ export const edgeCaseFixtures: TestFixture[] = [
     id: 'special-chars',
     name: 'Special Characters',
     category: 'edge-case',
-    html: '<p>Caf\u00e9, na\u00efve, &amp; &lt;tags&gt;</p>',
+    text: '<p>Caf\u00e9, na\u00efve, &amp; &lt;tags&gt;</p>',
     expectedStyles: [{ element: 'p', properties: { fontWeight: 'normal' } }],
     description: 'Text with special characters and HTML entities',
   },
@@ -154,7 +154,7 @@ export const edgeCaseFixtures: TestFixture[] = [
     id: 'empty-tags',
     name: 'Empty Tags',
     category: 'edge-case',
-    html: '<p><strong></strong>Text after empty</p>',
+    text: '<p><strong></strong>Text after empty</p>',
     expectedStyles: [{ element: 'p', properties: { fontWeight: 'normal' } }],
     description: 'Handles empty inline elements gracefully',
   },
@@ -162,7 +162,7 @@ export const edgeCaseFixtures: TestFixture[] = [
     id: 'mixed-nesting',
     name: 'Mixed Nesting',
     category: 'edge-case',
-    html: '<p>Normal <strong>bold <em>bold-italic</em> bold</strong> normal</p>',
+    text: '<p>Normal <strong>bold <em>bold-italic</em> bold</strong> normal</p>',
     expectedStyles: [
       { element: 'strong', properties: { fontWeight: 'bold' } },
       {

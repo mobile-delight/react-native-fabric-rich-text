@@ -1,8 +1,8 @@
 /**
- * FabricRichParser.h
+ * FabricMarkupParser.h
  *
- * Shared C++ HTML parsing module for cross-platform HTML rendering.
- * Used by both Android and iOS shadow nodes to parse HTML into
+ * Shared C++ markup parsing module for cross-platform rich text rendering.
+ * Used by both Android and iOS shadow nodes to parse markup into
  * AttributedString fragments for measurement and rendering.
  *
  * This eliminates duplicate parsing logic between platforms and ensures
@@ -19,7 +19,7 @@
 #include "parsing/DirectionContext.h"
 #include "parsing/StyleParser.h"
 #include "parsing/TextNormalizer.h"
-#include "parsing/HtmlSegmentParser.h"
+#include "parsing/MarkupSegmentParser.h"
 #include "parsing/AttributedStringBuilder.h"
 
 #include <string>
@@ -42,16 +42,16 @@ using parsing::isStrongRTL;
 using parsing::isStrongLTR;
 
 /**
- * Shared HTML parser for cross-platform use.
+ * Shared markup parser for cross-platform use.
  *
- * Provides HTML parsing functionality that produces React Native's
+ * Provides markup parsing functionality that produces React Native's
  * AttributedString format, which can then be used for both measurement
  * (via TextLayoutManager) and rendering (via platform-specific builders).
  */
-class FabricRichParser {
+class FabricMarkupParser {
  public:
   /**
-   * Result of parsing HTML, containing both the attributed string and link URLs.
+   * Result of parsing markup, containing both the attributed string and link URLs.
    */
   struct ParseResult {
     AttributedString attributedString;
@@ -60,9 +60,9 @@ class FabricRichParser {
   };
 
   /**
-   * Parse HTML string into an AttributedString.
+   * Parse markup string into an AttributedString.
    *
-   * @param html The HTML string to parse (should be pre-sanitized)
+   * @param markup The markup string to parse (should be pre-sanitized)
    * @param baseFontSize Base font size in points
    * @param fontSizeMultiplier Accessibility scaling multiplier
    * @param allowFontScaling Whether to apply font scaling
@@ -76,8 +76,8 @@ class FabricRichParser {
    * @param tagStyles JSON string of per-tag style overrides
    * @return Parsed AttributedString with styled fragments
    */
-  static AttributedString parseHtmlToAttributedString(
-      const std::string& html,
+  static AttributedString parseMarkupToAttributedString(
+      const std::string& markup,
       Float baseFontSize,
       Float fontSizeMultiplier,
       bool allowFontScaling,
@@ -91,11 +91,11 @@ class FabricRichParser {
       const std::string& tagStyles);
 
   /**
-   * Parse HTML string with full results including link URLs.
-   * Same as parseHtmlToAttributedString but also returns link URLs for each fragment.
+   * Parse markup string with full results including link URLs.
+   * Same as parseMarkupToAttributedString but also returns link URLs for each fragment.
    */
-  static ParseResult parseHtmlWithLinkUrls(
-      const std::string& html,
+  static ParseResult parseMarkupWithLinkUrls(
+      const std::string& markup,
       Float baseFontSize,
       Float fontSizeMultiplier,
       bool allowFontScaling,
@@ -109,23 +109,23 @@ class FabricRichParser {
       const std::string& tagStyles);
 
   /**
-   * Strip HTML tags from a string, returning plain text content.
+   * Strip markup tags from a string, returning plain text content.
    * Handles lists, line breaks, and basic formatting.
    */
-  static std::string stripHtmlTags(const std::string& html);
+  static std::string stripMarkupTags(const std::string& markup);
 
   /**
    * Normalize inter-tag whitespace from source formatting.
    * Removes whitespace between block elements while preserving
    * significant whitespace after inline elements.
    */
-  static std::string normalizeInterTagWhitespace(const std::string& html);
+  static std::string normalizeInterTagWhitespace(const std::string& markup);
 
   /**
-   * Parse HTML into styled text segments.
+   * Parse markup into styled text segments.
    * Each segment represents a run of text with consistent styling.
    */
-  static std::vector<FabricRichTextSegment> parseHtmlToSegments(const std::string& html);
+  static std::vector<FabricRichTextSegment> parseMarkupToSegments(const std::string& markup);
 
   /**
    * Extract link URLs from segments.

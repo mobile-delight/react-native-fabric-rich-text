@@ -2,23 +2,25 @@ import XCTest
 @testable import FabricRichText
 
 /**
- * Unit tests for UIAccessibilityContainer protocol implementation in FabricHTMLCoreTextView.
+ * Unit tests for UIAccessibilityContainer protocol implementation in FabricRichCoreTextView.
  *
  * These tests verify the accessibility container correctly exposes links as individual
  * accessibility elements for VoiceOver navigation.
  *
- * TDD Requirement: These tests should FAIL initially until T013-T020 are implemented.
+ * Accessibility Element Structure:
+ * - Index 0: Text element (full text content for VoiceOver to read)
+ * - Index 1+: Link elements (individual links for navigation)
  *
  * WCAG 2.1 Level AA Requirements:
  * - 2.4.4 Link Purpose: Links are identified with meaningful labels
  * - 4.1.2 Name, Role, Value: Links expose correct accessibility traits
  */
 final class AccessibilityContainerTests: XCTestCase {
-    private var coreTextView: FabricHTMLCoreTextView!
+    private var coreTextView: FabricRichCoreTextView!
 
     override func setUp() {
         super.setUp()
-        coreTextView = FabricHTMLCoreTextView(frame: CGRect(x: 0, y: 0, width: 300, height: 100))
+        coreTextView = FabricRichCoreTextView(frame: CGRect(x: 0, y: 0, width: 300, height: 100))
     }
 
     override func tearDown() {
@@ -66,8 +68,10 @@ final class AccessibilityContainerTests: XCTestCase {
         // When: We check the accessibility element count
         let count = coreTextView.accessibilityElementCount()
 
-        // Then: Should have 3 accessibility elements (one per link)
-        XCTAssertEqual(count, 3, "Accessibility element count should match link count")
+        // Then: Should have 4 accessibility elements (1 text element + 3 links)
+        // The first element (index 0) is the text content for VoiceOver to read
+        // Subsequent elements (index 1+) are the individual links for navigation
+        XCTAssertEqual(count, 4, "Accessibility element count should be 1 text + link count")
     }
 
     func testAccessibilityElementCountIsZeroForEmptyText() {
@@ -147,9 +151,9 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.attributedText = attributedText
         coreTextView.layoutIfNeeded()
 
-        // When: We get the accessibility label
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We get the link accessibility label (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
         let label = element.accessibilityLabel
@@ -169,9 +173,9 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.attributedText = attributedText
         coreTextView.layoutIfNeeded()
 
-        // When: We get the first link's accessibility label
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We get the first link's accessibility label (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
         let label = element.accessibilityLabel
@@ -194,9 +198,9 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.attributedText = attributedText
         coreTextView.layoutIfNeeded()
 
-        // When: We get the accessibility traits
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We get the link accessibility traits (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
         let traits = element.accessibilityTraits
@@ -214,11 +218,16 @@ final class AccessibilityContainerTests: XCTestCase {
         """
         let attributedText = createAttributedString(from: html)
         coreTextView.attributedText = attributedText
+
+        // Add view to window for proper frame calculation
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 400, height: 300))
+        window.addSubview(coreTextView)
+        window.makeKeyAndVisible()
         coreTextView.layoutIfNeeded()
 
-        // When: We get the accessibility frame
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We get the link accessibility frame (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
         let frame = element.accessibilityFrame
@@ -240,9 +249,9 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.attributedText = attributedText
         coreTextView.layoutIfNeeded()
 
-        // When: We try to activate the link
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We try to activate the link (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
 
@@ -262,9 +271,9 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.attributedText = attributedText
         coreTextView.layoutIfNeeded()
 
-        // When: We get the accessibility hint
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We get the link accessibility hint (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
         let hint = element.accessibilityHint
@@ -287,9 +296,9 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.attributedText = attributedText
         coreTextView.layoutIfNeeded()
 
-        // When: We get the accessibility hint
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We get the link accessibility hint (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
         let hint = element.accessibilityHint
@@ -314,11 +323,16 @@ final class AccessibilityContainerTests: XCTestCase {
         """
         let attributedText = createAttributedString(from: html)
         coreTextView.attributedText = attributedText
+
+        // Add view to window for proper frame calculation
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 400, height: 300))
+        window.addSubview(coreTextView)
+        window.makeKeyAndVisible()
         coreTextView.layoutIfNeeded()
 
-        // When: We get the accessibility element
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We get the link accessibility element (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
 
@@ -355,9 +369,9 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.setNeedsLayout()
         coreTextView.layoutIfNeeded()
 
-        // When: We get the accessibility element
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
-            XCTFail("Should have accessibility element")
+        // When: We get the link accessibility element (index 1, after text element at index 0)
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
+            XCTFail("Should have link accessibility element at index 1")
             return
         }
 
@@ -381,18 +395,22 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.attributedText = attributedText
         coreTextView.layoutIfNeeded()
 
-        // When: We get all accessibility labels
-        var labels: [String] = []
-        for i in 0..<coreTextView.accessibilityElementCount() {
+        // Should have 4 elements: 1 text element + 3 link elements
+        let totalCount = coreTextView.accessibilityElementCount()
+        XCTAssertEqual(totalCount, 4, "Should have 1 text element + 3 link elements")
+
+        // When: We get all link accessibility labels (indices 1, 2, 3 - skip text element at index 0)
+        var linkLabels: [String] = []
+        for i in 1..<totalCount {
             if let element = coreTextView.accessibilityElement(at: i) as? UIAccessibilityElement,
                let label = element.accessibilityLabel {
-                labels.append(label)
+                linkLabels.append(label)
             }
         }
 
         // Then: Each link should have unique label (includes position info)
-        XCTAssertEqual(labels.count, 3, "Should have 3 links")
-        XCTAssertEqual(Set(labels).count, labels.count,
+        XCTAssertEqual(linkLabels.count, 3, "Should have 3 link elements")
+        XCTAssertEqual(Set(linkLabels).count, linkLabels.count,
                        "All link labels should be unique (include position info)")
     }
 
