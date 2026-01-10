@@ -1,28 +1,28 @@
 /**
- * FabricHTMLStylingTests.mm
+ * FabricRichStylingTests.mm
  *
- * Tests for tagStyles functionality in FabricHTMLParser.
- * Mirrors Android FabricHTMLStylingTest.kt for cross-platform parity.
+ * Tests for tagStyles functionality in FabricMarkupParser.
+ * Mirrors Android FabricRichStylingTest.kt for cross-platform parity.
  */
 
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
-#import "../../../cpp/FabricHTMLParser.h"
-#import "../../../ios/FabricHTMLFragmentParser.h"
+#import "../../../cpp/FabricMarkupParser.h"
+#import "../../../ios/FabricRichFragmentParser.h"
 
 using namespace facebook::react;
 
-@interface FabricHTMLStylingTests : XCTestCase
+@interface FabricRichStylingTests : XCTestCase
 @end
 
-@implementation FabricHTMLStylingTests
+@implementation FabricRichStylingTests
 
 #pragma mark - Helper Methods
 
 - (AttributedString)parseHTML:(NSString *)html withTagStyles:(NSString *)tagStyles {
     std::string htmlStr = [html UTF8String] ?: "";
     std::string tagStylesStr = [tagStyles UTF8String] ?: "";
-    return FabricHTMLParser::parseHtmlToAttributedString(
+    return FabricMarkupParser::parseMarkupToAttributedString(
         htmlStr, 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, tagStylesStr);
 }
 

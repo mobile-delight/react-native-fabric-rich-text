@@ -7,15 +7,15 @@ jest.mock('../adapters/native', () => {
   return {
     RichTextNative: jest.fn(
       ({
-        html,
+        text,
         style,
         testID,
       }: {
-        html: string;
+        text: string;
         style?: object;
         testID?: string;
       }) => {
-        return mockReact.createElement(Text, { style, testID }, html);
+        return mockReact.createElement(Text, { style, testID }, text);
       }
     ),
   };
@@ -31,53 +31,53 @@ describe('RichText', () => {
   });
 
   describe('Edge Case Handling', () => {
-    it('returns null for empty string html', () => {
-      const { toJSON } = render(<RichText html="" />);
+    it('returns null for empty string text', () => {
+      const { toJSON } = render(<RichText text="" />);
       expect(toJSON()).toBeNull();
     });
 
-    it('returns null for undefined html', () => {
+    it('returns null for undefined text', () => {
       const { toJSON } = render(
-        <RichText html={undefined as unknown as string} />
+        <RichText text={undefined as unknown as string} />
       );
       expect(toJSON()).toBeNull();
     });
 
-    it('returns null for null html', () => {
-      const { toJSON } = render(<RichText html={null as unknown as string} />);
+    it('returns null for null text', () => {
+      const { toJSON } = render(<RichText text={null as unknown as string} />);
       expect(toJSON()).toBeNull();
     });
 
-    it('returns null for whitespace-only html', () => {
-      const { toJSON } = render(<RichText html={'   \n\t   '} />);
+    it('returns null for whitespace-only text', () => {
+      const { toJSON } = render(<RichText text={'   \n\t   '} />);
       expect(toJSON()).toBeNull();
     });
 
     it('renders nothing for empty input', () => {
-      render(<RichText html="" />);
+      render(<RichText text="" />);
       expect(RichTextNative).not.toHaveBeenCalled();
     });
 
     it('renders nothing for whitespace-only input', () => {
-      render(<RichText html={'   \n\t   '} />);
+      render(<RichText text={'   \n\t   '} />);
       expect(RichTextNative).not.toHaveBeenCalled();
     });
   });
 
   describe('Native Adapter Integration', () => {
-    it('passes html prop to RichTextNative', () => {
-      render(<RichText html="<p>Hello</p>" />);
+    it('passes text prop to RichTextNative', () => {
+      render(<RichText text="<p>Hello</p>" />);
       expect(RichTextNative).toHaveBeenCalledWith(
-        expect.objectContaining({ html: '<p>Hello</p>' }),
+        expect.objectContaining({ text: '<p>Hello</p>' }),
         undefined
       );
     });
 
     it('passes exact html value to RichTextNative', () => {
-      const testHtml = '<strong>Bold text</strong>';
-      render(<RichText html={testHtml} />);
+      const testText = '<strong>Bold text</strong>';
+      render(<RichText text={testText} />);
       expect(RichTextNative).toHaveBeenCalledWith(
-        expect.objectContaining({ html: testHtml }),
+        expect.objectContaining({ text: testText }),
         undefined
       );
     });
@@ -86,7 +86,7 @@ describe('RichText', () => {
   describe('Style Prop Pass-Through', () => {
     it('passes style prop to RichTextNative', () => {
       const testStyle = { color: 'red', fontSize: 16 };
-      render(<RichText html="<p>Hello</p>" style={testStyle} />);
+      render(<RichText text="<p>Hello</p>" style={testStyle} />);
       expect(RichTextNative).toHaveBeenCalledWith(
         expect.objectContaining({ style: testStyle }),
         undefined
@@ -95,7 +95,7 @@ describe('RichText', () => {
 
     it('preserves style prop value exactly', () => {
       const complexStyle = { fontWeight: 'bold' as const, marginTop: 10 };
-      render(<RichText html="<p>Hello</p>" style={complexStyle} />);
+      render(<RichText text="<p>Hello</p>" style={complexStyle} />);
       expect(RichTextNative).toHaveBeenCalledWith(
         expect.objectContaining({ style: complexStyle }),
         undefined
@@ -103,7 +103,7 @@ describe('RichText', () => {
     });
 
     it('works when style is undefined', () => {
-      render(<RichText html="<p>Hello</p>" />);
+      render(<RichText text="<p>Hello</p>" />);
       expect(RichTextNative).toHaveBeenCalledWith(
         expect.objectContaining({ style: undefined }),
         undefined
@@ -113,7 +113,7 @@ describe('RichText', () => {
 
   describe('TestID Prop Pass-Through', () => {
     it('passes testID prop to RichTextNative', () => {
-      render(<RichText html="<p>Hello</p>" testID="html-content" />);
+      render(<RichText text="<p>Hello</p>" testID="html-content" />);
       expect(RichTextNative).toHaveBeenCalledWith(
         expect.objectContaining({ testID: 'html-content' }),
         undefined
@@ -122,7 +122,7 @@ describe('RichText', () => {
 
     it('preserves testID value exactly', () => {
       const testId = 'my-custom-test-id';
-      render(<RichText html="<p>Hello</p>" testID={testId} />);
+      render(<RichText text="<p>Hello</p>" testID={testId} />);
       expect(RichTextNative).toHaveBeenCalledWith(
         expect.objectContaining({ testID: testId }),
         undefined
@@ -130,12 +130,12 @@ describe('RichText', () => {
     });
 
     it('component is queryable by testID', () => {
-      render(<RichText html="<p>Hello</p>" testID="queryable-id" />);
+      render(<RichText text="<p>Hello</p>" testID="queryable-id" />);
       expect(screen.getByTestId('queryable-id')).toBeTruthy();
     });
 
     it('works when testID is undefined', () => {
-      render(<RichText html="<p>Hello</p>" />);
+      render(<RichText text="<p>Hello</p>" />);
       expect(RichTextNative).toHaveBeenCalledWith(
         expect.objectContaining({ testID: undefined }),
         undefined
@@ -144,34 +144,34 @@ describe('RichText', () => {
   });
 
   describe('Re-Rendering on Prop Changes', () => {
-    it('html prop change triggers re-render', () => {
-      const { rerender } = render(<RichText html="<p>Old</p>" />);
+    it('text prop change triggers re-render', () => {
+      const { rerender } = render(<RichText text="<p>Old</p>" />);
       jest.clearAllMocks();
-      rerender(<RichText html="<p>New</p>" />);
+      rerender(<RichText text="<p>New</p>" />);
       expect(RichTextNative).toHaveBeenCalled();
     });
 
     it('RichTextNative receives updated html', () => {
-      const { rerender } = render(<RichText html="<p>Old</p>" />);
+      const { rerender } = render(<RichText text="<p>Old</p>" />);
       jest.clearAllMocks();
-      rerender(<RichText html="<p>New</p>" />);
+      rerender(<RichText text="<p>New</p>" />);
       expect(RichTextNative).toHaveBeenCalledWith(
-        expect.objectContaining({ html: '<p>New</p>' }),
+        expect.objectContaining({ text: '<p>New</p>' }),
         undefined
       );
     });
 
-    it('changing from empty to valid html renders component', () => {
-      const { rerender, toJSON } = render(<RichText html="" />);
+    it('changing from empty to valid text renders component', () => {
+      const { rerender, toJSON } = render(<RichText text="" />);
       expect(toJSON()).toBeNull();
-      rerender(<RichText html="<p>Hello</p>" />);
+      rerender(<RichText text="<p>Hello</p>" />);
       expect(toJSON()).not.toBeNull();
     });
 
-    it('changing from valid to empty html renders null', () => {
-      const { rerender, toJSON } = render(<RichText html="<p>Hello</p>" />);
+    it('changing from valid to empty text renders null', () => {
+      const { rerender, toJSON } = render(<RichText text="<p>Hello</p>" />);
       expect(toJSON()).not.toBeNull();
-      rerender(<RichText html="" />);
+      rerender(<RichText text="" />);
       expect(toJSON()).toBeNull();
     });
   });
@@ -179,11 +179,11 @@ describe('RichText', () => {
   describe('Type Exports', () => {
     it('RichTextProps type is exported from component', () => {
       const props: import('../components/RichText').RichTextProps = {
-        html: '<p>Test</p>',
+        text: '<p>Test</p>',
         style: { color: 'red' },
         testID: 'test',
       };
-      expect(props.html).toBe('<p>Test</p>');
+      expect(props.text).toBe('<p>Test</p>');
     });
 
     it('RichText and RichTextProps are exported from index', async () => {

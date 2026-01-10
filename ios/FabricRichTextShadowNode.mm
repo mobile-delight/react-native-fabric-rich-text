@@ -2,11 +2,11 @@
  * FabricRichTextShadowNode.mm
  *
  * Custom ShadowNode for FabricRichText with measureContent() implementation.
- * Uses the shared HTMLParser module for cross-platform HTML parsing.
+ * Uses the shared FabricMarkupParser module for cross-platform markup parsing.
  */
 
 #import "FabricRichTextShadowNode.h"
-#import "../cpp/FabricRichParser.h"
+#import "../cpp/FabricMarkupParser.h"
 
 #import <react/renderer/components/view/ViewShadowNode.h>
 #import <react/renderer/textlayoutmanager/TextLayoutManager.h>
@@ -30,7 +30,7 @@ FabricRichTextShadowNode::FabricRichTextShadowNode(
 
 std::string FabricRichTextShadowNode::stripHtmlTags(const std::string& html) {
     // Delegate to shared parser
-    return FabricRichParser::stripHtmlTags(html);
+    return FabricMarkupParser::stripMarkupTags(html);
 }
 
 AttributedString FabricRichTextShadowNode::parseHtmlToAttributedString(
@@ -63,7 +63,7 @@ AttributedString FabricRichTextShadowNode::parseHtmlToAttributedString(
     int32_t color = props.color;
 
     // Call parser with all props - get link URLs too
-    auto parseResult = FabricRichParser::parseHtmlWithLinkUrls(
+    auto parseResult = FabricMarkupParser::parseMarkupWithLinkUrls(
         sanitizedHtmlStr,
         baseFontSize,
         fontSizeMultiplier,
@@ -88,7 +88,7 @@ Size FabricRichTextShadowNode::measureContent(
 
     const auto& props = getConcreteProps();
 
-    if (props.html.empty()) {
+    if (props.text.empty()) {
         return Size{0, 0};
     }
 
@@ -99,7 +99,7 @@ Size FabricRichTextShadowNode::measureContent(
     }
 
     // Parse HTML to AttributedString using shared parser
-    _attributedString = parseHtmlToAttributedString(props.html, fontSizeMultiplier);
+    _attributedString = parseHtmlToAttributedString(props.text, fontSizeMultiplier);
 
     if (_attributedString.isEmpty()) {
         return Size{0, 0};

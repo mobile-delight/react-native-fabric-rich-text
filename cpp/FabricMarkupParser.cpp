@@ -1,36 +1,36 @@
 /**
- * FabricRichParser.cpp
+ * FabricMarkupParser.cpp
  *
- * Shared C++ HTML parsing implementation for cross-platform HTML rendering.
+ * Shared C++ markup parsing implementation for cross-platform rich text rendering.
  * Extracted from platform-specific implementations to eliminate code duplication.
  */
 
-#include "FabricRichParser.h"
-#include "parsing/HtmlSegmentParser.h"
+#include "FabricMarkupParser.h"
+#include "parsing/MarkupSegmentParser.h"
 #include "parsing/AttributedStringBuilder.h"
 #include "parsing/TextNormalizer.h"
 
 namespace facebook::react {
 
-std::string FabricRichParser::stripHtmlTags(const std::string& html) {
-  return parsing::stripHtmlTags(html);
+std::string FabricMarkupParser::stripMarkupTags(const std::string& markup) {
+  return parsing::stripMarkupTags(markup);
 }
 
-std::string FabricRichParser::normalizeInterTagWhitespace(const std::string& html) {
-  return parsing::normalizeInterTagWhitespace(html);
+std::string FabricMarkupParser::normalizeInterTagWhitespace(const std::string& markup) {
+  return parsing::normalizeInterTagWhitespace(markup);
 }
 
-std::vector<std::string> FabricRichParser::extractLinkUrlsFromSegments(
+std::vector<std::string> FabricMarkupParser::extractLinkUrlsFromSegments(
     const std::vector<FabricRichTextSegment>& segments) {
   return parsing::extractLinkUrlsFromSegments(segments);
 }
 
-std::vector<FabricRichTextSegment> FabricRichParser::parseHtmlToSegments(const std::string& html) {
-  return parsing::parseHtmlToSegments(html);
+std::vector<FabricRichTextSegment> FabricMarkupParser::parseMarkupToSegments(const std::string& markup) {
+  return parsing::parseMarkupToSegments(markup);
 }
 
-FabricRichParser::ParseResult FabricRichParser::parseHtmlWithLinkUrls(
-    const std::string& html,
+FabricMarkupParser::ParseResult FabricMarkupParser::parseMarkupWithLinkUrls(
+    const std::string& markup,
     Float baseFontSize,
     Float fontSizeMultiplier,
     bool allowFontScaling,
@@ -45,14 +45,14 @@ FabricRichParser::ParseResult FabricRichParser::parseHtmlWithLinkUrls(
 
   ParseResult result;
 
-  if (html.empty()) {
+  if (markup.empty()) {
     return result;
   }
 
   // Normalize inter-tag whitespace before parsing
-  std::string normalizedHtml = normalizeInterTagWhitespace(html);
+  std::string normalizedMarkup = normalizeInterTagWhitespace(markup);
 
-  auto segments = parsing::parseHtmlToSegments(normalizedHtml);
+  auto segments = parsing::parseMarkupToSegments(normalizedMarkup);
 
   if (segments.empty()) {
     return result;
@@ -71,8 +71,8 @@ FabricRichParser::ParseResult FabricRichParser::parseHtmlWithLinkUrls(
   return result;
 }
 
-AttributedString FabricRichParser::parseHtmlToAttributedString(
-    const std::string& html,
+AttributedString FabricMarkupParser::parseMarkupToAttributedString(
+    const std::string& markup,
     Float baseFontSize,
     Float fontSizeMultiplier,
     bool allowFontScaling,
@@ -85,8 +85,8 @@ AttributedString FabricRichParser::parseHtmlToAttributedString(
     int32_t color,
     const std::string& tagStyles) {
 
-  auto result = parseHtmlWithLinkUrls(
-      html, baseFontSize, fontSizeMultiplier, allowFontScaling,
+  auto result = parseMarkupWithLinkUrls(
+      markup, baseFontSize, fontSizeMultiplier, allowFontScaling,
       maxFontSizeMultiplier, lineHeight, fontWeight, fontFamily,
       fontStyle, letterSpacing, color, tagStyles);
   return result.attributedString;

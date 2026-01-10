@@ -123,8 +123,8 @@ On Android, this state is serialized to a `MapBuffer` (an efficient binary forma
 | 1. Component | HTML string + style | Props object | `src/components/RichText.tsx` |
 | 2. Adapter | Props | Native props | `src/adapters/native.tsx` |
 | 3. Sanitize | Raw HTML | Safe HTML | Platform-specific sanitizers |
-| 4. Parse | Safe HTML | Text segments | `cpp/FabricRichParser.cpp` |
-| 5. Build | Segments | `AttributedString` | `cpp/FabricRichParser.cpp` |
+| 4. Parse | Safe markup | Text segments | `cpp/FabricMarkupParser.cpp` |
+| 5. Build | Segments | `AttributedString` | `cpp/FabricMarkupParser.cpp` |
 | 6. Measure | `AttributedString` | Size | `TextLayoutManager` |
 | 7. State | `AttributedString` + URLs | State data | Platform ShadowNode |
 | 8. Convert | State data | Platform text | `FabricRichFragmentParser` |
@@ -240,8 +240,8 @@ See [docs/nativewind-setup.md](../nativewind-setup.md) for configuration.
 
 | File | Purpose |
 |------|---------|
-| `FabricRichParser.h` | HTML parser interface |
-| `FabricRichParser.cpp` | Cross-platform HTML parsing implementation |
+| `FabricMarkupParser.h` | Markup parser interface |
+| `FabricMarkupParser.cpp` | Cross-platform markup parsing implementation |
 
 #### iOS Native Layer (`ios/`)
 

@@ -1,27 +1,27 @@
 /**
- * FabricHTMLListsTests.mm
+ * FabricRichListsTests.mm
  *
- * Tests for list parsing functionality in FabricHTMLParser.
- * Mirrors Android FabricHTMLListsTest.kt for cross-platform parity.
+ * Tests for list parsing functionality in FabricMarkupParser.
+ * Mirrors Android FabricRichListsTest.kt for cross-platform parity.
  */
 
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
-#import "../../../cpp/FabricHTMLParser.h"
-#import "../../../ios/FabricHTMLFragmentParser.h"
+#import "../../../cpp/FabricMarkupParser.h"
+#import "../../../ios/FabricRichFragmentParser.h"
 
 using namespace facebook::react;
 
-@interface FabricHTMLListsTests : XCTestCase
+@interface FabricRichListsTests : XCTestCase
 @end
 
-@implementation FabricHTMLListsTests
+@implementation FabricRichListsTests
 
 #pragma mark - Helper Methods
 
 - (AttributedString)parseHTML:(NSString *)html {
     std::string htmlStr = [html UTF8String] ?: "";
-    return FabricHTMLParser::parseHtmlToAttributedString(
+    return FabricMarkupParser::parseMarkupToAttributedString(
         htmlStr, 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 }
 

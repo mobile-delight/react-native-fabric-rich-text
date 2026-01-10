@@ -4,17 +4,17 @@ import type { RichTextNativeProps } from '../../types/RichTextNativeProps';
 describe('RichTextNativeProps', () => {
   it('should extend ViewProps', () => {
     const props: RichTextNativeProps = {
-      html: '<p>Test</p>',
+      text: '<p>Test</p>',
     };
     const viewProps: ViewProps = props;
     expect(viewProps).toBeDefined();
   });
 
-  it('should require html property as string', () => {
+  it('should require text property as string', () => {
     const props: RichTextNativeProps = {
-      html: '<p>Test</p>',
+      text: '<p>Test</p>',
     };
-    expect(typeof props.html).toBe('string');
+    expect(typeof props.text).toBe('string');
   });
 
   it('should accept optional style property as TextStyle', () => {
@@ -23,7 +23,7 @@ describe('RichTextNativeProps', () => {
       fontWeight: 'bold',
     };
     const props: RichTextNativeProps = {
-      html: '<p>Test</p>',
+      text: '<p>Test</p>',
       style,
     };
     expect(props.style).toBe(style);
@@ -31,7 +31,7 @@ describe('RichTextNativeProps', () => {
 
   it('should accept optional testID property as string', () => {
     const props: RichTextNativeProps = {
-      html: '<p>Test</p>',
+      text: '<p>Test</p>',
       testID: 'test-id',
     };
     expect(props.testID).toBe('test-id');
@@ -39,11 +39,11 @@ describe('RichTextNativeProps', () => {
 
   it('should work with all properties combined', () => {
     const props: RichTextNativeProps = {
-      html: '<p>Test</p>',
+      text: '<p>Test</p>',
       style: { fontSize: 14 },
       testID: 'my-test',
     };
-    expect(props.html).toBeDefined();
+    expect(props.text).toBeDefined();
     expect(props.style).toBeDefined();
     expect(props.testID).toBeDefined();
   });

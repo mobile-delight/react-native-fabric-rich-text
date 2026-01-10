@@ -73,7 +73,7 @@ function addLinkPositionInfo(
 }
 
 export default function RichText({
-  html,
+  text,
   style,
   className,
   testID,
@@ -125,20 +125,20 @@ export default function RichText({
     [onLinkPress]
   );
 
-  if (!html) {
+  if (!text) {
     return null;
   }
 
-  const trimmedHtml = html.trim();
-  if (!trimmedHtml) {
+  const trimmedText = text.trim();
+  if (!trimmedText) {
     return null;
   }
 
-  const sanitizedHtml = sanitize(trimmedHtml);
+  const sanitizedText = sanitize(trimmedText);
   const cssStyle = convertStyle(style);
 
-  // Count links in the sanitized HTML for accessibility
-  const linkCount = countLinks(sanitizedHtml);
+  // Count links in the sanitized text for accessibility
+  const linkCount = countLinks(sanitizedText);
 
   // Apply CSS line-clamp for truncation when numberOfLines > 0
   // The line-clamp styles must be applied directly to the text-containing elements,
@@ -161,26 +161,26 @@ export default function RichText({
           textAlign: 'start',
         };
 
-  // When truncating, apply line-clamp styles directly to block elements in the HTML.
+  // When truncating, apply line-clamp styles directly to block elements in the markup.
   // This ensures the ellipsis appears correctly at the truncation point.
   const lineClampStyles = `display:-webkit-box;-webkit-line-clamp:${numberOfLines};-webkit-box-orient:vertical;overflow:hidden;margin:0;padding:0;`;
-  let processedHtml = isTruncated
-    ? sanitizedHtml.replace(
+  let processedMarkup = isTruncated
+    ? sanitizedText.replace(
         /<(p|div|h[1-6]|blockquote|li|ul|ol)(\s|>)/gi,
         `<$1 style="${lineClampStyles}"$2`
       )
-    : sanitizedHtml;
+    : sanitizedText;
 
   // Add position info to links for screen readers (WCAG 2.4.4 Link Purpose)
   let descriptionElements = '';
   if (linkCount > 0) {
-    const result = addLinkPositionInfo(processedHtml, linkCount, instanceId);
-    processedHtml = result.processedHtml;
+    const result = addLinkPositionInfo(processedMarkup, linkCount, instanceId);
+    processedMarkup = result.processedHtml;
     descriptionElements = result.descriptionElements;
   }
 
   // Combine content with hidden description elements
-  const finalHtml = processedHtml + descriptionElements;
+  const finalMarkup = processedMarkup + descriptionElements;
 
   // Build ARIA attributes for screen reader navigation
   const ariaLabel =
@@ -202,8 +202,8 @@ export default function RichText({
       tabIndex={0}
       aria-label={ariaLabel}
       role={role}
-      // nosemgrep: no-dangerous-innerhtml-without-sanitization - finalHtml is sanitized via DOMPurify (sanitizedHtml on line 125) with only safe accessibility attributes added
-      dangerouslySetInnerHTML={{ __html: finalHtml }}
+      // nosemgrep: no-dangerous-innerhtml-without-sanitization - finalMarkup is sanitized via DOMPurify (sanitizedText above) with only safe accessibility attributes added
+      dangerouslySetInnerHTML={{ __html: finalMarkup }}
     />
   );
 }

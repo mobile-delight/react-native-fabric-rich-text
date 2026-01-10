@@ -8,18 +8,18 @@ jest.mock('../../adapters/native', () => {
   return {
     RichTextNative: jest.fn(
       ({
-        html,
+        text,
         style,
         testID,
       }: {
-        html: string;
+        text: string;
         style?: object;
         testID?: string;
       }) => {
         // Simple list detection for testing
         // Convert <ul><li>item</li></ul> to bullet points
         // Convert <ol><li>item</li></ol> to numbered lists
-        let processedContent = html;
+        let processedContent = text;
 
         // Handle unordered lists
         const ulMatch = processedContent.match(/<ul[^>]*>([\s\S]*?)<\/ul>/gi);
@@ -63,12 +63,15 @@ jest.mock('../../adapters/native', () => {
         // (SwiftSoup on iOS, OWASP on Android). This simple regex is safe here
         // because test inputs are controlled, not user-supplied.
         // lgtm[js/incomplete-multi-character-sanitization]
-        const text = processedContent.replace(/<\/?[a-z][a-z0-9]*[^>]*>/gi, '');
+        const displayText = processedContent.replace(
+          /<\/?[a-z][a-z0-9]*[^>]*>/gi,
+          ''
+        );
 
         return mockReact.createElement(
           View,
           { testID, accessibilityRole: 'text' },
-          mockReact.createElement(Text, { style }, text)
+          mockReact.createElement(Text, { style }, displayText)
         );
       }
     ),
@@ -86,14 +89,14 @@ describe('Unordered List Rendering (T016)', () => {
   it('renders bullet markers for ul/li elements', () => {
     render(
       <RichText
-        html="<ul><li>First</li><li>Second</li></ul>"
+        text="<ul><li>First</li><li>Second</li></ul>"
         testID="unordered-list"
       />
     );
 
     expect(RichTextNative).toHaveBeenCalledWith(
       expect.objectContaining({
-        html: expect.any(String),
+        text: expect.any(String),
       }),
       undefined
     );
@@ -104,7 +107,7 @@ describe('Unordered List Rendering (T016)', () => {
   });
 
   it('orphaned li renders as plain text without marker', () => {
-    render(<RichText html="<li>Orphan item</li>" testID="orphaned-li" />);
+    render(<RichText text="<li>Orphan item</li>" testID="orphaned-li" />);
 
     // The mock removes list markers for orphaned li
     const text = screen.getByText('Orphan item');
@@ -123,7 +126,7 @@ describe('Ordered List Rendering (T017)', () => {
   it('renders sequential numbers for ol/li elements', () => {
     render(
       <RichText
-        html="<ol><li>First</li><li>Second</li><li>Third</li></ol>"
+        text="<ol><li>First</li><li>Second</li><li>Third</li></ol>"
         testID="ordered-list"
       />
     );
@@ -135,7 +138,7 @@ describe('Ordered List Rendering (T017)', () => {
   it('numbering restarts for separate ol elements', () => {
     render(
       <RichText
-        html="<ol><li>A</li><li>B</li></ol><ol><li>X</li><li>Y</li></ol>"
+        text="<ol><li>A</li><li>B</li></ol><ol><li>X</li><li>Y</li></ol>"
         testID="separate-lists"
       />
     );
@@ -152,7 +155,7 @@ describe('Nested List Rendering (T018)', () => {
   });
 
   it('renders nested lists with increased indentation', () => {
-    const nestedHtml = `
+    const nestedMarkup = `
       <ul>
         <li>Parent</li>
         <li>
@@ -164,12 +167,12 @@ describe('Nested List Rendering (T018)', () => {
     `;
 
     expect(() => {
-      render(<RichText html={nestedHtml} testID="nested-list" />);
+      render(<RichText text={nestedMarkup} testID="nested-list" />);
     }).not.toThrow();
   });
 
   it('caps nesting at 3 levels', () => {
-    const deeplyNested = `
+    const deeplyNestedMarkup = `
       <ul>
         <li>Level 1
           <ul>
@@ -188,14 +191,14 @@ describe('Nested List Rendering (T018)', () => {
     `;
 
     expect(() => {
-      render(<RichText html={deeplyNested} testID="deeply-nested" />);
+      render(<RichText text={deeplyNestedMarkup} testID="deeply-nested" />);
     }).not.toThrow();
   });
 
   it('preserves accessibility with list semantics', () => {
     render(
       <RichText
-        html="<ul><li>Accessible item</li></ul>"
+        text="<ul><li>Accessible item</li></ul>"
         testID="accessible-list"
       />
     );
@@ -211,26 +214,26 @@ describe('Mixed List and Link Content', () => {
   });
 
   it('renders links inside list items', () => {
-    const htmlWithLinksInList = `
+    const markupWithLinksInList = `
       <ul>
         <li><a href="https://example.com">Link in list</a></li>
       </ul>
     `;
 
     expect(() => {
-      render(<RichText html={htmlWithLinksInList} testID="link-in-list" />);
+      render(<RichText text={markupWithLinksInList} testID="link-in-list" />);
     }).not.toThrow();
   });
 
   it('renders bold text inside list items', () => {
-    const htmlWithBoldInList = `
+    const markupWithBoldInList = `
       <ul>
         <li><strong>Bold item</strong></li>
       </ul>
     `;
 
     expect(() => {
-      render(<RichText html={htmlWithBoldInList} testID="bold-in-list" />);
+      render(<RichText text={markupWithBoldInList} testID="bold-in-list" />);
     }).not.toThrow();
   });
 });

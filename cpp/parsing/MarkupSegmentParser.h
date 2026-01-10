@@ -1,8 +1,8 @@
 /**
- * HtmlSegmentParser.h
+ * MarkupSegmentParser.h
  *
- * Core HTML parsing to text segments.
- * Parses HTML into styled text segments with formatting, links, and RTL support.
+ * Core markup parsing to text segments.
+ * Parses markup into styled text segments with formatting, links, and RTL support.
  */
 
 #pragma once
@@ -42,12 +42,12 @@ struct FabricRichTextSegment {
 float getHeadingScale(const std::string& tag);
 
 /**
- * Parse HTML into styled text segments.
+ * Parse markup into styled text segments.
  * Each segment represents a run of text with consistent styling.
- * @param html HTML string to parse
+ * @param markup Markup string to parse
  * @return Vector of text segments with style information
  */
-std::vector<FabricRichTextSegment> parseHtmlToSegments(const std::string& html);
+std::vector<FabricRichTextSegment> parseMarkupToSegments(const std::string& markup);
 
 /**
  * Extract link URLs from segments.
@@ -66,14 +66,14 @@ std::vector<std::string> extractLinkUrlsFromSegments(
 bool isAllowedUrlScheme(const std::string& url);
 
 /**
- * Extract href URL from an HTML tag string.
+ * Extract href URL from a tag string.
  * @param fullTag Full tag string including attributes (e.g., "a href=\"url\"")
  * @return Extracted URL or empty string if not found or blocked
  */
 std::string extractHrefUrl(const std::string& fullTag);
 
 /**
- * Extract dir attribute from an HTML tag string.
+ * Extract dir attribute from a tag string.
  * @param fullTag Full tag string including attributes
  * @return dir attribute value or empty string
  */

@@ -9,7 +9,7 @@ import type { FC } from 'react';
 
 declare module 'react-native-fabric-rich-text' {
   export interface RichTextProps {
-    html: string;
+    text: string;
     style?: React.CSSProperties;
     className?: string;
     testID?: string;
@@ -28,7 +28,7 @@ declare module 'react-native-fabric-rich-text' {
   const defaultExport: FC<RichTextProps>;
   export default defaultExport;
 
-  export function sanitize(html: string | null | undefined): string;
+  export function sanitize(text: string | null | undefined): string;
   export const ALLOWED_TAGS: readonly string[];
   export const ALLOWED_ATTR: readonly string[];
 

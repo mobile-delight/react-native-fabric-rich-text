@@ -1,8 +1,8 @@
 /**
  * TextNormalizer.h
  *
- * Text normalization utilities for HTML parsing.
- * Handles whitespace normalization, HTML stripping, and entity decoding.
+ * Text normalization utilities for markup parsing.
+ * Handles whitespace normalization, markup stripping, and entity decoding.
  */
 
 #pragma once
@@ -49,13 +49,13 @@ bool isInlineFormattingTag(const std::string& tag);
 std::string normalizeInterTagWhitespace(const std::string& html);
 
 /**
- * Strip HTML tags from a string, returning plain text content.
+ * Strip markup tags from a string, returning plain text content.
  * Handles lists, line breaks, and basic formatting.
- * Also decodes common HTML entities.
- * @param html HTML string to strip
+ * Also decodes common entities.
+ * @param markup Markup string to strip
  * @return Plain text content
  */
-std::string stripHtmlTags(const std::string& html);
+std::string stripMarkupTags(const std::string& markup);
 
 /**
  * Normalize a single segment's text (whitespace handling).

@@ -1,44 +1,44 @@
 /**
- * FabricHTMLParserTests.mm
+ * FabricRichParserTests.mm
  *
- * Tests for the shared C++ FabricHTMLParser.
+ * Tests for the shared C++ FabricMarkupParser.
  * Uses XCTest with Obj-C++ to test C++ code directly.
  */
 
 #import <XCTest/XCTest.h>
-#import "../../../cpp/FabricHTMLParser.h"
+#import "../../../cpp/FabricMarkupParser.h"
 
 using namespace facebook::react;
 
-@interface FabricHTMLParserTests : XCTestCase
+@interface FabricRichParserTests : XCTestCase
 @end
 
-@implementation FabricHTMLParserTests
+@implementation FabricRichParserTests
 
 #pragma mark - stripHtmlTags Tests
 
 - (void)testStripHtmlTags_PlainText {
-    std::string result = FabricHTMLParser::stripHtmlTags("Hello world");
+    std::string result = FabricMarkupParser::stripMarkupTags("Hello world");
     XCTAssertTrue(result == "Hello world", @"Expected 'Hello world', got '%s'", result.c_str());
 }
 
 - (void)testStripHtmlTags_SimpleTags {
-    std::string result = FabricHTMLParser::stripHtmlTags("<p>Hello</p>");
+    std::string result = FabricMarkupParser::stripMarkupTags("<p>Hello</p>");
     XCTAssertTrue(result == "Hello", @"Expected 'Hello', got '%s'", result.c_str());
 }
 
 - (void)testStripHtmlTags_NestedTags {
-    std::string result = FabricHTMLParser::stripHtmlTags("<div><p><strong>Bold</strong> text</p></div>");
+    std::string result = FabricMarkupParser::stripMarkupTags("<div><p><strong>Bold</strong> text</p></div>");
     XCTAssertTrue(result == "Bold text", @"Expected 'Bold text', got '%s'", result.c_str());
 }
 
 - (void)testStripHtmlTags_EmptyString {
-    std::string result = FabricHTMLParser::stripHtmlTags("");
+    std::string result = FabricMarkupParser::stripMarkupTags("");
     XCTAssertTrue(result.empty(), @"Expected empty string");
 }
 
 - (void)testStripHtmlTags_PreservesWhitespace {
-    std::string result = FabricHTMLParser::stripHtmlTags("<p>Line 1</p><p>Line 2</p>");
+    std::string result = FabricMarkupParser::stripMarkupTags("<p>Line 1</p><p>Line 2</p>");
     XCTAssertTrue(result.find("Line 1") != std::string::npos, @"Should contain 'Line 1'");
     XCTAssertTrue(result.find("Line 2") != std::string::npos, @"Should contain 'Line 2'");
 }
@@ -46,13 +46,13 @@ using namespace facebook::react;
 #pragma mark - parseHtmlToAttributedString Tests
 
 - (void)testParseHtml_EmptyString {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
     XCTAssertTrue(result.isEmpty());
 }
 
 - (void)testParseHtml_PlainText {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "Hello world", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     XCTAssertFalse(result.isEmpty());
@@ -63,7 +63,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_BoldText {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<strong>Bold</strong>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -80,7 +80,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_ItalicText {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<em>Italic</em>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -97,7 +97,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_NestedFormatting {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<strong><em>Bold Italic</em></strong>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -115,7 +115,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_Heading {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<h1>Heading</h1>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -134,7 +134,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_UnorderedList {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<ul><li>Item 1</li><li>Item 2</li></ul>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -151,7 +151,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_OrderedList {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<ol><li>First</li><li>Second</li></ol>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -167,7 +167,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_FontSizeMultiplier {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "Text", 16.0f, 2.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -176,7 +176,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_DisallowFontScaling {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "Text", 16.0f, 2.0f, false, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -185,7 +185,7 @@ using namespace facebook::react;
 }
 
 - (void)testParseHtml_MaxFontSizeMultiplier {
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "Text", 16.0f, 3.0f, true, 1.5f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -195,18 +195,18 @@ using namespace facebook::react;
 
 - (void)testParseHtml_ForegroundColor {
     int32_t redColor = 0xFFFF0000; // ARGB red
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "Red text", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, redColor, "");
 
     const auto& fragments = result.getFragments();
     XCTAssertGreaterThan(fragments.size(), 0UL);
-    // Color is tested in FabricHTMLFragmentParserTests - just verify parsing succeeds
+    // Color is tested in FabricRichFragmentParserTests - just verify parsing succeeds
     XCTAssertTrue(fragments[0].string == "Red text", @"Expected 'Red text'");
 }
 
 - (void)testParseHtml_LinkWithHrefDefaultColor {
     // Links WITH href should get default blue color and underline
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<a href=\"https://example.com\">Link</a>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -225,7 +225,7 @@ using namespace facebook::react;
 
 - (void)testParseHtml_AnchorWithoutHrefNoLinkStyling {
     // <a> tags WITHOUT href should NOT get link styling (no blue color, no underline)
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<a name=\"anchor\">Anchor</a>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 
     const auto& fragments = result.getFragments();
@@ -246,7 +246,7 @@ using namespace facebook::react;
 - (void)testParseHtml_LinkColorOverride {
     // tagStyles should override default link color
     std::string tagStyles = R"({"a": {"color": "#FF0000"}})";
-    AttributedString result = FabricHTMLParser::parseHtmlToAttributedString(
+    AttributedString result = FabricMarkupParser::parseMarkupToAttributedString(
         "<a href=\"https://example.com\">Red Link</a>", 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, tagStyles);
 
     const auto& fragments = result.getFragments();
@@ -267,25 +267,25 @@ using namespace facebook::react;
 
 - (void)testNormalizeWhitespace_PlainTextUnchanged {
     // Plain text without tags should be unchanged (whitespace collapsing happens in normalizeSegmentText)
-    std::string result = FabricHTMLParser::normalizeInterTagWhitespace("Hello world");
+    std::string result = FabricMarkupParser::normalizeInterTagWhitespace("Hello world");
     XCTAssertTrue(result == "Hello world", @"Expected 'Hello world', got '%s'", result.c_str());
 }
 
 - (void)testNormalizeWhitespace_TrimsLeadingBeforeTag {
     // Leading whitespace before first tag should be trimmed
-    std::string result = FabricHTMLParser::normalizeInterTagWhitespace("  <p>text</p>");
+    std::string result = FabricMarkupParser::normalizeInterTagWhitespace("  <p>text</p>");
     XCTAssertTrue(result == "<p>text</p>", @"Expected '<p>text</p>', got '%s'", result.c_str());
 }
 
 - (void)testNormalizeWhitespace_RemovesWhitespaceAfterBlockTag {
     // Whitespace after block-level closing tag should be removed
-    std::string result = FabricHTMLParser::normalizeInterTagWhitespace("<p>para1</p>   <p>para2</p>");
+    std::string result = FabricMarkupParser::normalizeInterTagWhitespace("<p>para1</p>   <p>para2</p>");
     XCTAssertTrue(result == "<p>para1</p><p>para2</p>", @"Expected '<p>para1</p><p>para2</p>', got '%s'", result.c_str());
 }
 
 - (void)testNormalizeWhitespace_PreservesInlineSpacing {
     // Whitespace after inline tags should be preserved
-    std::string result = FabricHTMLParser::normalizeInterTagWhitespace("<span>hello</span> <span>world</span>");
+    std::string result = FabricMarkupParser::normalizeInterTagWhitespace("<span>hello</span> <span>world</span>");
     XCTAssertTrue(result == "<span>hello</span> <span>world</span>", @"Expected preserved space, got '%s'", result.c_str());
 }
 
@@ -294,7 +294,7 @@ using namespace facebook::react;
 - (void)testPerformance_ShortHTML {
     [self measureBlock:^{
         for (int i = 0; i < 100; i++) {
-            FabricHTMLParser::parseHtmlToAttributedString(
+            FabricMarkupParser::parseMarkupToAttributedString(
                 "<p>Short <strong>text</strong></p>",
                 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
         }
@@ -310,7 +310,7 @@ using namespace facebook::react;
 
     [self measureBlock:^{
         for (int i = 0; i < 10; i++) {
-            FabricHTMLParser::parseHtmlToAttributedString(
+            FabricMarkupParser::parseMarkupToAttributedString(
                 longHtml, 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
         }
     }];

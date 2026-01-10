@@ -8,7 +8,7 @@ describe('tagStyles', () => {
       const tagStyles = { strong: { color: 'red' } };
       const { getByTestId } = render(
         <RichText
-          html="<p>Normal <strong>Bold</strong></p>"
+          text="<p>Normal <strong>Bold</strong></p>"
           tagStyles={tagStyles}
           testID="styled-text"
         />
@@ -21,7 +21,7 @@ describe('tagStyles', () => {
       const tagStyles = { p: { fontSize: 18 } };
       const { getByTestId } = render(
         <RichText
-          html="<p>Paragraph</p>"
+          text="<p>Paragraph</p>"
           tagStyles={tagStyles}
           testID="styled-text"
         />
@@ -32,7 +32,7 @@ describe('tagStyles', () => {
 
     it('handles empty tagStyles object', () => {
       const { getByTestId } = render(
-        <RichText html="<p>Text</p>" tagStyles={{}} testID="styled-text" />
+        <RichText text="<p>Text</p>" tagStyles={{}} testID="styled-text" />
       );
 
       expect(getByTestId('styled-text')).toBeTruthy();
@@ -41,7 +41,7 @@ describe('tagStyles', () => {
     it('handles undefined tagStyles gracefully', () => {
       const { getByTestId } = render(
         <RichText
-          html="<p>Text</p>"
+          text="<p>Text</p>"
           tagStyles={undefined}
           testID="styled-text"
         />
@@ -60,7 +60,7 @@ describe('tagStyles', () => {
       };
       const { getByTestId } = render(
         <RichText
-          html="<p><strong>Bold</strong> and <em>italic</em></p>"
+          text="<p><strong>Bold</strong> and <em>italic</em></p>"
           tagStyles={tagStyles}
           testID="multi-styled"
         />
@@ -80,7 +80,7 @@ describe('tagStyles', () => {
       };
       const { getByTestId } = render(
         <RichText
-          html="<p>Text</p>"
+          text="<p>Text</p>"
           tagStyles={tagStyles as never}
           testID="invalid-styles"
         />
@@ -93,7 +93,7 @@ describe('tagStyles', () => {
       const tagStyles = { customtag: { color: 'red' } };
       const { getByTestId } = render(
         <RichText
-          html="<p>No custom tag here</p>"
+          text="<p>No custom tag here</p>"
           tagStyles={tagStyles}
           testID="no-match"
         />
@@ -109,7 +109,7 @@ describe('className', () => {
     it('accepts className prop', () => {
       const { getByTestId } = render(
         <RichText
-          html="<p>Text</p>"
+          text="<p>Text</p>"
           className="custom-class"
           testID="classed-text"
         />
@@ -121,7 +121,7 @@ describe('className', () => {
     it('accepts multiple space-separated classes', () => {
       const { getByTestId } = render(
         <RichText
-          html="<p>Text</p>"
+          text="<p>Text</p>"
           className="class-one class-two"
           testID="multi-class"
         />
@@ -132,7 +132,7 @@ describe('className', () => {
 
     it('handles empty className string', () => {
       const { getByTestId } = render(
-        <RichText html="<p>Text</p>" className="" testID="empty-class" />
+        <RichText text="<p>Text</p>" className="" testID="empty-class" />
       );
 
       expect(getByTestId('empty-class')).toBeTruthy();
@@ -141,7 +141,7 @@ describe('className', () => {
     it('handles undefined className gracefully', () => {
       const { getByTestId } = render(
         <RichText
-          html="<p>Text</p>"
+          text="<p>Text</p>"
           className={undefined}
           testID="undefined-class"
         />
@@ -156,7 +156,7 @@ describe('className', () => {
       // NativeWind classes like text-lg, text-blue-500, etc.
       const { getByTestId } = render(
         <RichText
-          html="<p>Styled text</p>"
+          text="<p>Styled text</p>"
           className="text-lg text-blue-500 font-bold"
           testID="nativewind-classes"
         />
@@ -172,7 +172,7 @@ describe('Combined Props', () => {
     const tagStyles = { strong: { color: 'red' } };
     const { getByTestId } = render(
       <RichText
-        html="<p><strong>Bold</strong></p>"
+        text="<p><strong>Bold</strong></p>"
         tagStyles={tagStyles}
         className="custom-class"
         testID="combined"
@@ -187,7 +187,7 @@ describe('Combined Props', () => {
     const tagStyles = { p: { color: 'green' } };
     const { getByTestId } = render(
       <RichText
-        html="<p>Full featured</p>"
+        text="<p>Full featured</p>"
         style={style}
         tagStyles={tagStyles}
         className="extra-class"

@@ -24,76 +24,76 @@ export default function TruncationPage() {
         title="Single Line Truncation"
         description="Limit text to exactly 1 line with ellipsis"
         code={`<RichText
-  html="${longParagraph}"
+  text="${longParagraph}"
   numberOfLines={1}
 />`}
       >
-        <RichText html={longParagraph} numberOfLines={1} />
+        <RichText text={longParagraph} numberOfLines={1} />
       </DemoSection>
 
       <DemoSection
         title="Two Line Truncation"
         description="Limit text to 2 lines"
         code={`<RichText
-  html="${longParagraph}"
+  text="${longParagraph}"
   numberOfLines={2}
 />`}
       >
-        <RichText html={longParagraph} numberOfLines={2} />
+        <RichText text={longParagraph} numberOfLines={2} />
       </DemoSection>
 
       <DemoSection
         title="Three Line Truncation"
         description="Limit text to 3 lines"
         code={`<RichText
-  html="${longParagraph}"
+  text="${longParagraph}"
   numberOfLines={3}
 />`}
       >
-        <RichText html={longParagraph} numberOfLines={3} />
+        <RichText text={longParagraph} numberOfLines={3} />
       </DemoSection>
 
       <DemoSection
         title="No Truncation (Full Text)"
         description="Without numberOfLines prop, text displays fully"
         code={`<RichText
-  html="${longParagraph}"
+  text="${longParagraph}"
 />`}
       >
-        <RichText html={longParagraph} />
+        <RichText text={longParagraph} />
       </DemoSection>
 
       <DemoSection
         title="Truncation with Formatted Text"
         description="Truncation preserves HTML formatting"
         code={`<RichText
-  html="${formattedContent}"
+  text="${formattedContent}"
   numberOfLines={2}
 />`}
       >
-        <RichText html={formattedContent} numberOfLines={2} />
+        <RichText text={formattedContent} numberOfLines={2} />
       </DemoSection>
 
       <DemoSection
         title="Truncation with Multiple Paragraphs"
         description="Truncation works across multiple paragraph elements"
         code={`<RichText
-  html="${multiParagraph}"
+  text="${multiParagraph}"
   numberOfLines={2}
 />`}
       >
-        <RichText html={multiParagraph} numberOfLines={2} />
+        <RichText text={multiParagraph} numberOfLines={2} />
       </DemoSection>
 
       <DemoSection
         title="numberOfLines={0} (No Truncation)"
         description="Setting numberOfLines to 0 disables truncation"
         code={`<RichText
-  html="${longParagraph}"
+  text="${longParagraph}"
   numberOfLines={0}
 />`}
       >
-        <RichText html={longParagraph} numberOfLines={0} />
+        <RichText text={longParagraph} numberOfLines={0} />
       </DemoSection>
     </div>
   );

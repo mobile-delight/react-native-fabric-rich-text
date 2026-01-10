@@ -1,27 +1,27 @@
 /**
- * FabricHTMLLinksTests.mm
+ * FabricRichLinksTests.mm
  *
- * Tests for link parsing functionality in FabricHTMLParser.
- * Mirrors Android FabricHTMLLinksTest.kt for cross-platform parity.
+ * Tests for link parsing functionality in FabricMarkupParser.
+ * Mirrors Android FabricRichLinksTest.kt for cross-platform parity.
  */
 
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
-#import "../../../cpp/FabricHTMLParser.h"
-#import "../../../ios/FabricHTMLFragmentParser.h"
+#import "../../../cpp/FabricMarkupParser.h"
+#import "../../../ios/FabricRichFragmentParser.h"
 
 using namespace facebook::react;
 
-@interface FabricHTMLLinksTests : XCTestCase
+@interface FabricRichLinksTests : XCTestCase
 @end
 
-@implementation FabricHTMLLinksTests
+@implementation FabricRichLinksTests
 
 #pragma mark - Helper Methods
 
-- (FabricHTMLParser::ParseResult)parseHTMLWithLinks:(NSString *)html {
+- (FabricMarkupParser::ParseResult)parseHTMLWithLinks:(NSString *)html {
     std::string htmlStr = [html UTF8String] ?: "";
-    return FabricHTMLParser::parseHtmlWithLinkUrls(
+    return FabricMarkupParser::parseMarkupWithLinkUrls(
         htmlStr, 16.0f, 1.0f, true, 0.0f, 0.0f, "", "", "", 0.0f, 0xFF000000, "");
 }
 
@@ -31,7 +31,7 @@ using namespace facebook::react;
 
 - (NSAttributedString *)parseToNSAttributedString:(NSString *)html {
     auto result = [self parseHTMLWithLinks:html];
-    return [FabricHTMLFragmentParser buildAttributedStringFromCppAttributedString:result.attributedString
+    return [FabricRichFragmentParser buildAttributedStringFromCppAttributedString:result.attributedString
                                                                      withLinkUrls:result.linkUrls];
 }
 

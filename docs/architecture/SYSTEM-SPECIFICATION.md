@@ -107,7 +107,7 @@ Raw HTML → Whitespace Normalization → Allowlist Sanitization → C++ Parsing
 
 1. **Whitespace Normalization**: Remove inter-tag whitespace from JSX formatting
 2. **Allowlist Sanitization**: Only allowed tags/attributes pass through
-3. **C++ Parsing**: `FabricRichParser` converts to React Native's `AttributedString`
+3. **C++ Parsing**: `FabricMarkupParser` converts to React Native's `AttributedString`
 4. **Platform Rendering**: Convert to NSAttributedString (iOS) or Spannable (Android)
 
 **Allowed Content (defined in `/src/core/constants.ts`):**
@@ -237,16 +237,16 @@ The shared C++ layer ensures:
 
 ### How It Works
 
-**FabricRichParser Interface:**
+**FabricMarkupParser Interface:**
 
 ```cpp
-// FabricRichParser.h
-class FabricRichParser {
+// FabricMarkupParser.h
+class FabricMarkupParser {
 public:
-  static std::string stripHtmlTags(const std::string& html);
+  static std::string stripMarkupTags(const std::string& markup);
 
-  static ParseResult parseHtmlWithLinkUrls(
-    const std::string& html,
+  static ParseResult parseMarkupWithLinkUrls(
+    const std::string& markup,
     Float baseFontSize,
     Float fontSizeMultiplier,
     bool allowFontScaling,
@@ -300,8 +300,8 @@ struct AttributedString {
 
 | File | Purpose |
 |------|---------|
-| `/cpp/FabricRichParser.h` | Parser interface and types |
-| `/cpp/FabricRichParser.cpp` | HTML parsing implementation |
+| `/cpp/FabricMarkupParser.h` | Parser interface and types |
+| `/cpp/FabricMarkupParser.cpp` | Markup parsing implementation |
 
 ---
 
