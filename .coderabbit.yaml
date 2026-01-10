@@ -1,22 +1,35 @@
-# CodeRabbit Configuration
-# Profile: Chill on styling, strict on security and constitution
-# https://docs.coderabbit.ai/reference/configuration
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 
-language: en-US
+# CodeRabbit Configuration - Security-First Review Policy
+# Priority: Security > Logic/Correctness > Design Principles
+
+language: "en-US"
+early_access: false
+
+# Strict, security-focused tone
+tone_instructions: "Security-first reviewer. Priority: 1) Security (OWASP/CWE), 2) Logic/correctness, 3) DRY/YAGNI. Be direct, cite standards."
 
 reviews:
-  # Chill profile - less nitpicky on style
-  profile: chill
+  # Assertive profile for thorough, detailed feedback
+  profile: "assertive"
 
-  # Disable extra fluff
+  # Request changes workflow for critical security issues
+  request_changes_workflow: true
+
+  # Disable summaries and diagrams
   high_level_summary: false
   high_level_summary_in_walkthrough: false
   poem: false
+
+  # Detailed review status
   review_status: true
   collapse_walkthrough: true
-  changed_files_summary: false
 
-  # Auto-review settings
+  # Disable extra context features
+  changed_files_summary: false
+  sequence_diagrams: false
+
+  # Auto-review configuration
   auto_review:
     enabled: true
     auto_incremental_review: true
@@ -24,6 +37,7 @@ reviews:
     ignore_title_keywords:
       - "WIP"
       - "DO NOT MERGE"
+      - "DO NOT REVIEW"
       - "DRAFT"
 
   # Path filters - ignore build artifacts and dependencies
@@ -38,136 +52,103 @@ reviews:
     - "!**/Pods/**"
     - "!**/generated/**"
     - "!**/.yarn/**"
+    - "!**/DerivedData/**"
 
-  # Security-focused path instructions
+  # Security-focused path instructions (max 245 chars each)
   path_instructions:
     # PROTECTED FILES - Changes require maintainer approval
     - path: ".specify/memory/constitution.md"
-      instructions: |
-        PROTECTED FILE - ALWAYS REJECT
-
-        This is the project constitution. Changes to this file MUST be rejected
-        in code review. Constitution amendments require:
-        1. Separate discussion issue or RFC
-        2. Explicit maintainer approval outside of normal PR flow
-        3. Version bump and ratification date update
-
-        DO NOT approve changes to this file through normal PR review.
-        Request that the author open a separate governance discussion.
+      instructions: "PROTECTED FILE - REJECT. Constitution changes need separate RFC, maintainer approval outside PR flow, version bump. Do not approve here."
 
     - path: "AGENTS.md"
-      instructions: |
-        PROTECTED FILE - ALWAYS REJECT
+      instructions: "PROTECTED FILE - REJECT. AI agent guidelines tied to constitution. Changes need separate governance discussion, not PR approval."
 
-        This file defines AI agent operating guidelines aligned with the constitution.
-        Changes to this file MUST be rejected in code review.
-
-        Amendments require:
-        1. Corresponding constitution update (if principles change)
-        2. Explicit maintainer approval outside of normal PR flow
-
-        DO NOT approve changes to this file through normal PR review.
-        Request that the author open a separate governance discussion.
-
+    # TypeScript source - XSS prevention critical
     - path: "src/**/*.{ts,tsx}"
-      instructions: |
-        SECURITY CRITICAL - HTML Text Rendering Library
-
-        This library renders HTML content. XSS prevention is paramount.
-
-        MUST FLAG AS BLOCKING:
-        - Any use of dangerouslySetInnerHTML without DOMPurify sanitization
-        - Any innerHTML assignment without sanitization
-        - Any eval(), Function(), or new Function() with dynamic content
-        - Any setTimeout/setInterval with string arguments
-        - Missing href validation for javascript:, data:, or vbscript: protocols
-        - Event handler injection vulnerabilities (onclick, onerror, onload, etc.)
-        - Template literal injection in HTML contexts
-        - Improper HTML entity encoding
-
-        MUST VERIFY:
-        - DOMPurify.sanitize() is called before any HTML rendering
-        - URL schemes are validated against allowlist (http, https, mailto, tel)
-        - No user input reaches innerHTML, outerHTML, or insertAdjacentHTML
-        - All HTML attributes are properly escaped
-
-        Reference: OWASP XSS Prevention Cheat Sheet
+      instructions: "XSS CRITICAL: Block innerHTML without DOMPurify, eval/Function, unsafe href protocols (javascript:, data:). Verify sanitization before render."
 
     - path: "src/core/**/*.{ts,tsx}"
-      instructions: |
-        CORE MODULE - Parser and Sanitizer
+      instructions: "CORE SECURITY: Require allowlist sanitization, strip event handlers, validate URLs. No platform-specific code per constitution."
 
-        This is the security-critical core. Extra scrutiny required.
-
-        Constitution violations to check:
-        - No platform-specific code allowed (Principle X)
-        - Must use allowlist-based sanitization
-        - Must strip all event handler attributes
-        - Must validate all URLs
-
+    # iOS Native Code
     - path: "**/*.{swift,m,mm,h}"
-      instructions: |
-        iOS Native Code Review
+      instructions: "iOS: Check retain cycles, thread safety for UI, nil handling, NSAttributedString security. No arbitrary HTML interpretation."
 
-        Check for:
-        - Memory safety issues (retain cycles, dangling pointers)
-        - Thread safety in UI updates
-        - Proper nil handling
-        - NSAttributedString security (no arbitrary HTML interpretation)
-
+    # Android Native Code
     - path: "**/*.{kt,java}"
-      instructions: |
-        Android Native Code Review
+      instructions: "Android: Check context leaks, main thread UI updates, Spannable security, null safety. No arbitrary HTML interpretation."
 
-        Check for:
-        - Memory leaks (context references, handlers)
-        - Thread safety (UI updates on main thread)
-        - Spannable security (no arbitrary HTML interpretation)
-        - Proper null safety
+    # C++ Code
+    - path: "**/*.{cpp,hpp,h}"
+      instructions: "C++: Check buffer overflows, memory leaks, null derefs, RAII patterns. Verify string handling is bounds-checked."
 
-  # Tools configuration
+    # Test files
+    - path: "**/*.test.{ts,tsx,swift,kt}"
+      instructions: "Tests: Verify security test coverage for auth/sanitization. Check assertions are meaningful. Flag duplicated setup code."
+
+    # Configuration files
+    - path: "*.{json,yaml,yml}"
+      instructions: "Config: Check for exposed secrets/API keys, secure defaults, no debug settings in prod. Validate dependency versions."
+
+    # GitHub workflows
+    - path: ".github/workflows/**/*.{yml,yaml}"
+      instructions: "CI/CD: Verify secrets handling, least-privilege permissions, pinned action versions, no untrusted code execution."
+
+    # Package dependencies
+    - path: "package*.json"
+      instructions: "Deps: Flag known vulnerabilities, outdated security patches, typosquatting risks. Minimize attack surface."
+
+  # Enable security and quality tools
   tools:
-    # Security scanners - ENABLED
+    github-checks:
+      enabled: true
+    shellcheck:
+      enabled: true
+    biome:
+      enabled: true
+    yamllint:
+      enabled: true
     gitleaks:
       enabled: true
     semgrep:
       enabled: true
-
-    # Linters - enabled but won't block on style
-    eslint:
-      enabled: true
-    biome:
+    checkov:
       enabled: true
 
-    # Language tools - relaxed settings
-    languagetool:
-      enabled: false  # Don't nitpick grammar in code comments
-
-    # Markdown linting - disabled (we don't want doc nitpicks)
-    markdownlint:
-      enabled: false
-
-  # Disable finishing touches (no auto-generated docstrings or tests)
+  # Disable auto-generated content
   finishing_touches:
     docstrings:
       enabled: false
     unit_tests:
       enabled: false
 
-# Knowledge base - constitution as code guidelines
+# Chat configuration
+chat:
+  auto_reply: true
+
+# Knowledge base - learn from security issues
 knowledge_base:
   opt_out: false
-  learnings:
-    scope: auto
-  issues:
-    scope: auto
-  pull_requests:
-    scope: auto
+
+  # Enable web search for security advisories
+  web_search:
+    enabled: true
+
+  # Learn from code guidelines
   code_guidelines:
     enabled: true
     filePatterns:
       - ".specify/memory/constitution.md"
+      - "AGENTS.md"
 
-# Chat settings
-chat:
-  auto_reply: true
+  # Learn from previous issues
+  learnings:
+    scope: "global"
+
+  # Track security-related issues
+  issues:
+    scope: "global"
+
+  # Learn from PRs
+  pull_requests:
+    scope: "global"
