@@ -220,7 +220,11 @@ function StyleSheetExamples({
           animationDuration={0.3}
           testID="expand-collapse-demo"
         />
-        <TouchableOpacity accessibilityRole="button" onPress={toggleExpanded} activeOpacity={0.7}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          onPress={toggleExpanded}
+          activeOpacity={0.7}
+        >
           <Text style={styles.tapHint}>
             Tap to {expandedText ? 'collapse' : 'expand'}
           </Text>
@@ -236,7 +240,11 @@ function StyleSheetExamples({
           animationDuration={0.2}
           testID="dynamic-lines-demo"
         />
-        <TouchableOpacity accessibilityRole="button" onPress={cycleNumberOfLines} activeOpacity={0.7}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          onPress={cycleNumberOfLines}
+          activeOpacity={0.7}
+        >
           <Text style={styles.tapHint}>
             Lines: {numberOfLinesDemo === 0 ? 'unlimited' : numberOfLinesDemo}{' '}
             (tap)
@@ -262,9 +270,13 @@ function StyleSheetExamples({
           <Text style={styles.measurementText}>
             Visible: {measurementData?.visibleLineCount ?? '—'} lines
           </Text>
-          {measurementData && measurementData.measuredLineCount > measurementData.visibleLineCount && (
-            <Text style={styles.truncatedIndicator}>Content is truncated</Text>
-          )}
+          {measurementData &&
+            measurementData.measuredLineCount >
+              measurementData.visibleLineCount && (
+              <Text style={styles.truncatedIndicator}>
+                Content is truncated
+              </Text>
+            )}
         </View>
       </View>
 
@@ -564,7 +576,11 @@ function NativeWindExamples({
           animationDuration={0.3}
           testID="nw-expand-collapse-demo"
         />
-        <TouchableOpacity accessibilityRole="button" onPress={toggleExpanded} activeOpacity={0.7}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          onPress={toggleExpanded}
+          activeOpacity={0.7}
+        >
           <Text style={styles.tapHint}>
             Tap to {expandedText ? 'collapse' : 'expand'}
           </Text>
@@ -580,7 +596,11 @@ function NativeWindExamples({
           animationDuration={0.2}
           testID="nw-dynamic-lines-demo"
         />
-        <TouchableOpacity accessibilityRole="button" onPress={cycleNumberOfLines} activeOpacity={0.7}>
+        <TouchableOpacity
+          accessibilityRole="button"
+          onPress={cycleNumberOfLines}
+          activeOpacity={0.7}
+        >
           <Text style={styles.tapHint}>
             Lines: {numberOfLinesDemo === 0 ? 'unlimited' : numberOfLinesDemo}{' '}
             (tap)
@@ -606,9 +626,13 @@ function NativeWindExamples({
           <Text style={styles.measurementText}>
             Visible: {measurementData?.visibleLineCount ?? '—'} lines
           </Text>
-          {measurementData && measurementData.measuredLineCount > measurementData.visibleLineCount && (
-            <Text style={styles.truncatedIndicator}>Content is truncated</Text>
-          )}
+          {measurementData &&
+            measurementData.measuredLineCount >
+              measurementData.visibleLineCount && (
+              <Text style={styles.truncatedIndicator}>
+                Content is truncated
+              </Text>
+            )}
         </View>
       </View>
 

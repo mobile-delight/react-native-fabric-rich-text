@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SIMULATOR_NAME="iPhoneTest"
-SCHEME="FabricHtmlTextTests"
+SCHEME="FabricRichTextExample"
 
 # Navigate to the example app
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -123,8 +123,8 @@ echo "=== Building Dependencies (Stage 1) ==="
 # and is cached by irgaly/xcode-cache action in CI
 if command -v xcbeautify &> /dev/null; then
     xcodebuild build \
-        -workspace FabricHtmlTextExample.xcworkspace \
-        -scheme "Pods-FabricHtmlTextExample" \
+        -workspace FabricRichTextExample.xcworkspace \
+        -scheme "Pods-FabricRichTextExample" \
         -destination "platform=iOS Simulator,id=$UDID" \
         -derivedDataPath "$DERIVED_DATA_PATH" \
         2>&1 | xcbeautify --is-ci
@@ -135,8 +135,8 @@ if command -v xcbeautify &> /dev/null; then
 else
     echo "Note: Install xcbeautify for prettier output (brew install xcbeautify)"
     xcodebuild build \
-        -workspace FabricHtmlTextExample.xcworkspace \
-        -scheme "Pods-FabricHtmlTextExample" \
+        -workspace FabricRichTextExample.xcworkspace \
+        -scheme "Pods-FabricRichTextExample" \
         -destination "platform=iOS Simulator,id=$UDID" \
         -derivedDataPath "$DERIVED_DATA_PATH"
     if [[ $? -ne 0 ]]; then
@@ -150,7 +150,7 @@ echo "=== Running Tests (Stage 2) ==="
 # Run tests - pods cached from Stage 1, only incremental compilation needed
 if command -v xcbeautify &> /dev/null; then
     xcodebuild test \
-        -workspace FabricHtmlTextExample.xcworkspace \
+        -workspace FabricRichTextExample.xcworkspace \
         -scheme "$SCHEME" \
         -destination "platform=iOS Simulator,id=$UDID" \
         -derivedDataPath "$DERIVED_DATA_PATH" \
@@ -161,7 +161,7 @@ if command -v xcbeautify &> /dev/null; then
     fi
 else
     xcodebuild test \
-        -workspace FabricHtmlTextExample.xcworkspace \
+        -workspace FabricRichTextExample.xcworkspace \
         -scheme "$SCHEME" \
         -destination "platform=iOS Simulator,id=$UDID" \
         -derivedDataPath "$DERIVED_DATA_PATH" \

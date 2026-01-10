@@ -25,7 +25,7 @@ buildscript {
 }
 
 // Detect standalone mode (running tests directly from library)
-def isStandalone = rootProject.name == 'react-native-fabric-html-text'
+def isStandalone = rootProject.name == 'react-native-fabric-rich-text'
 
 apply plugin: "com.android.library"
 apply plugin: "kotlin-android"

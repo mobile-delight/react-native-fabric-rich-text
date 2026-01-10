@@ -79,9 +79,7 @@ export interface RichTextProps {
    *
    * @param data - Contains measured and visible line counts
    */
-  onRichTextMeasurement?:
-    | ((data: RichTextMeasurementData) => void)
-    | undefined;
+  onRichTextMeasurement?: ((data: RichTextMeasurementData) => void) | undefined;
 }
 
 export default function RichText({

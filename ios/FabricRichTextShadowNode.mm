@@ -7,61 +7,6 @@
 
 #import "FabricRichTextShadowNode.h"
 #import "../cpp/FabricRichParser.h"
-#import "../cpp/FabricRichParserLibxml2.h"
-
-// ============================================================================
-// Parser Selection Flags
-// Set USE_LIBXML2_PARSER to 1 to use libxml2 parser instead of hand-rolled
-// Set COMPARE_PARSERS to 1 to run both parsers and log differences (debug only)
-// ============================================================================
-#define USE_LIBXML2_PARSER 0
-#define COMPARE_PARSERS 0
-
-#if COMPARE_PARSERS
-#import <os/log.h>
-
-static void compareParseResults(
-    const facebook::react::FabricRichParser::ParseResult& result1,
-    const facebook::react::FabricRichParser::ParseResult& result2,
-    const std::string& html) {
-
-  bool hasDifferences = false;
-
-  // Compare fragment counts
-  auto frags1 = result1.attributedString.getFragments();
-  auto frags2 = result2.attributedString.getFragments();
-
-  if (frags1.size() != frags2.size()) {
-    os_log_error(OS_LOG_DEFAULT, "PARSER_COMPARE: Fragment count mismatch - original: %zu, libxml2: %zu",
-                 frags1.size(), frags2.size());
-    hasDifferences = true;
-  }
-
-  // Compare link URLs
-  if (result1.linkUrls.size() != result2.linkUrls.size()) {
-    os_log_error(OS_LOG_DEFAULT, "PARSER_COMPARE: Link URL count mismatch - original: %zu, libxml2: %zu",
-                 result1.linkUrls.size(), result2.linkUrls.size());
-    hasDifferences = true;
-  } else {
-    for (size_t i = 0; i < result1.linkUrls.size(); ++i) {
-      if (result1.linkUrls[i] != result2.linkUrls[i]) {
-        os_log_error(OS_LOG_DEFAULT, "PARSER_COMPARE: Link URL mismatch at index %zu", i);
-        hasDifferences = true;
-      }
-    }
-  }
-
-  // Compare accessibility labels
-  if (result1.accessibilityLabel != result2.accessibilityLabel) {
-    os_log_error(OS_LOG_DEFAULT, "PARSER_COMPARE: Accessibility label mismatch");
-    hasDifferences = true;
-  }
-
-  if (!hasDifferences) {
-    os_log_info(OS_LOG_DEFAULT, "PARSER_COMPARE: Results match for HTML length %zu", html.size());
-  }
-}
-#endif
 
 #import <react/renderer/components/view/ViewShadowNode.h>
 #import <react/renderer/textlayoutmanager/TextLayoutManager.h>
@@ -118,61 +63,6 @@ AttributedString FabricRichTextShadowNode::parseHtmlToAttributedString(
     int32_t color = props.color;
 
     // Call parser with all props - get link URLs too
-#if COMPARE_PARSERS
-    // Run both parsers and compare results
-    auto originalResult = FabricRichParser::parseHtmlWithLinkUrls(
-        sanitizedHtmlStr,
-        baseFontSize,
-        fontSizeMultiplier,
-        allowFontScaling,
-        maxFontSizeMultiplier,
-        lineHeight,
-        props.fontWeight,
-        props.fontFamily,
-        props.fontStyle,
-        props.letterSpacing,
-        color,
-        props.tagStyles);
-
-    auto libxml2Result = FabricRichParserLibxml2::parseHtmlWithLinkUrls(
-        sanitizedHtmlStr,
-        baseFontSize,
-        fontSizeMultiplier,
-        allowFontScaling,
-        maxFontSizeMultiplier,
-        lineHeight,
-        props.fontWeight,
-        props.fontFamily,
-        props.fontStyle,
-        props.letterSpacing,
-        color,
-        props.tagStyles);
-
-    compareParseResults(originalResult, libxml2Result, sanitizedHtmlStr);
-
-    // Use the result based on USE_LIBXML2_PARSER flag
-    #if USE_LIBXML2_PARSER
-    auto& parseResult = libxml2Result;
-    #else
-    auto& parseResult = originalResult;
-    #endif
-#elif USE_LIBXML2_PARSER
-    // Use libxml2 parser only
-    auto parseResult = FabricRichParserLibxml2::parseHtmlWithLinkUrls(
-        sanitizedHtmlStr,
-        baseFontSize,
-        fontSizeMultiplier,
-        allowFontScaling,
-        maxFontSizeMultiplier,
-        lineHeight,
-        props.fontWeight,
-        props.fontFamily,
-        props.fontStyle,
-        props.letterSpacing,
-        color,
-        props.tagStyles);
-#else
-    // Use original hand-rolled parser
     auto parseResult = FabricRichParser::parseHtmlWithLinkUrls(
         sanitizedHtmlStr,
         baseFontSize,
@@ -186,7 +76,6 @@ AttributedString FabricRichTextShadowNode::parseHtmlToAttributedString(
         props.letterSpacing,
         color,
         props.tagStyles);
-#endif
 
     _linkUrls = std::move(parseResult.linkUrls);
     _accessibilityLabel = std::move(parseResult.accessibilityLabel);

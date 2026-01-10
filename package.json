@@ -6,7 +6,9 @@
   "types": "./lib/typescript/src/index.d.ts",
   "typesVersions": {
     "*": {
-      "nativewind": ["./lib/typescript/src/nativewind.d.ts"]
+      "nativewind": [
+        "./lib/typescript/src/nativewind.d.ts"
+      ]
     }
   },
   "exports": {

@@ -31,6 +31,7 @@ export default defineConfig([
       'android/build/',
       'ios/build/',
       'example/android/build/',
+      'example/android/app/.cxx/',
       'example/ios/build/',
       'example/ios/DerivedData/',
       'example-web/.next/',

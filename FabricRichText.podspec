@@ -33,12 +33,6 @@ Pod::Spec.new do |s|
 
   s.frameworks = "CoreText", "CoreFoundation"
 
-  # libxml2 for HTML parsing (system library on iOS/macOS)
-  s.libraries = "xml2"
-  s.pod_target_xcconfig = {
-    'HEADER_SEARCH_PATHS' => '"$(SDKROOT)/usr/include/libxml2"'
-  }
-
   s.dependency "SwiftSoup", "~> 2.6"
 
   install_modules_dependencies(s)

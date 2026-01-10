@@ -10,18 +10,9 @@
 #include "ShadowNodes.h"
 #include "FabricRichTextState.h"
 #include "FabricRichParser.h"
-#include "FabricRichParserLibxml2.h"
 
 #include <react/renderer/components/view/ViewShadowNode.h>
 #include <android/log.h>
-
-// ============================================================================
-// Parser Selection Flags
-// Set USE_LIBXML2_PARSER to 1 to use libxml2 parser instead of hand-rolled
-// Set COMPARE_PARSERS to 1 to run both parsers and log differences (debug only)
-// ============================================================================
-#define USE_LIBXML2_PARSER 0
-#define COMPARE_PARSERS 0
 
 // Debug flag for verbose measurement logging.
 // Set to 1 to enable detailed logging for HTML parsing and layout measurement.
@@ -33,73 +24,6 @@
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, HTML_LOG_TAG, __VA_ARGS__)
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, HTML_LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, HTML_LOG_TAG, __VA_ARGS__)
-
-#if COMPARE_PARSERS
-static void compareParseResults(
-    const facebook::react::FabricRichParser::ParseResult& result1,
-    const facebook::react::FabricRichParser::ParseResult& result2,
-    const std::string& html) {
-
-  bool hasDifferences = false;
-
-  // Compare fragment counts
-  auto frags1 = result1.attributedString.getFragments();
-  auto frags2 = result2.attributedString.getFragments();
-
-  if (frags1.size() != frags2.size()) {
-    LOGE("PARSER_COMPARE: Fragment count mismatch - original: %zu, libxml2: %zu",
-         frags1.size(), frags2.size());
-    hasDifferences = true;
-  }
-
-  // Compare fragment content
-  size_t minFrags = std::min(frags1.size(), frags2.size());
-  for (size_t i = 0; i < minFrags; ++i) {
-    if (frags1[i].string != frags2[i].string) {
-      LOGE("PARSER_COMPARE: Fragment %zu text differs:", i);
-      LOGE("  original: '%s'", frags1[i].string.substr(0, 50).c_str());
-      LOGE("  libxml2:  '%s'", frags2[i].string.substr(0, 50).c_str());
-      hasDifferences = true;
-    }
-  }
-
-  // Compare link URLs
-  if (result1.linkUrls.size() != result2.linkUrls.size()) {
-    LOGE("PARSER_COMPARE: Link URL count mismatch - original: %zu, libxml2: %zu",
-         result1.linkUrls.size(), result2.linkUrls.size());
-    hasDifferences = true;
-  } else {
-    for (size_t i = 0; i < result1.linkUrls.size(); ++i) {
-      if (result1.linkUrls[i] != result2.linkUrls[i]) {
-        LOGE("PARSER_COMPARE: Link URL mismatch at index %zu", i);
-        hasDifferences = true;
-      }
-    }
-  }
-
-  // Compare accessibility labels
-  if (result1.accessibilityLabel != result2.accessibilityLabel) {
-    LOGE("PARSER_COMPARE: Accessibility label mismatch:");
-    LOGE("  original len: %zu, libxml2 len: %zu",
-         result1.accessibilityLabel.size(), result2.accessibilityLabel.size());
-    // Show first difference
-    for (size_t i = 0; i < std::min(result1.accessibilityLabel.size(), result2.accessibilityLabel.size()); ++i) {
-      if (result1.accessibilityLabel[i] != result2.accessibilityLabel[i]) {
-        LOGE("  first diff at pos %zu: orig='%c'(0x%02x) vs libxml2='%c'(0x%02x)",
-             i,
-             result1.accessibilityLabel[i], (unsigned char)result1.accessibilityLabel[i],
-             result2.accessibilityLabel[i], (unsigned char)result2.accessibilityLabel[i]);
-        break;
-      }
-    }
-    hasDifferences = true;
-  }
-
-  if (!hasDifferences) {
-    LOGD("PARSER_COMPARE: Results match for HTML length %zu", html.size());
-  }
-}
-#endif
 
 namespace facebook::react {
 
@@ -161,61 +85,6 @@ AttributedString FabricRichTextShadowNode::parseHtmlToAttributedString(
   }
 
   // Call parser with all props - get link URLs and accessibility label too
-#if COMPARE_PARSERS
-  // Run both parsers and compare results
-  auto originalResult = FabricRichParser::parseHtmlWithLinkUrls(
-      html,
-      baseFontSize,
-      fontSizeMultiplier,
-      allowFontScaling,
-      maxFontSizeMultiplier,
-      lineHeight,
-      props.fontWeight,
-      props.fontFamily,
-      props.fontStyle,
-      props.letterSpacing,
-      color,
-      props.tagStyles);
-
-  auto libxml2Result = FabricRichParserLibxml2::parseHtmlWithLinkUrls(
-      html,
-      baseFontSize,
-      fontSizeMultiplier,
-      allowFontScaling,
-      maxFontSizeMultiplier,
-      lineHeight,
-      props.fontWeight,
-      props.fontFamily,
-      props.fontStyle,
-      props.letterSpacing,
-      color,
-      props.tagStyles);
-
-  compareParseResults(originalResult, libxml2Result, html);
-
-  // Use the result based on USE_LIBXML2_PARSER flag
-  #if USE_LIBXML2_PARSER
-  auto& parseResult = libxml2Result;
-  #else
-  auto& parseResult = originalResult;
-  #endif
-#elif USE_LIBXML2_PARSER
-  // Use libxml2 parser only
-  auto parseResult = FabricRichParserLibxml2::parseHtmlWithLinkUrls(
-      html,
-      baseFontSize,
-      fontSizeMultiplier,
-      allowFontScaling,
-      maxFontSizeMultiplier,
-      lineHeight,
-      props.fontWeight,
-      props.fontFamily,
-      props.fontStyle,
-      props.letterSpacing,
-      color,
-      props.tagStyles);
-#else
-  // Use original hand-rolled parser
   auto parseResult = FabricRichParser::parseHtmlWithLinkUrls(
       html,
       baseFontSize,
@@ -229,7 +98,6 @@ AttributedString FabricRichTextShadowNode::parseHtmlToAttributedString(
       props.letterSpacing,
       color,
       props.tagStyles);
-#endif
 
   _linkUrls = std::move(parseResult.linkUrls);
   _accessibilityLabel = std::move(parseResult.accessibilityLabel);
