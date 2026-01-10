@@ -6,13 +6,13 @@ expect.extend(toHaveNoViolations);
 
 describe('RichText - Basic Rendering', () => {
   it('renders simple paragraph content', () => {
-    render(<RichText html="<p>Hello World</p>" />);
+    render(<RichText text="<p>Hello World</p>" />);
     expect(screen.getByText('Hello World')).toBeInTheDocument();
   });
 
   it('renders nested formatting (bold, italic)', () => {
     render(
-      <RichText html="<p>This is <strong>bold</strong> and <em>italic</em> text</p>" />
+      <RichText text="<p>This is <strong>bold</strong> and <em>italic</em> text</p>" />
     );
     expect(screen.getByText(/bold/)).toBeInTheDocument();
     expect(screen.getByText(/italic/)).toBeInTheDocument();
@@ -20,7 +20,7 @@ describe('RichText - Basic Rendering', () => {
 
   it('renders heading elements (h1-h6)', () => {
     const { container } = render(
-      <RichText html="<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3>" />
+      <RichText text="<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading 3</h3>" />
     );
     expect(container.querySelector('h1')).toHaveTextContent('Heading 1');
     expect(container.querySelector('h2')).toHaveTextContent('Heading 2');
@@ -29,7 +29,7 @@ describe('RichText - Basic Rendering', () => {
 
   it('renders unordered lists', () => {
     const { container } = render(
-      <RichText html="<ul><li>Item 1</li><li>Item 2</li></ul>" />
+      <RichText text="<ul><li>Item 1</li><li>Item 2</li></ul>" />
     );
     const listItems = container.querySelectorAll('li');
     expect(listItems).toHaveLength(2);
@@ -39,7 +39,7 @@ describe('RichText - Basic Rendering', () => {
 
   it('renders ordered lists', () => {
     const { container } = render(
-      <RichText html="<ol><li>First</li><li>Second</li></ol>" />
+      <RichText text="<ol><li>First</li><li>Second</li></ol>" />
     );
     expect(container.querySelector('ol')).toBeInTheDocument();
     expect(container.querySelectorAll('li')).toHaveLength(2);
@@ -47,7 +47,7 @@ describe('RichText - Basic Rendering', () => {
 
   it('renders links with href', () => {
     const { container } = render(
-      <RichText html='<p>Visit <a href="https://example.com">our site</a></p>' />
+      <RichText text='<p>Visit <a href="https://example.com">our site</a></p>' />
     );
     const link = container.querySelector('a');
     expect(link).toHaveAttribute('href', 'https://example.com');
@@ -58,7 +58,7 @@ describe('RichText - Basic Rendering', () => {
     const onLinkPress = jest.fn();
     const { container } = render(
       <RichText
-        html='<a href="https://example.com">Click me</a>'
+        text='<a href="https://example.com">Click me</a>'
         onLinkPress={onLinkPress}
       />
     );
@@ -70,13 +70,13 @@ describe('RichText - Basic Rendering', () => {
 
   it('renders blockquotes', () => {
     const { container } = render(
-      <RichText html="<blockquote>A quote</blockquote>" />
+      <RichText text="<blockquote>A quote</blockquote>" />
     );
     expect(container.querySelector('blockquote')).toHaveTextContent('A quote');
   });
 
   it('renders preformatted text', () => {
-    const { container } = render(<RichText html="<pre>const x = 1;</pre>" />);
+    const { container } = render(<RichText text="<pre>const x = 1;</pre>" />);
     expect(container.querySelector('pre')).toHaveTextContent('const x = 1;');
   });
 });
@@ -84,7 +84,7 @@ describe('RichText - Basic Rendering', () => {
 describe('RichText - XSS Sanitization', () => {
   it('strips script tags', () => {
     const { container } = render(
-      <RichText html='<p>Safe</p><script>alert("xss")</script>' />
+      <RichText text='<p>Safe</p><script>alert("xss")</script>' />
     );
     expect(container.querySelector('script')).toBeNull();
     expect(screen.getByText('Safe')).toBeInTheDocument();
@@ -92,7 +92,7 @@ describe('RichText - XSS Sanitization', () => {
 
   it('strips onclick attributes', () => {
     const { container } = render(
-      <RichText html='<p onclick="alert(1)">Click</p>' />
+      <RichText text='<p onclick="alert(1)">Click</p>' />
     );
     const p = container.querySelector('p');
     expect(p).not.toHaveAttribute('onclick');
@@ -100,7 +100,7 @@ describe('RichText - XSS Sanitization', () => {
 
   it('strips javascript: URLs', () => {
     const { container } = render(
-      <RichText html='<p>Safe text <a href="javascript:alert(1)">Link</a></p>' />
+      <RichText text='<p>Safe text <a href="javascript:alert(1)">Link</a></p>' />
     );
     // DOMPurify removes javascript: hrefs entirely
     const link = container.querySelector('a');
@@ -116,7 +116,7 @@ describe('RichText - XSS Sanitization', () => {
 
   it('strips img tags with onerror', () => {
     const { container } = render(
-      <RichText html='<img src="x" onerror="alert(1)"/><p>Safe</p>' />
+      <RichText text='<img src="x" onerror="alert(1)"/><p>Safe</p>' />
     );
     expect(container.querySelector('img')).toBeNull();
   });
@@ -125,7 +125,7 @@ describe('RichText - XSS Sanitization', () => {
 describe('RichText - Accessibility', () => {
   it('preserves semantic HTML structure', async () => {
     const { container } = render(
-      <RichText html="<h1>Title</h1><p>Paragraph with <a href='#'>link</a></p>" />
+      <RichText text="<h1>Title</h1><p>Paragraph with <a href='#'>link</a></p>" />
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -133,7 +133,7 @@ describe('RichText - Accessibility', () => {
 
   it('maintains heading hierarchy', async () => {
     const { container } = render(
-      <RichText html="<h1>Main</h1><h2>Section</h2><h3>Subsection</h3>" />
+      <RichText text="<h1>Main</h1><h2>Section</h2><h3>Subsection</h3>" />
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -152,7 +152,7 @@ describe('RichText - Truncation (numberOfLines)', () => {
   it('applies single-line truncation styles when numberOfLines={1}', () => {
     const { container } = render(
       <RichText
-        html="<p>This is a very long text that should be truncated to a single line with ellipsis.</p>"
+        text="<p>This is a very long text that should be truncated to a single line with ellipsis.</p>"
         numberOfLines={1}
       />
     );
@@ -173,7 +173,7 @@ describe('RichText - Truncation (numberOfLines)', () => {
   it('applies multi-line truncation styles when numberOfLines={3}', () => {
     const { container } = render(
       <RichText
-        html="<p>Line one.</p><p>Line two.</p><p>Line three.</p><p>Line four should be hidden.</p>"
+        text="<p>Line one.</p><p>Line two.</p><p>Line three.</p><p>Line four should be hidden.</p>"
         numberOfLines={3}
       />
     );
@@ -192,7 +192,7 @@ describe('RichText - Truncation (numberOfLines)', () => {
 
   it('does not apply truncation styles when numberOfLines is 0', () => {
     const { container } = render(
-      <RichText html="<p>Short text that fits.</p>" numberOfLines={0} />
+      <RichText text="<p>Short text that fits.</p>" numberOfLines={0} />
     );
     const wrapper = container.firstChild as HTMLElement;
     // Should not have line-clamp styles
@@ -202,7 +202,7 @@ describe('RichText - Truncation (numberOfLines)', () => {
 
   it('does not apply truncation styles when numberOfLines is undefined', () => {
     const { container } = render(
-      <RichText html="<p>Normal text without truncation.</p>" />
+      <RichText text="<p>Normal text without truncation.</p>" />
     );
     const wrapper = container.firstChild as HTMLElement;
     // Should not have line-clamp styles
@@ -213,7 +213,7 @@ describe('RichText - Truncation (numberOfLines)', () => {
   it('treats negative numberOfLines as no limit', () => {
     const { container } = render(
       <RichText
-        html="<p>Text with negative numberOfLines.</p>"
+        text="<p>Text with negative numberOfLines.</p>"
         numberOfLines={-1}
       />
     );

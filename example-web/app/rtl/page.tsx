@@ -22,25 +22,25 @@ export default function RTLPage() {
       <DemoSection
         title="Arabic Text"
         description="Arabic text renders right-to-left automatically"
-        code={`<RichText html="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>" />`}
+        code={`<RichText text="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>" />`}
       >
-        <RichText html="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>" />
+        <RichText text="<p>مرحباً بالعالم! هذا نص عربي يعرض من اليمين إلى اليسار.</p>" />
       </DemoSection>
 
       <DemoSection
         title="Hebrew Text"
         description="Hebrew text renders right-to-left automatically"
-        code={`<RichText html="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>" />`}
+        code={`<RichText text="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>" />`}
       >
-        <RichText html="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>" />
+        <RichText text="<p>שלום עולם! זהו טקסט בעברית המוצג מימין לשמאל.</p>" />
       </DemoSection>
 
       <DemoSection
         title="Persian Text"
         description="Persian (Farsi) text renders right-to-left automatically"
-        code={`<RichText html="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>" />`}
+        code={`<RichText text="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>" />`}
       >
-        <RichText html="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>" />
+        <RichText text="<p>سلام دنیا! این یک متن فارسی است که از راست به چپ نمایش داده می‌شود.</p>" />
       </DemoSection>
 
       {/* Mixed Directional Content */}
@@ -51,25 +51,25 @@ export default function RTLPage() {
       <DemoSection
         title="Mixed Arabic and English"
         description="Arabic and English text mixed in the same paragraph"
-        code={`<RichText html="<p>مرحباً Hello عالم World!</p>" />`}
+        code={`<RichText text="<p>مرحباً Hello عالم World!</p>" />`}
       >
-        <RichText html="<p>مرحباً Hello عالم World!</p>" />
+        <RichText text="<p>مرحباً Hello عالم World!</p>" />
       </DemoSection>
 
       <DemoSection
         title="RTL with Embedded Numbers"
         description="Numbers within RTL text (dir attribute sets paragraph direction)"
-        code={`<RichText html="<p dir='rtl'>السعر: 123.45 دولار</p>" />`}
+        code={`<RichText text="<p dir='rtl'>السعر: 123.45 دولار</p>" />`}
       >
-        <RichText html="<p dir='rtl'>السعر: 123.45 دولار</p>" />
+        <RichText text="<p dir='rtl'>السعر: 123.45 دولار</p>" />
       </DemoSection>
 
       <DemoSection
         title="RTL with Brand Names"
         description="English brand names embedded in Arabic text"
-        code={`<RichText html="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />`}
+        code={`<RichText text="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />`}
       >
-        <RichText html="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />
+        <RichText text="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />
       </DemoSection>
 
       {/* BDI Isolation */}
@@ -80,17 +80,17 @@ export default function RTLPage() {
       <DemoSection
         title="BDI for User Names"
         description="The <bdi> tag isolates bidirectional text, preventing it from affecting surrounding punctuation"
-        code={`<RichText html="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>" />`}
+        code={`<RichText text="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>" />`}
       >
-        <RichText html="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>" />
+        <RichText text="<p>User: <bdi>محمد</bdi> logged in at 10:30 AM</p>" />
       </DemoSection>
 
       <DemoSection
         title="Multiple BDI Elements"
         description="Multiple isolated bidirectional text segments"
-        code={`<RichText html="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi>, and <bdi>יעקב</bdi></p>" />`}
+        code={`<RichText text="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi>, and <bdi>יעקב</bdi></p>" />`}
       >
-        <RichText html="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi>, and <bdi>יעקב</bdi></p>" />
+        <RichText text="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi>, and <bdi>יעקב</bdi></p>" />
       </DemoSection>
 
       {/* BDO Override */}
@@ -101,17 +101,17 @@ export default function RTLPage() {
       <DemoSection
         title="BDO with dir='rtl'"
         description="The <bdo> tag forces text direction, overriding the natural direction"
-        code={`<RichText html="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>" />`}
+        code={`<RichText text="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>" />`}
       >
-        <RichText html="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>" />
+        <RichText text="<p>Normal text, <bdo dir='rtl'>forced RTL</bdo>, back to normal</p>" />
       </DemoSection>
 
       <DemoSection
         title="BDO with dir='ltr'"
         description="Force LTR direction within RTL context"
-        code={`<RichText html="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>" />`}
+        code={`<RichText text="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>" />`}
       >
-        <RichText html="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>" />
+        <RichText text="<p dir='rtl'>نص عربي، <bdo dir='ltr'>forced LTR</bdo>، عودة للعربي</p>" />
       </DemoSection>
 
       {/* Direction Attribute */}
@@ -122,25 +122,25 @@ export default function RTLPage() {
       <DemoSection
         title="dir='rtl' on Paragraph"
         description="Set paragraph-level text direction with dir attribute"
-        code={`<RichText html="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>" />`}
+        code={`<RichText text="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>" />`}
       >
-        <RichText html="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>" />
+        <RichText text="<p dir='rtl'>هذا فقرة باللغة العربية مع محاذاة صحيحة.</p>" />
       </DemoSection>
 
       <DemoSection
         title="dir='ltr' on Paragraph"
         description="Explicit LTR direction (useful for forcing direction)"
-        code={`<RichText html="<p dir='ltr'>Left to right paragraph with explicit direction.</p>" />`}
+        code={`<RichText text="<p dir='ltr'>Left to right paragraph with explicit direction.</p>" />`}
       >
-        <RichText html="<p dir='ltr'>Left to right paragraph with explicit direction.</p>" />
+        <RichText text="<p dir='ltr'>Left to right paragraph with explicit direction.</p>" />
       </DemoSection>
 
       <DemoSection
         title="dir='auto' (Auto-detection)"
         description="Direction is automatically detected from first strong character"
-        code={`<RichText html="<p dir='auto'>مرحباً - this will be RTL because first strong char is Arabic</p>" />`}
+        code={`<RichText text="<p dir='auto'>مرحباً - this will be RTL because first strong char is Arabic</p>" />`}
       >
-        <RichText html="<p dir='auto'>مرحباً - this will be RTL because first strong char is Arabic</p>" />
+        <RichText text="<p dir='auto'>مرحباً - this will be RTL because first strong char is Arabic</p>" />
       </DemoSection>
 
       {/* Component-Level Direction */}
@@ -152,12 +152,12 @@ export default function RTLPage() {
         title="writingDirection='rtl'"
         description="Force RTL at the component level via writingDirection prop"
         code={`<RichText
-  html="<p>This English text is forced RTL via writingDirection prop.</p>"
+  text="<p>This English text is forced RTL via writingDirection prop.</p>"
   writingDirection="rtl"
 />`}
       >
         <RichText
-          html="<p>This English text is forced RTL via writingDirection prop.</p>"
+          text="<p>This English text is forced RTL via writingDirection prop.</p>"
           writingDirection="rtl"
         />
       </DemoSection>
@@ -166,12 +166,12 @@ export default function RTLPage() {
         title="writingDirection='ltr'"
         description="Force LTR at the component level via writingDirection prop"
         code={`<RichText
-  html="<p>مرحباً - forced LTR despite Arabic content</p>"
+  text="<p>مرحباً - forced LTR despite Arabic content</p>"
   writingDirection="ltr"
 />`}
       >
         <RichText
-          html="<p>مرحباً - forced LTR despite Arabic content</p>"
+          text="<p>مرحباً - forced LTR despite Arabic content</p>"
           writingDirection="ltr"
         />
       </DemoSection>
@@ -180,12 +180,12 @@ export default function RTLPage() {
         title="writingDirection='auto'"
         description="Auto-detect direction at component level (default behavior)"
         code={`<RichText
-  html="<p>שלום עולם - auto detects Hebrew as RTL</p>"
+  text="<p>שלום עולם - auto detects Hebrew as RTL</p>"
   writingDirection="auto"
 />`}
       >
         <RichText
-          html="<p>שלום עולם - auto detects Hebrew as RTL</p>"
+          text="<p>שלום עולם - auto detects Hebrew as RTL</p>"
           writingDirection="auto"
         />
       </DemoSection>
@@ -198,21 +198,21 @@ export default function RTLPage() {
       <DemoSection
         title="RTL with Formatting"
         description="Bold, italic, and underline in RTL text"
-        code={`<RichText html="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>" />`}
+        code={`<RichText text="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>" />`}
       >
-        <RichText html="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>" />
+        <RichText text="<p dir='rtl'><strong>مهم:</strong> هذا نص <em>مائل</em> و<u>تحته خط</u>.</p>" />
       </DemoSection>
 
       <DemoSection
         title="RTL with Links"
         description="Clickable links in RTL text"
         code={`<RichText
-  html='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
+  text='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
   onLinkPress={(url, type) => alert(\`Clicked: \${url}\`)}
 />`}
       >
         <RichText
-          html='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
+          text='<p dir="rtl">زيارة <a href="https://example.com">موقعنا</a> للمزيد من المعلومات.</p>'
           onLinkPress={(url) => alert(`Clicked: ${url}`)}
         />
       </DemoSection>
@@ -220,29 +220,29 @@ export default function RTLPage() {
       <DemoSection
         title="RTL Unordered List"
         description="Bulleted list with RTL text"
-        code={`<RichText html="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>" />`}
+        code={`<RichText text="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>" />`}
       >
-        <RichText html="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>" />
+        <RichText text="<ul dir='rtl'><li>العنصر الأول</li><li>العنصر الثاني</li><li>العنصر الثالث</li></ul>" />
       </DemoSection>
 
       <DemoSection
         title="RTL Ordered List"
         description="Numbered list with RTL text"
-        code={`<RichText html="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>" />`}
+        code={`<RichText text="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>" />`}
       >
-        <RichText html="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>" />
+        <RichText text="<ol dir='rtl'><li>الخطوة الأولى</li><li>الخطوة الثانية</li><li>الخطوة الثالثة</li></ol>" />
       </DemoSection>
 
       <DemoSection
         title="RTL with Truncation"
         description="Truncated RTL text with numberOfLines"
         code={`<RichText
-  html="<p dir='rtl'>هذا نص طويل جداً سيتم اقتطاعه. يحتوي على محتوى عربي كثير لإظهار كيف يعمل الاقتطاع مع النص من اليمين إلى اليسار.</p>"
+  text="<p dir='rtl'>هذا نص طويل جداً سيتم اقتطاعه. يحتوي على محتوى عربي كثير لإظهار كيف يعمل الاقتطاع مع النص من اليمين إلى اليسار.</p>"
   numberOfLines={2}
 />`}
       >
         <RichText
-          html="<p dir='rtl'>هذا نص طويل جداً سيتم اقتطاعه. يحتوي على محتوى عربي كثير لإظهار كيف يعمل الاقتطاع مع النص من اليمين إلى اليسار.</p>"
+          text="<p dir='rtl'>هذا نص طويل جداً سيتم اقتطاعه. يحتوي على محتوى عربي كثير لإظهار كيف يعمل الاقتطاع مع النص من اليمين إلى اليسار.</p>"
           numberOfLines={2}
         />
       </DemoSection>
@@ -251,7 +251,7 @@ export default function RTLPage() {
         title="RTL with Custom Styles"
         description="Styled RTL text using tagStyles prop"
         code={`<RichText
-  html="<p dir='rtl'><strong>مهم</strong> و <em>ملاحظة</em></p>"
+  text="<p dir='rtl'><strong>مهم</strong> و <em>ملاحظة</em></p>"
   tagStyles={{
     strong: { color: '#CC0000' },
     em: { color: '#0066CC' },
@@ -259,7 +259,7 @@ export default function RTLPage() {
 />`}
       >
         <RichText
-          html="<p dir='rtl'><strong>مهم</strong> و <em>ملاحظة</em></p>"
+          text="<p dir='rtl'><strong>مهم</strong> و <em>ملاحظة</em></p>"
           tagStyles={{
             strong: { color: '#CC0000' },
             em: { color: '#0066CC' },

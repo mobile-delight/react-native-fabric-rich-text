@@ -1,10 +1,10 @@
 /**
- * HtmlSegmentParser.cpp
+ * MarkupSegmentParser.cpp
  *
- * Core HTML parsing to text segments implementation.
+ * Core markup parsing to text segments implementation.
  */
 
-#include "HtmlSegmentParser.h"
+#include "MarkupSegmentParser.h"
 #include "DirectionContext.h"
 #include "TextNormalizer.h"
 
@@ -145,10 +145,10 @@ static std::string extractTextForAutoDetection(
   return textContent;
 }
 
-std::vector<FabricRichTextSegment> parseHtmlToSegments(const std::string& html) {
+std::vector<FabricRichTextSegment> parseMarkupToSegments(const std::string& markup) {
   std::vector<FabricRichTextSegment> segments;
 
-  if (html.empty()) {
+  if (markup.empty()) {
     return segments;
   }
 
@@ -234,8 +234,8 @@ std::vector<FabricRichTextSegment> parseHtmlToSegments(const std::string& html) 
     }
   };
 
-  for (size_t i = 0; i < html.size(); ++i) {
-    char c = html[i];
+  for (size_t i = 0; i < markup.size(); ++i) {
+    char c = markup[i];
 
     if (c == '<') {
       inTag = true;
@@ -298,7 +298,7 @@ std::vector<FabricRichTextSegment> parseHtmlToSegments(const std::string& html) 
             ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
           }
           if (lowerDir == "auto") {
-            textForDetection = extractTextForAutoDetection(html, i + 1, cleanTag);
+            textForDetection = extractTextForAutoDetection(markup, i + 1, cleanTag);
           }
         }
         dirContext.enterElement(cleanTag, dirAttr, textForDetection);
@@ -330,7 +330,7 @@ std::vector<FabricRichTextSegment> parseHtmlToSegments(const std::string& html) 
           needsAutoDetection = true;
         }
         if (needsAutoDetection) {
-          textForDetection = extractTextForAutoDetection(html, i + 1, cleanTag);
+          textForDetection = extractTextForAutoDetection(markup, i + 1, cleanTag);
         }
         dirContext.enterElement(cleanTag, dirAttr, textForDetection);
 

@@ -1,13 +1,13 @@
 /**
  * AttributedStringBuilder.h
  *
- * Builds React Native AttributedString from parsed HTML segments.
+ * Builds React Native AttributedString from parsed markup segments.
  * Handles font scaling, text decoration, color, and accessibility labels.
  */
 
 #pragma once
 
-#include "HtmlSegmentParser.h"
+#include "MarkupSegmentParser.h"
 #include "StyleParser.h"
 #include "TextNormalizer.h"
 
@@ -36,9 +36,9 @@ constexpr float LINE_HEIGHT_BUFFER_DEFAULT = 4.0f;
 constexpr int32_t DEFAULT_LINK_COLOR = 0xFF007AFF;
 
 /**
- * Build an AttributedString from parsed HTML segments.
+ * Build an AttributedString from parsed markup segments.
  *
- * @param segments Parsed HTML segments from parseHtmlToSegments
+ * @param segments Parsed markup segments from parseMarkupToSegments
  * @param baseFontSize Base font size in points
  * @param fontSizeMultiplier Accessibility scaling multiplier
  * @param allowFontScaling Whether to apply font scaling

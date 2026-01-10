@@ -70,8 +70,8 @@ export interface LinkFocusEvent {
  * Extends ViewProps to support standard view properties including accessibility.
  */
 export interface RichTextNativeProps extends ViewProps {
-  /** HTML string to render as native styled text */
-  html: string;
+  /** Markup string to render as native styled text */
+  text: string;
   /** Optional text styling applied to the rendered content */
   style?: TextStyle | undefined;
   /** Optional test identifier for testing frameworks */

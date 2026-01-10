@@ -4,12 +4,12 @@
  * This provides the FabricRichTextShadowNode implementation with
  * measureContent() for proper Yoga layout measurement.
  *
- * Uses the shared FabricRichParser module for cross-platform HTML parsing.
+ * Uses the shared FabricMarkupParser module for cross-platform markup parsing.
  */
 
 #include "ShadowNodes.h"
 #include "FabricRichTextState.h"
-#include "FabricRichParser.h"
+#include "FabricMarkupParser.h"
 
 #include <react/renderer/components/view/ViewShadowNode.h>
 #include <android/log.h>
@@ -50,7 +50,7 @@ FabricRichTextShadowNode::FabricRichTextShadowNode(
 
 std::string FabricRichTextShadowNode::stripHtmlTags(const std::string& html) {
   // Delegate to shared parser
-  return FabricRichParser::stripHtmlTags(html);
+  return FabricMarkupParser::stripMarkupTags(html);
 }
 
 // NOTE: This method modifies _linkUrls and _accessibilityLabel. It must only be called while holding _mutex.
@@ -85,7 +85,7 @@ AttributedString FabricRichTextShadowNode::parseHtmlToAttributedString(
   }
 
   // Call parser with all props - get link URLs and accessibility label too
-  auto parseResult = FabricRichParser::parseHtmlWithLinkUrls(
+  auto parseResult = FabricMarkupParser::parseMarkupWithLinkUrls(
       html,
       baseFontSize,
       fontSizeMultiplier,
@@ -117,7 +117,7 @@ Size FabricRichTextShadowNode::measureContent(
 
   if (DEBUG_CPP_MEASUREMENT) {
     LOGD("========== measureContent START ==========");
-    LOGD("HTML length: %zu", props.html.length());
+    LOGD("HTML length: %zu", props.text.length());
     LOGD("fontSizeMultiplier: %f", fontSizeMultiplier);
     LOGD("Constraints: minW=%f maxW=%f minH=%f maxH=%f",
          layoutConstraints.minimumSize.width, layoutConstraints.maximumSize.width,
@@ -129,7 +129,7 @@ Size FabricRichTextShadowNode::measureContent(
   AttributedString localAttributedString;
   {
     std::lock_guard<std::mutex> lock(_mutex);
-    localAttributedString = parseHtmlToAttributedString(props.html, fontSizeMultiplier);
+    localAttributedString = parseHtmlToAttributedString(props.text, fontSizeMultiplier);
     _attributedString = localAttributedString;
   }
 

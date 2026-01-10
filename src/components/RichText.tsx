@@ -10,8 +10,8 @@ import type {
 } from '../types/RichTextNativeProps';
 
 export interface RichTextProps {
-  /** HTML string to render */
-  html: string;
+  /** Markup string to render */
+  text: string;
   /** Optional text styling applied to the rendered content */
   style?: TextStyle | undefined;
   /** Optional class name for NativeWind/web CSS styling */
@@ -83,7 +83,7 @@ export interface RichTextProps {
 }
 
 export default function RichText({
-  html,
+  text,
   style,
   testID,
   className,
@@ -97,16 +97,16 @@ export default function RichText({
   writingDirection = 'auto',
   onRichTextMeasurement,
 }: RichTextProps): ReactElement | null {
-  if (!html) {
+  if (!text) {
     return null;
   }
 
-  const trimmedHtml = html.trim();
-  if (!trimmedHtml) {
+  const trimmedText = text.trim();
+  if (!trimmedText) {
     return null;
   }
 
-  const sanitizedHtml = sanitize(html);
+  const sanitizedText = sanitize(text);
 
   // Resolve 'auto' to explicit direction using I18nManager
   const resolvedDirection: 'ltr' | 'rtl' =
@@ -118,7 +118,7 @@ export default function RichText({
 
   return (
     <RichTextNative
-      html={sanitizedHtml}
+      text={sanitizedText}
       style={style}
       testID={testID}
       className={className}

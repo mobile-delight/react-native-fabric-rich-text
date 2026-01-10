@@ -42,7 +42,7 @@ type RichTextMeasurementEvent = Readonly<{
 }>;
 
 interface NativeProps extends ViewProps {
-  html: string;
+  text: string;
   // testID is inherited from ViewProps - do not redeclare here
   // as it breaks iOS accessibility identifier mapping in Fabric
   onLinkPress?: DirectEventHandler<LinkPressEvent>;

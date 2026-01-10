@@ -6,7 +6,7 @@
  * import { RichText } from 'react-native-fabric-rich-text/nativewind';
  *
  * <RichText
- *   html="<p>Hello World</p>"
+ *   text="<p>Hello World</p>"
  *   className="text-blue-500 text-lg"
  * />
  * ```

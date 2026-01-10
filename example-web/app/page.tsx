@@ -100,7 +100,7 @@ import { RichText } from 'react-native-fabric-rich-text';
 export default function MyComponent() {
   return (
     <RichText
-      html="<p>Hello <strong>world</strong>!</p>"
+      text="<p>Hello <strong>world</strong>!</p>"
     />
   );
 }`}</code>

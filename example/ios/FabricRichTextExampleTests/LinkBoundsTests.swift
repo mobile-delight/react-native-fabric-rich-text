@@ -2,7 +2,7 @@ import XCTest
 @testable import FabricRichText
 
 /**
- * Unit tests for link bounds calculation in FabricHTMLCoreTextView.
+ * Unit tests for link bounds calculation in FabricRichCoreTextView.
  *
  * These tests verify the `boundsForLinkAtIndex:` method correctly calculates
  * bounding rectangles for links in the text using CoreText frame analysis.
@@ -10,11 +10,11 @@ import XCTest
  * TDD Requirement: These tests should FAIL initially until T006 is implemented.
  */
 final class LinkBoundsTests: XCTestCase {
-    private var coreTextView: FabricHTMLCoreTextView!
+    private var coreTextView: FabricRichCoreTextView!
 
     override func setUp() {
         super.setUp()
-        coreTextView = FabricHTMLCoreTextView(frame: CGRect(x: 0, y: 0, width: 300, height: 100))
+        coreTextView = FabricRichCoreTextView(frame: CGRect(x: 0, y: 0, width: 300, height: 100))
     }
 
     override func tearDown() {
@@ -214,7 +214,7 @@ final class LinkBoundsTests: XCTestCase {
 
     private func createAttributedString(from html: String) -> NSAttributedString {
         // Simple HTML to attributed string conversion for testing
-        // This mimics what FabricHTMLFragmentParser produces
+        // This mimics what FabricRichFragmentParser produces
         guard let data = html.data(using: .utf8) else {
             return NSAttributedString(string: "")
         }
