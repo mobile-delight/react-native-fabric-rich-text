@@ -29,6 +29,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.view.ViewCompat
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -378,7 +379,8 @@ class FabricRichTextView : AppCompatTextView {
 
   /**
    * Update content description for TalkBack users.
-   * When content is truncated, only reads the visible text.
+   * When content is truncated, only reads the visible text with word-boundary adjustment.
+   * This ensures accessibility text matches what's visually displayed.
    */
   private fun updateAccessibilityForTruncation() {
     // Get the base accessibility label (resolved from C++ or fall back to plain text)
@@ -387,23 +389,109 @@ class FabricRichTextView : AppCompatTextView {
     if (numberOfLines > 0 && baseLabel.isNotEmpty() && isContentTruncated()) {
       val layout = customLayout ?: layout
       if (layout != null) {
-        // Content is truncated - only read visible text
+        // Content is truncated - calculate word-boundary-adjusted visible text
         val visibleLines = minOf(layout.lineCount, numberOfLines)
-        val visibleEndOffset = layout.getLineEnd(visibleLines - 1)
+        val lastLine = visibleLines - 1
+        val lastLineStart = layout.getLineStart(lastLine)
         val fullText = (stateSpannable ?: text)?.toString() ?: ""
-        val visibleText = if (visibleEndOffset < fullText.length) {
-          fullText.substring(0, visibleEndOffset).trim()
-        } else {
-          fullText.trim()
-        }
+
+        // Get remaining text and find word-boundary-adjusted truncation point
+        // This matches the logic in drawTruncatedLayout()
+        val remainingText = fullText.substring(lastLineStart).replace(Regex("[\n\r]"), " ")
+        val ellipsisWidth = customTextPaint.measureText("\u2026")
+        val availableWidth = layout.width.toFloat() - ellipsisWidth
+        val truncationIndex = findTruncationIndex(remainingText, availableWidth, customTextPaint)
+        val adjustedIndex = adjustTruncationIndexToWordBoundary(remainingText, truncationIndex)
+
+        // Build visible text from all complete lines + truncated last line
+        val completeLinesText = if (lastLine > 0) {
+          fullText.substring(0, lastLineStart)
+        } else ""
+        val truncatedLastLine = if (adjustedIndex > 0) {
+          remainingText.substring(0, adjustedIndex).trimEnd()
+        } else ""
+
+        val visibleText = (completeLinesText + truncatedLastLine).trim()
         contentDescription = visibleText
-        logA11y("Truncated: showing $visibleEndOffset of ${fullText.length} chars")
+        logA11y("Truncated with word-boundary: showing ${visibleText.length} of ${fullText.length} chars")
         return
       }
     }
 
     // Not truncated - use the base accessibility label
     contentDescription = if (baseLabel.isNotEmpty()) baseLabel else null
+  }
+
+  /**
+   * Get the visible text for accessibility when content is truncated.
+   * Returns only the portion of text that is actually visible on screen,
+   * accounting for ellipsis truncation on the last line.
+   *
+   * This method is called lazily when TalkBack requests accessibility info,
+   * ensuring the layout exists and truncation can be accurately detected.
+   * Similar to iOS's visibleTextForAccessibility method.
+   */
+  fun getVisibleTextForAccessibility(): String {
+    val baseLabel = resolvedAccessibilityLabel ?: (stateSpannable ?: text)?.toString() ?: ""
+
+    // If not truncating or no content, return full text
+    if (numberOfLines <= 0 || baseLabel.isEmpty()) {
+      return baseLabel
+    }
+
+    val layout = customLayout ?: layout
+    if (layout == null) {
+      // Layout not available yet - return full text
+      return baseLabel
+    }
+
+    if (!isContentTruncated()) {
+      // Not actually truncated - return full text
+      return baseLabel
+    }
+
+    // Content is truncated - calculate word-boundary-adjusted visible text
+    val visibleLines = minOf(layout.lineCount, numberOfLines)
+    val lastLine = visibleLines - 1
+    val lastLineStart = layout.getLineStart(lastLine)
+    val fullText = (stateSpannable ?: text)?.toString() ?: ""
+
+    // Get remaining text and find word-boundary-adjusted truncation point
+    val remainingText = fullText.substring(lastLineStart).replace(Regex("[\n\r]"), " ")
+    val ellipsisWidth = customTextPaint.measureText("\u2026")
+    val availableWidth = layout.width.toFloat() - ellipsisWidth
+    val truncationIndex = findTruncationIndex(remainingText, availableWidth, customTextPaint)
+    val adjustedIndex = adjustTruncationIndexToWordBoundary(remainingText, truncationIndex)
+
+    // Build visible text from all complete lines + truncated last line
+    val completeLinesText = if (lastLine > 0) fullText.substring(0, lastLineStart) else ""
+    val truncatedLastLine = if (adjustedIndex > 0) remainingText.substring(0, adjustedIndex).trimEnd() else ""
+
+    val visibleText = (completeLinesText + truncatedLastLine).trim()
+    logA11y("getVisibleTextForAccessibility: ${visibleText.length} of ${fullText.length} chars")
+    return visibleText
+  }
+
+  /**
+   * Check if a character at the given index is on a visible line.
+   * Used by accessibility delegate to filter links to only those on visible lines.
+   *
+   * @param charIndex The character index to check
+   * @return true if the character is on a visible line, false if it's on a truncated line
+   */
+  fun isCharacterOnVisibleLine(charIndex: Int): Boolean {
+    // No truncation - all characters are visible
+    if (numberOfLines <= 0) return true
+
+    val layout = customLayout ?: layout
+    if (layout == null) {
+      // Layout not available - assume visible
+      return true
+    }
+
+    // Find which line contains this character
+    val lineForChar = layout.getLineForOffset(charIndex)
+    return lineForChar < numberOfLines
   }
 
   fun setAnimationDuration(duration: Float) {
@@ -675,17 +763,214 @@ class FabricRichTextView : AppCompatTextView {
       .setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE)
       .setTextDirection(textDirectionHeuristic)  // Apply RTL direction if set
 
-    // Apply numberOfLines with ellipsis truncation
-    if (numberOfLines > 0) {
-      builder.setMaxLines(numberOfLines)
-      builder.setEllipsize(android.text.TextUtils.TruncateAt.END)
-    }
+    // NOTE: We do NOT use StaticLayout's built-in ellipsis (setMaxLines/setEllipsize)
+    // because we need smart word-boundary truncation matching iOS behavior.
+    // Truncation is handled manually in drawTruncatedLayout() instead.
+    // The layout is created with all lines so we can properly detect truncation
+    // and calculate where to apply word-boundary-aware ellipsis.
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
       builder.setUseLineSpacingFromFallbacks(true)
     }
 
     return builder.build()
+  }
+
+  // MARK: - Smart Word Boundary Truncation
+
+  /**
+   * Adjusts truncation index to word boundary if cut occurs mid-word.
+   * Mirrors iOS adjustTruncationIndexToWordBoundary:atIndex: implementation.
+   *
+   * Algorithm:
+   * 1. Check if character at truncation index is alphanumeric (first hidden char)
+   * 2. Check if character just before is alphanumeric (last visible char)
+   * 3. If both are alphanumeric → cut mid-word detected
+   * 4. Find last whitespace in text before truncation point
+   * 5. Return whitespace location if found, else original truncation index
+   *
+   * @param text The text being truncated
+   * @param truncationIndex Where truncation would occur
+   * @return Adjusted index at last word boundary, or original if no adjustment needed
+   */
+  private fun adjustTruncationIndexToWordBoundary(text: String, truncationIndex: Int): Int {
+    if (truncationIndex <= 0 || truncationIndex >= text.length) {
+      return truncationIndex
+    }
+
+    val lastVisibleChar = text[truncationIndex - 1]
+    val firstHiddenChar = text[truncationIndex]
+
+    // Check if we're cutting mid-word (both chars are alphanumeric)
+    val cutMidWord = Character.isLetterOrDigit(lastVisibleChar) &&
+                     Character.isLetterOrDigit(firstHiddenChar)
+
+    if (!cutMidWord) {
+      return truncationIndex
+    }
+
+    // Find last whitespace to get the last complete word
+    val textBeforeTruncation = text.substring(0, truncationIndex)
+    val lastSpaceIndex = textBeforeTruncation.lastIndexOfAny(charArrayOf(' ', '\t'))
+
+    return if (lastSpaceIndex > 0) lastSpaceIndex else truncationIndex
+  }
+
+  /**
+   * Find the character index where text exceeds availableWidth.
+   * Used to determine where truncation should occur before applying word boundary adjustment.
+   *
+   * @param text The text to measure
+   * @param availableWidth Maximum width available for text
+   * @param paint The TextPaint to use for measurement
+   * @return Character index where text exceeds width, or text.length if it fits
+   */
+  private fun findTruncationIndex(text: String, availableWidth: Float, paint: TextPaint): Int {
+    var width = 0f
+    for (i in text.indices) {
+      width += paint.measureText(text, i, i + 1)
+      if (width > availableWidth) {
+        return i
+      }
+    }
+    return text.length
+  }
+
+  /**
+   * Builds a truncated Spannable preserving spans from the original.
+   * Includes the ellipsis character with matching style from the end of the truncated text.
+   * Mirrors iOS attributesForTruncationToken: behavior.
+   *
+   * @param original The original full Spannable
+   * @param startOffset Start of the last line in the original
+   * @param truncationLength Characters to keep from the last line (before trimming)
+   * @return A new Spannable with truncated text + ellipsis, preserving styles
+   */
+  private fun buildTruncatedSpannable(
+    original: Spannable,
+    startOffset: Int,
+    truncationLength: Int
+  ): Spannable {
+    // Calculate the actual end position in the original spannable
+    val endOffset = minOf(startOffset + truncationLength, original.length)
+
+    // Create a SpannableStringBuilder from the truncated portion
+    val builder = android.text.SpannableStringBuilder(original, startOffset, endOffset)
+
+    // Trim trailing whitespace
+    while (builder.isNotEmpty() && Character.isWhitespace(builder[builder.length - 1])) {
+      builder.delete(builder.length - 1, builder.length)
+    }
+
+    // Get style spans from the last character to apply to ellipsis
+    val ellipsisSpans = if (builder.isNotEmpty()) {
+      original.getSpans(endOffset - 1, endOffset, Any::class.java)
+    } else {
+      emptyArray()
+    }
+
+    // Append ellipsis
+    val ellipsisStart = builder.length
+    builder.append("\u2026")
+
+    // Copy relevant style spans to the ellipsis
+    for (span in ellipsisSpans) {
+      when (span) {
+        is android.text.style.ForegroundColorSpan,
+        is android.text.style.StyleSpan,
+        is android.text.style.TypefaceSpan,
+        is android.text.style.AbsoluteSizeSpan -> {
+          // Create a copy of the span for the ellipsis to avoid sharing issues
+          val newSpan = when (span) {
+            is android.text.style.ForegroundColorSpan ->
+              android.text.style.ForegroundColorSpan(span.foregroundColor)
+            is android.text.style.StyleSpan ->
+              android.text.style.StyleSpan(span.style)
+            is android.text.style.AbsoluteSizeSpan ->
+              android.text.style.AbsoluteSizeSpan(span.size, span.dip)
+            else -> span
+          }
+          builder.setSpan(
+            newSpan,
+            ellipsisStart,
+            builder.length,
+            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+          )
+        }
+      }
+    }
+
+    return builder
+  }
+
+  /**
+   * Draws layout with smart word-boundary truncation on the last visible line.
+   * Mirrors iOS drawTruncatedFrame:inContext:maxLines: implementation.
+   * Preserves text spans (colors, bold, etc.) from the original Spannable.
+   *
+   * @param canvas The canvas to draw on
+   * @param layout The full text layout (without ellipsis)
+   * @param spannable The original spannable with all styling
+   */
+  private fun drawTruncatedLayout(canvas: Canvas, layout: Layout, spannable: Spannable) {
+    val visibleLines = numberOfLines
+    val lastLine = visibleLines - 1
+
+    // Draw all complete lines (0 to lastLine-1) using clipping
+    if (lastLine > 0) {
+      val clipBottom = layout.getLineBottom(lastLine - 1)
+      canvas.save()
+      canvas.clipRect(0f, 0f, layout.width.toFloat(), clipBottom.toFloat())
+      layout.draw(canvas)
+      canvas.restore()
+    }
+
+    // Handle last visible line with word boundary truncation
+    val lastLineStart = layout.getLineStart(lastLine)
+    val plainText = spannable.toString()
+
+    // Guard against out of bounds
+    if (lastLineStart >= plainText.length) {
+      return
+    }
+
+    // Get remaining text from last line start to end
+    val remainingText = plainText.substring(lastLineStart)
+
+    // Replace newlines with spaces (matching iOS behavior)
+    val continuousText = remainingText.replace(Regex("[\n\r]"), " ")
+
+    // Calculate how much text fits on the last line (account for ellipsis width)
+    val ellipsisWidth = customTextPaint.measureText("\u2026")
+    val availableWidth = layout.width.toFloat() - ellipsisWidth
+
+    // Find truncation point using paint measurement
+    val truncationIndex = findTruncationIndex(continuousText, availableWidth, customTextPaint)
+
+    // Apply word boundary adjustment
+    val adjustedIndex = adjustTruncationIndexToWordBoundary(continuousText, truncationIndex)
+
+    // Guard against zero-length truncation
+    if (adjustedIndex <= 0) {
+      return
+    }
+
+    // Build truncated Spannable preserving original spans
+    val truncatedSpannable = buildTruncatedSpannable(spannable, lastLineStart, adjustedIndex)
+
+    // Draw the truncated last line using StaticLayout to preserve spans
+    val lastLineTop = layout.getLineTop(lastLine).toFloat()
+    val truncatedLayout = StaticLayout.Builder
+      .obtain(truncatedSpannable, 0, truncatedSpannable.length, customTextPaint, layout.width)
+      .setAlignment(layout.alignment)
+      .setLineSpacing(0f, 1f)
+      .setIncludePad(false)
+      .build()
+
+    canvas.save()
+    canvas.translate(0f, lastLineTop)
+    truncatedLayout.draw(canvas)
+    canvas.restore()
   }
 
   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -767,7 +1052,16 @@ class FabricRichTextView : AppCompatTextView {
         // Draw the layout directly at padding offset
         canvas.save()
         canvas.translate(paddingLeft.toFloat(), paddingTop.toFloat())
-        cl.draw(canvas)
+
+        // Check if content needs truncation with smart word detection
+        if (numberOfLines > 0 && cl.lineCount > numberOfLines) {
+          // Use custom truncation drawing with word-boundary awareness
+          drawTruncatedLayout(canvas, cl, spannable)
+        } else {
+          // No truncation needed - draw normally
+          cl.draw(canvas)
+        }
+
         canvas.restore()
 
         if (DEBUG_DRAW_LINE_BOUNDS) {
@@ -811,21 +1105,15 @@ class FabricRichTextView : AppCompatTextView {
       return
     }
 
-    // Get visible line count from the current layout
-    val visibleLineCount = textLayout.lineCount
+    // measuredLineCount: Total lines the full text would occupy (no truncation)
+    // Our customLayout is created WITHOUT setMaxLines(), so lineCount is the full count
+    val measuredLineCount = textLayout.lineCount
 
-    // Compute measured line count (total lines without numberOfLines constraint)
-    val measuredLineCount = if (numberOfLines > 0 && visibleLineCount == numberOfLines) {
-      // There might be more lines - create an unconstrained layout to check
-      val unconstrainedLayout = StaticLayout.Builder
-        .obtain(spannable, 0, spannable.length, customTextPaint, textLayout.width)
-        .setAlignment(textLayout.alignment)
-        .setLineSpacing(0f, 1f)
-        .setIncludePad(includeFontPadding)
-        .build()
-      unconstrainedLayout.lineCount
+    // visibleLineCount: Lines actually displayed (capped by numberOfLines if set)
+    val visibleLineCount = if (numberOfLines > 0) {
+      min(textLayout.lineCount, numberOfLines)
     } else {
-      visibleLineCount
+      textLayout.lineCount
     }
 
     // Only notify if values changed
@@ -1099,24 +1387,26 @@ class FabricRichTextView : AppCompatTextView {
   }
 
   /**
-   * Override to provide plain text content for accessibility, preventing TalkBack
-   * from reading span styling information (colors, fonts, etc.).
+   * Override to provide visible text content for accessibility, preventing TalkBack
+   * from reading span styling information (colors, fonts, etc.) and ensuring only
+   * visible (non-truncated) text is announced.
    *
-   * We set both text and contentDescription to plain String to ensure
-   * TalkBack reads plain text instead of the styled Spannable.
+   * We use getVisibleTextForAccessibility() which lazily computes the truncated text
+   * when numberOfLines is set, similar to iOS's visibleTextForAccessibility method.
    */
   override fun onInitializeAccessibilityNodeInfo(info: AccessibilityNodeInfo) {
     super.onInitializeAccessibilityNodeInfo(info)
 
-    // Get the plain text accessibility label
-    val plainText = resolvedAccessibilityLabel ?: (stateSpannable ?: text)?.toString() ?: ""
+    // Get the visible text (truncated if applicable) - computed lazily at this point
+    // when the layout exists and truncation can be accurately detected
+    val visibleText = getVisibleTextForAccessibility()
 
-    // Set BOTH text and contentDescription to plain String
-    // This should prevent TalkBack from accessing the Spannable
-    info.text = plainText
-    info.contentDescription = plainText
+    // Set BOTH text and contentDescription to the visible text
+    // This ensures TalkBack reads only what's visually displayed
+    info.text = visibleText
+    info.contentDescription = visibleText
 
-    logA11y("onInitializeAccessibilityNodeInfo: set plain text, length=${plainText.length}")
+    logA11y("onInitializeAccessibilityNodeInfo: set visible text, length=${visibleText.length}")
   }
 
   // Note: We use ExploreByTouchHelper (FabricRichTextAccessibilityDelegate) set via
