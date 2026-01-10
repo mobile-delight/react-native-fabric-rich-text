@@ -4,6 +4,11 @@
   "description": "Fabric-first rich text renderer for React Native with NativeWind/Tailwind CSS support",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "nativewind": ["./lib/typescript/src/nativewind.d.ts"]
+    }
+  },
   "exports": {
     ".": {
       "source": "./src/index.tsx",

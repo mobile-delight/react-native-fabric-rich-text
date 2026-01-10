@@ -212,59 +212,79 @@ class FabricRichTextAccessibilityDelegate(
     fun getLinkCount(): Int = accessibilityLinks?.links?.size ?: 0
 
     /**
-     * Returns the accessibility node provider only when links exist.
-     * When no links are present, returns null to use default TextView accessibility.
+     * Returns the number of visible links (on non-truncated lines).
+     * When numberOfLines is set, only counts links that start on visible lines.
+     */
+    fun getVisibleLinkCount(): Int = getVisibleLinks().size
+
+    /**
+     * Returns only links that are on visible (non-truncated) lines.
+     * Uses the host view's isCharacterOnVisibleLine() to filter links.
+     */
+    private fun getVisibleLinks(): List<LinkInfo> {
+        val links = accessibilityLinks?.links ?: return emptyList()
+        return links.filter { link ->
+            hostView.isCharacterOnVisibleLine(link.start)
+        }
+    }
+
+    /**
+     * Returns the accessibility node provider only when visible links exist.
+     * When no visible links are present (either no links at all, or all links are
+     * on truncated lines), returns null to use default TextView accessibility.
      *
      * This follows React Native's pattern where virtual views are only created
      * when there are actually links to navigate to.
      */
     override fun getAccessibilityNodeProvider(host: View): AccessibilityNodeProviderCompat? {
-        val links = accessibilityLinks?.links
-        if (links != null && links.isNotEmpty()) {
-            log("getAccessibilityNodeProvider: returning provider for ${links.size} links")
+        val visibleLinks = getVisibleLinks()
+        if (visibleLinks.isNotEmpty()) {
+            log("getAccessibilityNodeProvider: returning provider for ${visibleLinks.size} visible links")
             return super.getAccessibilityNodeProvider(host)
         }
-        log("getAccessibilityNodeProvider: no links, returning null")
+        log("getAccessibilityNodeProvider: no visible links, returning null")
         return null
     }
 
     /**
      * Initializes the accessibility node info for the host view.
-     * Ensures the host view uses plain text instead of styled Spannable to prevent
-     * TalkBack from reading span formatting (when "Speak text formatting" is enabled).
+     * Uses the visible text (truncated if applicable) to prevent TalkBack from
+     * reading span formatting and to ensure only visible content is announced.
      */
     override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
         super.onInitializeAccessibilityNodeInfo(host, info)
 
-        // Get plain text description from the view
-        val plainText = hostView.contentDescription?.toString()
-        if (plainText != null) {
-            // Set BOTH text and contentDescription to plain String
-            // This prevents TalkBack from reading span formatting even when
-            // "Speak text formatting" is enabled in TalkBack settings
-            info.text = plainText
-            info.contentDescription = plainText
-            log("onInitializeAccessibilityNodeInfo(host): set plain text, length=${plainText.length}")
+        // Get visible text from the view (truncated if applicable)
+        val visibleText = hostView.getVisibleTextForAccessibility()
+        if (visibleText.isNotEmpty()) {
+            // Set BOTH text and contentDescription to visible text
+            // This prevents TalkBack from reading span formatting and
+            // ensures only visible (non-truncated) text is announced
+            info.text = visibleText
+            info.contentDescription = visibleText
+            log("onInitializeAccessibilityNodeInfo(host): set visible text, length=${visibleText.length}")
         }
     }
 
     // MARK: - ExploreByTouchHelper Implementation
 
     /**
-     * Populates the list of virtual view IDs for all accessible links.
+     * Populates the list of virtual view IDs for visible (non-truncated) links.
      * Called by the accessibility framework to enumerate focusable items.
+     * Only includes links that start on visible lines when numberOfLines is set.
      */
     override fun getVisibleVirtualViews(virtualViewIds: MutableList<Int>) {
-        val links = accessibilityLinks?.links ?: return
-        log("getVisibleVirtualViews: returning ${links.size} link IDs")
-        links.forEach { link ->
+        val visibleLinks = getVisibleLinks()
+        log("getVisibleVirtualViews: returning ${visibleLinks.size} visible link IDs (of ${accessibilityLinks?.links?.size ?: 0} total)")
+        visibleLinks.forEach { link ->
             virtualViewIds.add(link.id)
         }
     }
 
     /**
      * Returns the virtual view ID at the given screen coordinates,
-     * or INVALID_ID if the point is not on a link.
+     * or INVALID_ID if the point is not on a visible link.
+     * Only returns link IDs for links on non-truncated lines.
      */
     override fun getVirtualViewAt(x: Float, y: Float): Int {
         val links = accessibilityLinks ?: return INVALID_ID
@@ -274,7 +294,12 @@ class FabricRichTextAccessibilityDelegate(
         val layoutY = y - hostView.paddingTop
 
         val link = links.getLinkAtPoint(hostView, layoutX, layoutY)
-        val result = link?.id ?: INVALID_ID
+        // Only return link if it's on a visible line
+        val result = if (link != null && hostView.isCharacterOnVisibleLine(link.start)) {
+            link.id
+        } else {
+            INVALID_ID
+        }
         log("getVirtualViewAt($x, $y) -> layoutCoords($layoutX, $layoutY) -> $result")
         return result
     }
@@ -285,7 +310,7 @@ class FabricRichTextAccessibilityDelegate(
      *
      * Uses localized strings for:
      * - Role description: "web link", "phone number", "email address", or "link"
-     * - Position: "X of Y" format localized to user's language
+     * - Position: "X of Y" format localized to user's language (uses visible link count)
      */
     override fun onPopulateNodeForVirtualView(
         virtualViewId: Int,
@@ -293,14 +318,24 @@ class FabricRichTextAccessibilityDelegate(
     ) {
         val links = accessibilityLinks?.links ?: return
         val link = links.getOrNull(virtualViewId) ?: return
-        val totalLinks = links.size
-        val position = virtualViewId + 1 // 1-indexed for user display
+
+        // Use visible links for position calculation
+        val visibleLinks = getVisibleLinks()
+        val visiblePosition = visibleLinks.indexOfFirst { it.id == virtualViewId }
+        if (visiblePosition == -1) {
+            // Link is not visible (on truncated line) - shouldn't happen but handle gracefully
+            log("onPopulateNodeForVirtualView: link $virtualViewId not visible, skipping")
+            return
+        }
+
+        val totalVisible = visibleLinks.size
+        val position = visiblePosition + 1 // 1-indexed for user display
 
         log("onPopulateNodeForVirtualView: link $virtualViewId '${link.text}' type=${link.linkType}")
 
-        // Build content description with position info if there are multiple links
-        val positionSuffix = if (totalLinks > 1) {
-            ", ${getPositionDescription(position, totalLinks)}"
+        // Build content description with position info if there are multiple visible links
+        val positionSuffix = if (totalVisible > 1) {
+            ", ${getPositionDescription(position, totalVisible)}"
         } else {
             ""
         }
@@ -322,7 +357,7 @@ class FabricRichTextAccessibilityDelegate(
         // Calculate and set bounds
         val bounds = calculateLinkBounds(link)
         node.setBoundsInParent(bounds)
-        log("  roleDescription: ${node.roleDescription}, position: $position/$totalLinks, bounds: $bounds")
+        log("  roleDescription: ${node.roleDescription}, position: $position/$totalVisible, bounds: $bounds")
     }
 
     /**
