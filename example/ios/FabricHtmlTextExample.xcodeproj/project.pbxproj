@@ -291,9 +291,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FabricHtmlTextExample/Pods-FabricHtmlTextExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FabricHtmlTextExample/Pods-FabricHtmlTextExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -308,9 +312,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FabricHtmlTextExample-FabricHtmlTextTests/Pods-FabricHtmlTextExample-FabricHtmlTextTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FabricHtmlTextExample-FabricHtmlTextTests/Pods-FabricHtmlTextExample-FabricHtmlTextTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -347,9 +355,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FabricHtmlTextExample-FabricHtmlTextTests/Pods-FabricHtmlTextExample-FabricHtmlTextTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FabricHtmlTextExample-FabricHtmlTextTests/Pods-FabricHtmlTextExample-FabricHtmlTextTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -386,9 +398,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FabricHtmlTextExample/Pods-FabricHtmlTextExample-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-FabricHtmlTextExample/Pods-FabricHtmlTextExample-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -440,7 +456,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = U8T8VY3446;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = FabricHtmlTextExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -469,7 +485,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = U8T8VY3446;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = FabricHtmlTextExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -497,7 +513,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = U8T8VY3446;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = FabricHtmlTextTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				PRODUCT_BUNDLE_IDENTIFIER = io.michaelfay.fabrichtmltext.tests;
@@ -517,7 +533,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = U8T8VY3446;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = FabricHtmlTextTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				PRODUCT_BUNDLE_IDENTIFIER = io.michaelfay.fabrichtmltext.tests;

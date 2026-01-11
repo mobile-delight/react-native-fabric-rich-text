@@ -5,16 +5,52 @@ import { ALLOWED_PROTOCOLS, ALLOWED_DIR_VALUES } from './constants';
 
 export { ALLOWED_TAGS, ALLOWED_ATTR };
 
-// Set up DOMPurify hook to validate dir attribute values
-// This runs once when the module loads (browser only)
+// Dangerous CSS patterns that should be stripped from style attributes
+// These patterns are used in XSS attacks via CSS (legacy IE expression(), javascript: URLs, etc.)
+const DANGEROUS_CSS_PATTERNS = [
+  /javascript\s*:/gi,
+  /expression\s*\(/gi,
+  /behavior\s*:/gi,
+  /-moz-binding\s*:/gi,
+  /vbscript\s*:/gi,
+  /data\s*:/gi,
+];
+
+/**
+ * Sanitize CSS content by removing dangerous patterns.
+ * Returns empty string if any dangerous pattern is found.
+ */
+function sanitizeCssValue(css: string): string {
+  for (const pattern of DANGEROUS_CSS_PATTERNS) {
+    if (pattern.test(css)) {
+      return '';
+    }
+  }
+  return css;
+}
+
+// Set up DOMPurify hooks (browser only)
+// This runs once when the module loads
 if (typeof window !== 'undefined') {
   DOMPurify.addHook('uponSanitizeAttribute', (_node, data) => {
+    // Validate dir attribute values
     if (data.attrName === 'dir') {
       const value = data.attrValue.toLowerCase();
       if (!ALLOWED_DIR_VALUES.includes(value as 'ltr' | 'rtl' | 'auto')) {
         // Remove invalid dir attribute by clearing its value
         data.attrValue = '';
         data.forceKeepAttr = false;
+      }
+    }
+
+    // Sanitize style attribute CSS content
+    if (data.attrName === 'style') {
+      const sanitizedCss = sanitizeCssValue(data.attrValue);
+      if (sanitizedCss !== data.attrValue) {
+        data.attrValue = sanitizedCss;
+        if (!sanitizedCss) {
+          data.forceKeepAttr = false;
+        }
       }
     }
   });
