@@ -125,7 +125,7 @@ reviews:
   assess_linked_issues: true
   enable_prompt_for_ai_agents: true
   related_prs: true
-  high_level_summary_instructions:
+  high_level_summary_instructions: ""
   fail_commit_status: false
   abort_on_close: true
   suggested_labels: true
