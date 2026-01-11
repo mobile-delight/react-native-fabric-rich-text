@@ -75,6 +75,18 @@ class FabricHTMLTextView : AppCompatTextView {
     // Accessibility debug logging - disabled in production
     private const val A11Y_TAG = "A11Y_FHTMLTV"
     private val A11Y_DEBUG = BuildConfig.DEBUG
+
+    // Allowed URL schemes for link clicks (security whitelist)
+    private val ALLOWED_SCHEMES = setOf("http", "https", "mailto", "tel")
+
+    /**
+     * Validates that a URL has an allowed scheme.
+     * Blocks dangerous schemes like javascript:, data:, vbscript:, etc.
+     */
+    fun isSchemeAllowed(url: String): Boolean {
+      val scheme = android.net.Uri.parse(url).scheme?.lowercase()
+      return scheme != null && scheme in ALLOWED_SCHEMES
+    }
   }
 
   // Text style props from React - synchronized with C++ measurement
@@ -515,8 +527,15 @@ class FabricHTMLTextView : AppCompatTextView {
   /**
    * Programmatically perform a link click.
    * Used by accessibility delegate to trigger link clicks from TalkBack actions.
+   *
+   * Validates URL scheme before invoking callback to prevent javascript: or other
+   * unsafe scheme activations.
    */
   internal fun performLinkClick(url: String, type: DetectedContentType) {
+    if (!isSchemeAllowed(url)) {
+      logA11y("performLinkClick: blocked unsafe scheme for URL: $url")
+      return
+    }
     linkClickListener?.onLinkClick(url, type)
   }
 
@@ -1078,10 +1097,7 @@ private class LinkClickMovementMethod(
         val href = hrefLinks[0].href
 
         // Defense-in-depth: Validate URL scheme before invoking callback
-        // Block dangerous schemes like javascript:, data:, vbscript:
-        val scheme = android.net.Uri.parse(href).scheme?.lowercase()
-        val allowedSchemes = setOf("http", "https", "mailto", "tel")
-        if (scheme == null || scheme !in allowedSchemes) {
+        if (!FabricHTMLTextView.isSchemeAllowed(href)) {
           return true  // Consume the event but don't invoke callback
         }
 
@@ -1095,10 +1111,7 @@ private class LinkClickMovementMethod(
         val url = urlSpans[0].url
 
         // Defense-in-depth: Validate URL scheme before invoking callback
-        // Block dangerous schemes like javascript:, data:, vbscript:
-        val scheme = android.net.Uri.parse(url).scheme?.lowercase()
-        val allowedSchemes = setOf("http", "https", "mailto", "tel")
-        if (scheme == null || scheme !in allowedSchemes) {
+        if (!FabricHTMLTextView.isSchemeAllowed(url)) {
           return true  // Consume the event but don't invoke callback
         }
 

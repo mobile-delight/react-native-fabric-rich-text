@@ -7,11 +7,13 @@ rules:
     languages: [typescript, javascript]
     paths:
       include:
-        - "*.web.tsx"
-        - "*.web.ts"
-    # Match dangerouslySetInnerHTML unless sanitize() or DOMPurify.sanitize() is called inline
+        - "**/*.web.tsx"
+        - "**/*.web.ts"
+    # Match dangerouslySetInnerHTML unless sanitize() or DOMPurify.sanitize() is called inline,
+    # or using a pre-sanitized variable (sanitizedHtml)
     # Note: Using \s+ (not \s*) before lookahead to prevent regex backtracking false positives
-    pattern-regex: 'dangerouslySetInnerHTML\s*=\s*\{\s*\{\s*__html\s*:\s+(?!(sanitize\(|DOMPurify\.sanitize\())'
+    # Allows optional whitespace before parenthesis (e.g., sanitize( or sanitize ()
+    pattern-regex: 'dangerouslySetInnerHTML\s*=\s*\{\s*\{\s*__html\s*:\s+(?!(sanitize\s*\(|DOMPurify\.sanitize\s*\(|sanitizedHtml\s*\}))'
 
   - id: no-innerhtml-assignment
     message: "Direct innerHTML assignment is dangerous. Use DOMPurify.sanitize() first."

@@ -27,8 +27,9 @@ Pod::Spec.new do |s|
   s.public_header_files = "ios/FabricHTMLCoreTextView.h"
 
   # Localized accessibility strings
+  # Use explicit file pattern to ensure Localizable.strings files are included
   s.resource_bundles = {
-    'FabricHtmlTextResources' => ['ios/Resources/**/*.lproj']
+    'FabricHtmlTextResources' => ['ios/Resources/**/*.lproj/*']
   }
 
   s.frameworks = "CoreText", "CoreFoundation"

@@ -37,7 +37,7 @@ AttributedString FabricHTMLTextShadowNode::parseHtmlToAttributedString(
     const std::string& html,
     Float fontSizeMultiplier) const {
 
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
 
     if (html.empty()) {
         _linkUrls.clear();
@@ -105,7 +105,7 @@ Size FabricHTMLTextShadowNode::measureContent(
     _attributedString = parseHtmlToAttributedString(props.html, fontSizeMultiplier);
 
     // Lock for reading _attributedString
-    std::lock_guard<std::mutex> lock(_mutex);
+    std::lock_guard<std::recursive_mutex> lock(_mutex);
     if (_attributedString.isEmpty()) {
         return Size{0, 0};
     }
@@ -160,7 +160,12 @@ void FabricHTMLTextShadowNode::layout(LayoutContext layoutContext) {
         // "ltr" or any other value defaults to LTR
     }
 
-    setStateData(FabricHTMLTextStateData{_attributedString, _linkUrls, effectiveNumberOfLines, animationDuration, writingDirection, _accessibilityLabel});
+    // Lock mutex while reading shared state to ensure thread safety
+    // parseHtmlToAttributedString may be writing these fields from another thread
+    {
+        std::lock_guard<std::recursive_mutex> lock(_mutex);
+        setStateData(FabricHTMLTextStateData{_attributedString, _linkUrls, effectiveNumberOfLines, animationDuration, writingDirection, _accessibilityLabel});
+    }
 
     ConcreteViewShadowNode::layout(layoutContext);
 }

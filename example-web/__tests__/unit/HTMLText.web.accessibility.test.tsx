@@ -17,7 +17,7 @@ describe('HTMLText.web Accessibility', () => {
   // MARK: - ARIA Container Tests
 
   describe('Container ARIA attributes', () => {
-    it('should have aria-label with link count when links present', () => {
+    it('should have aria-describedby referencing link count when links present', () => {
       const { container } = render(
         <HTMLText
           html='<p>Visit <a href="https://a.com">First</a> and <a href="https://b.com">Second</a></p>'
@@ -26,13 +26,18 @@ describe('HTMLText.web Accessibility', () => {
       );
 
       const rootElement = container.firstChild as HTMLElement;
-      const ariaLabel = rootElement.getAttribute('aria-label');
+      const describedBy = rootElement.getAttribute('aria-describedby');
 
-      expect(ariaLabel).toBeTruthy();
-      expect(ariaLabel).toContain('2'); // Should mention 2 links
+      expect(describedBy).toBeTruthy();
+
+      // The aria-describedby should reference a hidden element with link count
+      // Use getElementById instead of querySelector to handle special characters in useId() output
+      const descElement = document.getElementById(describedBy!);
+      expect(descElement).toBeTruthy();
+      expect(descElement?.textContent).toContain('2'); // Should mention 2 links
     });
 
-    it('should not have aria-label when no links present', () => {
+    it('should not have aria-describedby when no links present', () => {
       const { container } = render(
         <HTMLText
           html="<p>Just plain text with no links.</p>"
@@ -41,22 +46,21 @@ describe('HTMLText.web Accessibility', () => {
       );
 
       const rootElement = container.firstChild as HTMLElement;
-      const ariaLabel = rootElement.getAttribute('aria-label');
+      const describedBy = rootElement.getAttribute('aria-describedby');
 
       // Either null or empty is acceptable when no links
-      expect(!ariaLabel || ariaLabel === '').toBe(true);
+      expect(!describedBy || describedBy === '').toBe(true);
     });
 
-    it('should have role="group" when multiple links present', () => {
+    it('should preserve native semantics without role attribute', () => {
       const { container } = render(
         <HTMLText html='<p><a href="https://a.com">First</a> and <a href="https://b.com">Second</a></p>' />
       );
 
       const rootElement = container.firstChild as HTMLElement;
-      // Container should have a role that groups links
+      // Container should NOT have a role - preserves native div semantics
       const role = rootElement.getAttribute('role');
-      expect(role).not.toBeNull();
-      expect(['group', 'region']).toContain(role);
+      expect(role).toBeNull();
     });
   });
 
@@ -152,14 +156,15 @@ describe('HTMLText.web Accessibility', () => {
   // MARK: - Focus Management Tests
 
   describe('Focus management', () => {
-    it('should have tabIndex={0} on container for keyboard access', () => {
+    it('should have tabIndex={-1} on container to avoid duplicate focus with nested links', () => {
       const { container } = render(
         <HTMLText html='<p><a href="https://example.com">Link</a></p>' />
       );
 
       const rootElement = container.firstChild as HTMLElement;
-      // Container should be keyboard focusable
-      expect(rootElement.tabIndex).toBe(0);
+      // Container should NOT be keyboard focusable since nested links are focusable
+      // This prevents duplicate tab stops
+      expect(rootElement.tabIndex).toBe(-1);
     });
 
     it('links should be natively focusable', () => {
@@ -198,6 +203,79 @@ describe('HTMLText.web Accessibility', () => {
 
       const link = container.querySelector('a');
       expect(link?.getAttribute('href')).toBe('tel:+1234567890');
+    });
+  });
+
+  // MARK: - Dangerous Protocol Tests
+
+  describe('Dangerous URL protocol sanitization', () => {
+    it('should strip or block javascript: protocol links', () => {
+      const { container } = render(
+        <HTMLText html='<p><a href="javascript:alert(1)">XSS Link</a></p>' />
+      );
+
+      const link = container.querySelector('a');
+      // Link should either be removed, have no href, or have a sanitized href
+      if (link) {
+        const href = link.getAttribute('href');
+        // href being null/empty is valid sanitization (dangerous protocol stripped)
+        if (href) {
+          expect(href).not.toMatch(/^javascript:/i);
+        }
+      }
+    });
+
+    it('should strip or block data: protocol links', () => {
+      const { container } = render(
+        <HTMLText html='<p><a href="data:text/html,<script>alert(1)</script>">Data Link</a></p>' />
+      );
+
+      const link = container.querySelector('a');
+      if (link) {
+        const href = link.getAttribute('href');
+        // href being null/empty is valid sanitization (dangerous protocol stripped)
+        if (href) {
+          expect(href).not.toMatch(/^data:/i);
+        }
+      }
+    });
+
+    it('should strip or block vbscript: protocol links', () => {
+      const { container } = render(
+        <HTMLText html='<p><a href="vbscript:msgbox(1)">VBScript Link</a></p>' />
+      );
+
+      const link = container.querySelector('a');
+      if (link) {
+        const href = link.getAttribute('href');
+        // href being null/empty is valid sanitization (dangerous protocol stripped)
+        if (href) {
+          expect(href).not.toMatch(/^vbscript:/i);
+        }
+      }
+    });
+
+    it('should allow safe protocols (http, https, mailto, tel)', () => {
+      const { container } = render(
+        <HTMLText
+          html={`
+          <p>
+            <a href="https://example.com">HTTPS</a>
+            <a href="http://example.com">HTTP</a>
+            <a href="mailto:test@example.com">Email</a>
+            <a href="tel:+1234567890">Phone</a>
+          </p>
+        `}
+        />
+      );
+
+      const links = container.querySelectorAll('a');
+      expect(links.length).toBe(4);
+
+      expect(links[0]?.getAttribute('href')).toBe('https://example.com');
+      expect(links[1]?.getAttribute('href')).toBe('http://example.com');
+      expect(links[2]?.getAttribute('href')).toBe('mailto:test@example.com');
+      expect(links[3]?.getAttribute('href')).toBe('tel:+1234567890');
     });
   });
 

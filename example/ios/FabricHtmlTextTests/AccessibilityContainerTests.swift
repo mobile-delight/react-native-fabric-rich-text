@@ -283,7 +283,7 @@ final class AccessibilityContainerTests: XCTestCase {
         let result = element.accessibilityActivate()
         XCTAssertTrue(result, "Link should be activatable")
         XCTAssertEqual(mockDelegate.tapCount, 1, "Delegate should be called once")
-        XCTAssertEqual(mockDelegate.lastTappedURL?.absoluteString, "https://example.com")
+        XCTAssertEqual(mockDelegate.lastTappedURL?.absoluteString, "https://example.com/")
     }
 
     // MARK: - Content Type Hint Tests
@@ -426,21 +426,6 @@ final class AccessibilityContainerTests: XCTestCase {
     // MARK: - Helper Methods
 
     private func createAttributedString(from html: String) -> NSAttributedString {
-        // TODO: Use production FabricHTMLParser instead of Apple's HTML parser
-        // This should delegate to FabricHTMLFragmentParser for accurate production validation
-        guard let data = html.data(using: .utf8) else {
-            return NSAttributedString(string: "")
-        }
-
-        let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
-            .documentType: NSAttributedString.DocumentType.html,
-            .characterEncoding: String.Encoding.utf8.rawValue
-        ]
-
-        do {
-            return try NSAttributedString(data: data, options: options, documentAttributes: nil)
-        } catch {
-            return NSAttributedString(string: html)
-        }
+        return TestHelpers.createAttributedString(from: html)
     }
 }

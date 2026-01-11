@@ -341,27 +341,34 @@ class FabricHTMLTextAccessibilityDelegate(
             AccessibilityNodeInfoCompat.ACTION_CLICK,
             android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK -> {
                 // Perform the click action by triggering the link handler
-                try {
-                    val url = when (val span = link.span) {
-                        is HrefClickableSpan -> span.href
-                        is URLSpan -> span.url
-                        else -> {
-                            Log.w(TAG, "Unknown span type: ${span.javaClass.simpleName}")
-                            return false
-                        }
+                val url = when (val span = link.span) {
+                    is HrefClickableSpan -> span.href
+                    is URLSpan -> span.url
+                    else -> {
+                        Log.w(TAG, "Unknown span type: ${span.javaClass.simpleName}")
+                        return false
                     }
+                }
 
-                    val type = when (link.linkType) {
-                        LinkType.PHONE -> DetectedContentType.PHONE
-                        LinkType.EMAIL -> DetectedContentType.EMAIL
-                        else -> DetectedContentType.LINK
-                    }
+                val type = when (link.linkType) {
+                    LinkType.PHONE -> DetectedContentType.PHONE
+                    LinkType.EMAIL -> DetectedContentType.EMAIL
+                    else -> DetectedContentType.LINK
+                }
 
+                return try {
                     hostView.performLinkClick(url, type)
                     log("  clicked link '${link.text}' url='$url' type=$type")
-                    return true
-                } catch (e: Exception) {
-                    Log.w(TAG, "Error clicking link", e)
+                    true
+                } catch (e: IllegalArgumentException) {
+                    Log.w(TAG, "Invalid URL argument for link click: $url", e)
+                    false
+                } catch (e: android.content.ActivityNotFoundException) {
+                    Log.w(TAG, "No activity found to handle link: $url", e)
+                    false
+                } catch (e: SecurityException) {
+                    Log.w(TAG, "Security exception clicking link: $url", e)
+                    false
                 }
             }
             AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS,

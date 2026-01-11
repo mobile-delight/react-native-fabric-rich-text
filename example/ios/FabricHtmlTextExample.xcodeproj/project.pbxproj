@@ -22,6 +22,7 @@
 		EBD38CDA991AE7840D82E6E0 /* FabricHTMLSanitizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451B3FDD48BC06AD51BC036C /* FabricHTMLSanitizerTests.swift */; };
 		F0FC50F0E270744ACE459FAC /* libPods-FabricHtmlTextExample-FabricHtmlTextTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D6431BA46A1D145A1B03643E /* libPods-FabricHtmlTextExample-FabricHtmlTextTests.a */; };
 		LINK1234BOUNDS567890AB /* LinkBoundsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = LINK5678BOUNDSREF12345 /* LinkBoundsTests.swift */; };
+		TEST1234HELPERS567890AB /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = TEST5678HELPERSREF1234 /* TestHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F257B78065678D2A545CFC90 /* FabricHtmlTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FabricHtmlTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		LINK5678BOUNDSREF12345 /* LinkBoundsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LinkBoundsTests.swift; sourceTree = "<group>"; };
+		TEST5678HELPERSREF1234 /* TestHelpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				3074300C8FD772A52CDBAF46 /* FabricHTMLStylingTests.mm */,
 				LINK5678BOUNDSREF12345 /* LinkBoundsTests.swift */,
 				A11Y5678CONTAINERREF12 /* AccessibilityContainerTests.swift */,
+				TEST5678HELPERSREF1234 /* TestHelpers.swift */,
 			);
 			path = FabricHtmlTextTests;
 			sourceTree = "<group>";
@@ -418,6 +421,7 @@
 				8B59E52DE1E321DDCD808836 /* FabricHTMLStylingTests.mm in Sources */,
 				LINK1234BOUNDS567890AB /* LinkBoundsTests.swift in Sources */,
 				A11Y1234CONTAINER5678AB /* AccessibilityContainerTests.swift in Sources */,
+				TEST1234HELPERS567890AB /* TestHelpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

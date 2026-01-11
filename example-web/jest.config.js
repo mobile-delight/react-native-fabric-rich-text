@@ -9,8 +9,8 @@ const createJestConfig = nextJest({
 const reactPath = path.resolve(__dirname, 'node_modules/react');
 const reactDomPath = path.resolve(__dirname, 'node_modules/react-dom');
 
-// Resolve library path relative to this config file
-const libWebPath = path.resolve(__dirname, '../lib/module/index.web.js');
+// Resolve library path to TypeScript source (no build required)
+const libWebPath = path.resolve(__dirname, '../src/index.web.tsx');
 
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],

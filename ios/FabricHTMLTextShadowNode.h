@@ -94,7 +94,9 @@ class FabricHTMLTextShadowNode final : public ConcreteViewShadowNode<
    */
   static std::string stripHtmlTags(const std::string& html);
 
-  mutable std::mutex _mutex;
+  // Use recursive_mutex because measureContent() calls parseHtmlToAttributedString()
+  // which also needs to acquire the lock
+  mutable std::recursive_mutex _mutex;
   mutable AttributedString _attributedString;
   mutable std::vector<std::string> _linkUrls;
   mutable std::string _accessibilityLabel;

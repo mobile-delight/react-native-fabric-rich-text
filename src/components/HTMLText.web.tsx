@@ -1,7 +1,7 @@
 import {
   useCallback,
   useEffect,
-  useMemo,
+  useId,
   useRef,
   type ReactElement,
 } from 'react';
@@ -11,9 +11,6 @@ import { convertStyle } from '../adapters/web/StyleConverter';
 
 // Module-level flag to warn only once across all HTMLText instances
 let hasWarnedAboutDetection = false;
-
-// Unique ID counter for aria-describedby references
-let uniqueIdCounter = 0;
 
 /**
  * Web-specific implementation of HTMLText using semantic HTML elements.
@@ -41,10 +38,8 @@ export default function HTMLText({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Generate a unique instance ID for aria-describedby references
-  const instanceId = useMemo(() => {
-    uniqueIdCounter++;
-    return `htmltext-${uniqueIdCounter}`;
-  }, []);
+  // Using useId() to avoid side effects during render
+  const instanceId = useId();
 
   // Warn once in dev mode if detection props are used (limited functionality on web)
   useEffect(() => {
@@ -143,11 +138,22 @@ export default function HTMLText({
 
   const cssStyle = convertStyle(style);
 
-  // Sanitize HTML for link counting (also sanitized inline in dangerouslySetInnerHTML below)
+  // Sanitize HTML once - used for link counting and dangerouslySetInnerHTML
   const sanitizedHtml = sanitize(trimmedHtml);
 
-  // Count links for ARIA attributes
-  const linkCount = (sanitizedHtml.match(/<a\s[^>]*href\s*=/gi) || []).length;
+  // Count links for ARIA attributes using DOM parsing
+  // This is more robust than regex and handles edge cases like newlines in attributes
+  let linkCount = 0;
+  if (typeof DOMParser !== 'undefined') {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(sanitizedHtml, 'text/html');
+      linkCount = doc.querySelectorAll('a[href]').length;
+    } catch {
+      // Fallback: count won't be set, which results in no ARIA label
+      linkCount = 0;
+    }
+  }
 
   // Apply CSS for truncation container
   const isTruncated = numberOfLines && numberOfLines > 0;
@@ -164,28 +170,49 @@ export default function HTMLText({
           textAlign: 'start',
         };
 
-  // Build ARIA attributes for screen reader navigation
-  const ariaLabel =
+  // Build ARIA description for screen reader navigation
+  // Using aria-describedby to preserve native semantics (aria-label replaces accessible name)
+  const linkCountDescId =
+    linkCount > 0 ? `${instanceId}-link-count` : undefined;
+  const linkCountDesc =
     linkCount > 0
       ? `Contains ${linkCount} ${linkCount === 1 ? 'link' : 'links'}`
       : undefined;
 
-  // Use role="group" when multiple links for semantic grouping
-  const role = linkCount > 1 ? 'group' : undefined;
+  // Visually hidden style for screen reader-only content
+  const visuallyHiddenStyle: React.CSSProperties = {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: 0,
+    margin: '-1px',
+    overflow: 'hidden',
+    clip: 'rect(0, 0, 0, 0)',
+    whiteSpace: 'nowrap',
+    border: 0,
+  };
 
   return (
-    <div
-      ref={containerRef}
-      className={className}
-      style={{ ...cssStyle, ...truncationStyle, ...directionStyle }}
-      dir={writingDirection === 'auto' ? undefined : writingDirection}
-      data-testid={testID}
-      onClick={onLinkPress ? handleClick : undefined}
-      tabIndex={0}
-      aria-label={ariaLabel}
-      role={role}
-      // SAFETY: sanitize() uses DOMPurify (browser) or sanitize-html (SSR) - see sanitize.web.ts
-      dangerouslySetInnerHTML={{ __html: sanitize(trimmedHtml) }}
-    />
+    <>
+      <div
+        ref={containerRef}
+        className={className}
+        style={{ ...cssStyle, ...truncationStyle, ...directionStyle }}
+        dir={writingDirection === 'auto' ? undefined : writingDirection}
+        data-testid={testID}
+        onClick={onLinkPress ? handleClick : undefined}
+        // Container is not keyboard focusable since nested links are natively focusable
+        // This prevents duplicate tab stops (container + individual links)
+        tabIndex={-1}
+        aria-describedby={linkCountDescId}
+        // SAFETY: sanitize() uses DOMPurify (browser) or sanitize-html (SSR) - see sanitize.web.ts
+        dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+      />
+      {linkCountDesc && (
+        <span id={linkCountDescId} style={visuallyHiddenStyle}>
+          {linkCountDesc}
+        </span>
+      )}
+    </>
   );
 }

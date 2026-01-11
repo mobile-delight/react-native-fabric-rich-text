@@ -222,10 +222,12 @@ async function generateAllTranslations() {
 
       // Update version
       translationsData.languages[iosLocale].version = sourceVersion;
-      fs.writeFileSync(
-        translationsJsonPath,
-        JSON.stringify(translationsData, null, 2)
-      );
+
+      // Atomic write: write to temp file, then rename
+      // This prevents partial/inconsistent state if the process crashes
+      const tempPath = translationsJsonPath + '.tmp';
+      fs.writeFileSync(tempPath, JSON.stringify(translationsData, null, 2));
+      fs.renameSync(tempPath, translationsJsonPath);
 
       console.log(`✓ Completed ${iosLocale}\n`);
     } catch (error) {

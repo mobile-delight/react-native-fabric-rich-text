@@ -167,6 +167,24 @@
              self.accessibilityLabel, self.accessibilityHint);
 }
 
+#pragma mark - URL Scheme Validation
+
+/**
+ * Validates that a URL has an allowed scheme.
+ * Uses a whitelist approach to only allow safe protocols.
+ * Blocks dangerous schemes like javascript:, data:, file:, vbscript:, etc.
+ */
++ (BOOL)isSchemeAllowed:(NSURL *)url
+{
+    if (!url || !url.scheme) {
+        return NO;
+    }
+
+    NSString *scheme = [url.scheme lowercaseString];
+    NSSet<NSString *> *allowedSchemes = [NSSet setWithObjects:@"http", @"https", @"mailto", @"tel", nil];
+    return [allowedSchemes containsObject:scheme];
+}
+
 #pragma mark - UIAccessibilityAction
 
 - (BOOL)accessibilityActivate
@@ -177,6 +195,12 @@
     // Don't activate placeholder URLs
     if (!self.url || [self.url.absoluteString isEqualToString:@"about:blank"]) {
         A11Y_LOG(@">>> accessibilityActivate: invalid or placeholder URL, returning NO");
+        return NO;
+    }
+
+    // Validate URL scheme - block dangerous protocols
+    if (![[self class] isSchemeAllowed:self.url]) {
+        A11Y_LOG(@">>> accessibilityActivate: blocked unsafe URL scheme: %@", self.url.scheme);
         return NO;
     }
 
