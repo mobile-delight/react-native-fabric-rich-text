@@ -2,6 +2,22 @@
 
 Fabric-first HTML text renderer for React Native with iOS, Android, and web support.
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [NativeWind Integration](#nativewind-integration)
+- [RTL Support](#rtl-right-to-left-support)
+- [Props](#props)
+- [Events](#events)
+- [Type Exports](#type-exports)
+- [Error Handling](#error-handling)
+- [Testing](#testing)
+- [Requirements](#requirements)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Features
 
 - Native Fabric component for optimal performance
@@ -34,7 +50,7 @@ import { RichText } from 'react-native-fabric-rich-text';
 export default function App() {
   return (
     <RichText
-      html="<p>Hello <strong>world</strong></p>"
+      text="<p>Hello <strong>world</strong></p>"
       style={{ fontSize: 16 }}
     />
   );
@@ -45,7 +61,7 @@ export default function App() {
 
 ```tsx
 <RichText
-  html='<p>Visit <a href="https://example.com">our site</a></p>'
+  text='<p>Visit <a href="https://example.com">our site</a></p>'
   onLinkPress={(url, type) => {
     console.log(`Pressed ${type}: ${url}`);
   }}
@@ -56,7 +72,7 @@ export default function App() {
 
 ```tsx
 <RichText
-  html="<p>Normal <strong>bold red</strong> and <em>italic blue</em></p>"
+  text="<p>Normal <strong>bold red</strong> and <em>italic blue</em></p>"
   tagStyles={{
     strong: { color: '#CC0000' },
     em: { color: '#0066CC' },
@@ -68,7 +84,7 @@ export default function App() {
 
 ```tsx
 <RichText
-  html="<p>Call 555-123-4567 or email support@example.com</p>"
+  text="<p>Call 555-123-4567 or email support@example.com</p>"
   detectPhoneNumbers
   detectEmails
   onLinkPress={(url, type) => {
@@ -101,7 +117,7 @@ import { RichText } from 'react-native-fabric-rich-text/nativewind';
 function MyComponent() {
   return (
     <RichText
-      html="<p>Hello <strong>World</strong></p>"
+      text="<p>Hello <strong>World</strong></p>"
       className="text-blue-500 text-lg font-medium p-4"
     />
   );
@@ -112,7 +128,7 @@ function MyComponent() {
 
 ```tsx
 <RichText
-  html="<p>Responsive text</p>"
+  text="<p>Responsive text</p>"
   className="text-sm md:text-base lg:text-lg"
 />
 ```
@@ -121,7 +137,7 @@ function MyComponent() {
 
 ```tsx
 <RichText
-  html="<p>Theme-aware text</p>"
+  text="<p>Theme-aware text</p>"
   className="text-gray-900 dark:text-gray-100"
 />
 ```
@@ -140,7 +156,7 @@ cssInterop(RichText, { className: 'style' });
 function MyComponent() {
   return (
     <RichText
-      html="<p>Hello World</p>"
+      text="<p>Hello World</p>"
       className="text-blue-500"
     />
   );
@@ -170,8 +186,8 @@ Full support for RTL languages including Arabic, Hebrew, and Persian.
 RTL scripts are automatically detected and rendered correctly:
 
 ```tsx
-<RichText html="<p>مرحباً بالعالم!</p>" />
-<RichText html="<p>שלום עולם!</p>" />
+<RichText text="<p>مرحباً بالعالم!</p>" />
+<RichText text="<p>שלום עולם!</p>" />
 ```
 
 ### Direction Attribute
@@ -180,13 +196,13 @@ Use the `dir` attribute to control text direction:
 
 ```tsx
 // Explicit RTL
-<RichText html="<p dir='rtl'>Right-to-left paragraph</p>" />
+<RichText text="<p dir='rtl'>Right-to-left paragraph</p>" />
 
 // Explicit LTR
-<RichText html="<p dir='ltr'>Left-to-right paragraph</p>" />
+<RichText text="<p dir='ltr'>Left-to-right paragraph</p>" />
 
 // Auto-detect from first strong character
-<RichText html="<p dir='auto'>مرحباً - detects as RTL</p>" />
+<RichText text="<p dir='auto'>مرحباً - detects as RTL</p>" />
 ```
 
 ### writingDirection Prop
@@ -196,19 +212,19 @@ Control direction at the component level:
 ```tsx
 // Force RTL for entire component
 <RichText
-  html="<p>This will render RTL</p>"
+  text="<p>This will render RTL</p>"
   writingDirection="rtl"
 />
 
 // Force LTR
 <RichText
-  html="<p>مرحباً</p>"
+  text="<p>مرحباً</p>"
   writingDirection="ltr"
 />
 
 // Auto-detect (default)
 <RichText
-  html="<p>Text</p>"
+  text="<p>Text</p>"
   writingDirection="auto"
 />
 ```
@@ -218,8 +234,8 @@ Control direction at the component level:
 The `<bdi>` tag isolates bidirectional text to prevent it from affecting surrounding content. Useful for user-generated content:
 
 ```tsx
-<RichText html="<p>User: <bdi>محمد</bdi> logged in</p>" />
-<RichText html="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi></p>" />
+<RichText text="<p>User: <bdi>محمد</bdi> logged in</p>" />
+<RichText text="<p>Winners: <bdi>אברהם</bdi>, <bdi>محمد</bdi></p>" />
 ```
 
 ### BDO Element (Bidirectional Override)
@@ -228,10 +244,10 @@ The `<bdo>` tag forces text direction, overriding the natural direction:
 
 ```tsx
 // Force RTL
-<RichText html="<p>Normal <bdo dir='rtl'>forced RTL</bdo> normal</p>" />
+<RichText text="<p>Normal <bdo dir='rtl'>forced RTL</bdo> normal</p>" />
 
 // Force LTR within RTL context
-<RichText html="<p dir='rtl'>عربي <bdo dir='ltr'>forced LTR</bdo> عربي</p>" />
+<RichText text="<p dir='rtl'>عربي <bdo dir='ltr'>forced LTR</bdo> عربي</p>" />
 ```
 
 ### Mixed Content
@@ -239,8 +255,8 @@ The `<bdo>` tag forces text direction, overriding the natural direction:
 RTL text with embedded LTR content (numbers, brand names) is handled automatically:
 
 ```tsx
-<RichText html="<p dir='rtl'>السعر: 123.45 دولار</p>" />
-<RichText html="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />
+<RichText text="<p dir='rtl'>السعر: 123.45 دولار</p>" />
+<RichText text="<p dir='rtl'>أنا أستخدم iPhone كل يوم</p>" />
 ```
 
 ### RTL with Formatting
@@ -249,7 +265,7 @@ All text formatting works with RTL:
 
 ```tsx
 <RichText
-  html="<p dir='rtl'><strong>مهم:</strong> نص <em>مائل</em> و<u>تحته خط</u></p>"
+  text="<p dir='rtl'><strong>مهم:</strong> نص <em>مائل</em> و<u>تحته خط</u></p>"
 />
 ```
 
@@ -259,24 +275,183 @@ On React Native, the component respects `I18nManager.isRTL` as the default base 
 
 ## Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `html` | `string` | HTML content to render |
-| `style` | `TextStyle` | Style applied to the text |
-| `className` | `string` | Tailwind CSS classes (requires `/nativewind` import) |
-| `tagStyles` | `Record<string, TextStyle>` | Custom styles per HTML tag |
-| `onLinkPress` | `(url: string, type: DetectedContentType) => void` | Callback when a link is pressed |
-| `detectLinks` | `boolean` | Auto-detect URLs in text |
-| `detectPhoneNumbers` | `boolean` | Auto-detect phone numbers |
-| `detectEmails` | `boolean` | Auto-detect email addresses |
-| `numberOfLines` | `number` | Limit text to specified number of lines with animated height transitions (0 = no limit) |
-| `animationDuration` | `number` | Height animation duration in seconds (default: 0.2) |
-| `writingDirection` | `'auto' \| 'ltr' \| 'rtl'` | Text direction: auto-detect (default), left-to-right, or right-to-left |
-| `includeFontPadding` | `boolean` | Android: include font padding |
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `text` | `string` | - | HTML markup to render (required) |
+| `style` | `TextStyle` | - | Style applied to the text |
+| `className` | `string` | - | Tailwind CSS classes (requires `/nativewind` import) |
+| `testID` | `string` | - | Test identifier for testing frameworks |
+| `tagStyles` | `Record<string, TextStyle>` | - | Custom styles per HTML tag |
+| `onLinkPress` | `(url: string, type: DetectedContentType) => void` | - | Callback when a link is pressed |
+| `onLinkFocusChange` | `(event: LinkFocusEvent) => void` | - | Callback when accessibility focus changes between links |
+| `onRichTextMeasurement` | `(data: RichTextMeasurementData) => void` | - | Callback with line count data after layout |
+| `detectLinks` | `boolean` | `false` | Auto-detect URLs in text |
+| `detectPhoneNumbers` | `boolean` | `false` | Auto-detect phone numbers |
+| `detectEmails` | `boolean` | `false` | Auto-detect email addresses |
+| `numberOfLines` | `number` | `0` | Limit text to specified lines (0 = unlimited) |
+| `animationDuration` | `number` | `0.2` | Height animation duration in seconds |
+| `writingDirection` | `'auto' \| 'ltr' \| 'rtl'` | `'auto'` | Text direction |
+| `allowFontScaling` | `boolean` | `true` | Enable font scaling for accessibility |
+| `maxFontSizeMultiplier` | `number` | `0` | Maximum font scale (0 = unlimited) |
+| `includeFontPadding` | `boolean` | `true` | Android: include font padding |
+
+> **Note:** On iOS, enabling `detectEmails` also enables URL detection due to platform limitations.
+
+## Events
+
+### onLinkPress
+
+Fired when the user taps a link, phone number, or email.
+
+```tsx
+<RichText
+  text='<p>Visit <a href="https://example.com">our site</a></p>'
+  onLinkPress={(url, type) => {
+    // type: 'link' | 'email' | 'phone'
+    console.log(`Pressed ${type}: ${url}`);
+  }}
+/>
+```
+
+### onLinkFocusChange
+
+Fired when accessibility focus moves between links (screen readers, keyboard navigation).
+
+```tsx
+import type { LinkFocusEvent } from 'react-native-fabric-rich-text';
+
+<RichText
+  text='<p><a href="#1">Link 1</a> and <a href="#2">Link 2</a></p>'
+  onLinkFocusChange={(event: LinkFocusEvent) => {
+    // event.focusedLinkIndex: -1 (container), 0+ (link index), null (lost focus)
+    // event.url: string | null
+    // event.type: 'link' | 'email' | 'phone' | 'detected' | null
+    // event.totalLinks: number
+    console.log(`Focused link ${event.focusedLinkIndex} of ${event.totalLinks}`);
+  }}
+/>
+```
+
+### onRichTextMeasurement
+
+Fired after text layout with line count information. Useful for "Read more" patterns.
+
+```tsx
+import type { RichTextMeasurementData } from 'react-native-fabric-rich-text';
+
+const [isTruncated, setIsTruncated] = useState(false);
+
+<RichText
+  text="<p>Long text content...</p>"
+  numberOfLines={2}
+  onRichTextMeasurement={(data: RichTextMeasurementData) => {
+    // data.measuredLineCount: total lines without truncation
+    // data.visibleLineCount: lines actually displayed
+    setIsTruncated(data.measuredLineCount > data.visibleLineCount);
+  }}
+/>
+{isTruncated && <Text>Show more</Text>}
+```
+
+## Type Exports
+
+```tsx
+import {
+  RichText,
+  FabricRichText,
+  sanitize,
+  ALLOWED_TAGS,
+  ALLOWED_ATTR,
+} from 'react-native-fabric-rich-text';
+
+import type {
+  RichTextProps,
+  DetectedContentType,      // 'link' | 'email' | 'phone'
+  LinkFocusEvent,
+  LinkFocusType,            // DetectedContentType | 'detected'
+  RichTextMeasurementData,
+  WritingDirection,         // 'auto' | 'ltr' | 'rtl'
+} from 'react-native-fabric-rich-text';
+```
+
+## Error Handling
+
+### Empty or Whitespace Content
+
+Returns `null` if `text` is empty or contains only whitespace:
+
+```tsx
+<RichText text="" />          // Returns null
+<RichText text="   " />       // Returns null
+<RichText text="<p></p>" />   // Renders empty paragraph
+```
+
+### HTML Sanitization
+
+All HTML is sanitized before rendering. Dangerous content is automatically removed:
+
+```tsx
+// Script tags are removed
+<RichText text='<p>Safe</p><script>alert("xss")</script>' />
+// Renders: Safe
+
+// Event handlers are stripped
+<RichText text='<p onclick="alert(1)">Click me</p>' />
+// Renders: Click me
+
+// javascript: URLs are blocked
+<RichText text='<a href="javascript:alert(1)">Link</a>' />
+// Renders: Link (href removed)
+```
+
+### Allowed Tags and Attributes
+
+Access the sanitization allowlists:
+
+```tsx
+import { ALLOWED_TAGS, ALLOWED_ATTR } from 'react-native-fabric-rich-text';
+
+console.log(ALLOWED_TAGS);
+// ['p', 'div', 'h1', ..., 'bdi', 'bdo', 'ul', 'ol', 'li', ...]
+
+console.log(ALLOWED_ATTR);
+// ['href', 'class', 'dir']
+```
+
+## Testing
+
+### Unit Testing
+
+The library includes comprehensive test coverage:
+
+```sh
+# Run all tests
+yarn test
+
+# Run tests with coverage
+yarn test --coverage
+```
+
+### Test IDs
+
+Use the `testID` prop for testing:
+
+```tsx
+<RichText
+  text="<p>Test content</p>"
+  testID="my-rich-text"
+/>
+```
+
+On native platforms, this sets the accessibility identifier. On web, it sets `data-testid`.
+
+### E2E Testing
+
+See the `/e2e` directory for Maestro-based end-to-end tests.
 
 ## Requirements
 
-- React Native >= 0.80 (New Architecture / Fabric)
+- React Native >= 0.81 (New Architecture / Fabric required)
 - iOS >= 15.1
 - Android API >= 21
 

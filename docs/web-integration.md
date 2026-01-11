@@ -113,7 +113,7 @@ import { RichText } from 'react-native-fabric-rich-text';
 export default function Page() {
   return (
     <RichText
-      html="<p>Hello <strong>World</strong></p>"
+      text="<p>Hello <strong>World</strong></p>"
       className="text-blue-500"
     />
   );
@@ -130,7 +130,7 @@ import { RichText } from 'react-native-fabric-rich-text';
 
 export default function Home() {
   return (
-    <RichText html="<p>Hello World</p>" />
+    <RichText text="<p>Hello World</p>" />
   );
 }
 ```
@@ -179,7 +179,7 @@ import { RichText } from 'react-native-fabric-rich-text';
 
 function MyComponent() {
   return (
-    <RichText html="<p>Hello <strong>World</strong></p>" />
+    <RichText text="<p>Hello <strong>World</strong></p>" />
   );
 }
 ```
@@ -190,7 +190,7 @@ The `className` prop is fully supported on web:
 
 ```tsx
 <RichText
-  html="<p>Styled content</p>"
+  text="<p>Styled content</p>"
   className="text-lg font-semibold text-blue-600 bg-blue-50 p-4 rounded-lg"
 />
 ```
@@ -202,13 +202,13 @@ Use `numberOfLines` to truncate text with CSS `-webkit-line-clamp`:
 ```tsx
 // Single line with ellipsis
 <RichText
-  html="<p>Very long text that will be truncated...</p>"
+  text="<p>Very long text that will be truncated...</p>"
   numberOfLines={1}
 />
 
 // Multiple lines
 <RichText
-  html="<p>Long paragraph that spans multiple lines...</p>"
+  text="<p>Long paragraph that spans multiple lines...</p>"
   numberOfLines={3}
 />
 ```
@@ -219,7 +219,7 @@ Handle link clicks with the `onLinkPress` callback:
 
 ```tsx
 <RichText
-  html='<p>Visit <a href="https://example.com">our site</a></p>'
+  text='<p>Visit <a href="https://example.com">our site</a></p>'
   onLinkPress={(url, type) => {
     console.log(`Link clicked: ${url} (type: ${type})`);
     // Prevent default navigation, handle custom behavior
@@ -233,11 +233,11 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 
 ```tsx
 <RichText
-  html="<p>This is a <strong>styled</strong> and <em>truncated</em> piece of content with custom link handling.</p>"
+  text="<p>This is a <strong>styled</strong> and <em>truncated</em> piece of content with custom link handling.</p>"
   className="text-gray-700 bg-amber-50 p-4 rounded border-l-4 border-amber-400"
   numberOfLines={2}
   onLinkPress={(url) => window.open(url, '_blank')}
-  testID="my-html-text"
+  testID="my-rich-text"
 />
 ```
 
@@ -247,7 +247,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 
 ```tsx
 <RichText
-  html="<p>Responsive text</p>"
+  text="<p>Responsive text</p>"
   className="text-sm md:text-base lg:text-xl"
 />
 ```
@@ -256,7 +256,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 
 ```tsx
 <RichText
-  html="<p>Theme-aware text</p>"
+  text="<p>Theme-aware text</p>"
   className="text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
 />
 ```
@@ -265,7 +265,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 
 ```tsx
 <RichText
-  html="<p>Interactive text</p>"
+  text="<p>Interactive text</p>"
   className="bg-gray-100 hover:bg-blue-100 transition-colors cursor-pointer"
 />
 ```
@@ -274,7 +274,7 @@ Without `onLinkPress`, links navigate normally using the browser's default behav
 
 ```tsx
 <RichText
-  html="<p>Gradient text</p>"
+  text="<p>Gradient text</p>"
   className="p-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg"
 />
 ```
@@ -313,15 +313,15 @@ The library sanitizes all HTML input to prevent XSS attacks:
 
 ```tsx
 // Script tags are removed
-<RichText html='<p>Safe</p><script>alert("xss")</script>' />
+<RichText text='<p>Safe</p><script>alert("xss")</script>' />
 // Renders: <p>Safe</p>
 
 // Event handlers are stripped
-<RichText html='<p onclick="alert(1)">Click me</p>' />
+<RichText text='<p onclick="alert(1)">Click me</p>' />
 // Renders: <p>Click me</p>
 
 // javascript: URLs are removed
-<RichText html='<a href="javascript:alert(1)">Link</a>' />
+<RichText text='<a href="javascript:alert(1)">Link</a>' />
 // Renders: <a>Link</a> (href removed)
 ```
 
@@ -440,11 +440,11 @@ See the [example-web](../example-web/) directory for a complete Next.js implemen
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `html` | `string` | HTML content to render (required) |
+| `text` | `string` | HTML content to render (required) |
 | `className` | `string` | CSS classes to apply to the container |
 | `style` | `CSSProperties` | Inline styles for the container |
 | `numberOfLines` | `number` | Max lines before truncation (0 = no limit) |
-| `onLinkPress` | `(url: string, type: 'link') => void` | Callback when a link is clicked |
+| `onLinkPress` | `(url: string, type: DetectedContentType) => void` | Callback when a link is clicked |
 | `testID` | `string` | Sets `data-testid` attribute for testing |
 
 ### Exports

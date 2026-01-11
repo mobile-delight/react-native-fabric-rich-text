@@ -183,7 +183,7 @@ import { RichText } from 'react-native-fabric-rich-text/nativewind';
 function MyComponent() {
   return (
     <RichText
-      html="<p>Hello <strong>World</strong></p>"
+      text="<p>Hello <strong>World</strong></p>"
       className="text-blue-500 text-lg font-medium p-4"
     />
   );
@@ -204,7 +204,7 @@ cssInterop(RichText, { className: 'style' });
 function MyComponent() {
   return (
     <RichText
-      html="<p>Hello World</p>"
+      text="<p>Hello World</p>"
       className="text-blue-500"
     />
   );
@@ -217,7 +217,7 @@ function MyComponent() {
 
 ```tsx
 <RichText
-  html="<p>Responsive text</p>"
+  text="<p>Responsive text</p>"
   className="text-sm md:text-base lg:text-lg"
 />
 ```
@@ -226,7 +226,7 @@ function MyComponent() {
 
 ```tsx
 <RichText
-  html="<p>Theme-aware text</p>"
+  text="<p>Theme-aware text</p>"
   className="text-gray-900 dark:text-gray-100"
 />
 ```
@@ -243,7 +243,7 @@ function ResponsiveCard() {
   return (
     <View className="@container">
       <RichText
-        html="<p>Text adapts to container width</p>"
+        text="<p>Text adapts to container width</p>"
         className="text-sm @md:text-base @lg:text-lg"
       />
     </View>
@@ -256,7 +256,7 @@ function ResponsiveCard() {
 ```tsx
 <View className="@container/card">
   <RichText
-    html="<p>Named container</p>"
+    text="<p>Named container</p>"
     className="text-sm @sm/card:text-base"
   />
 </View>
