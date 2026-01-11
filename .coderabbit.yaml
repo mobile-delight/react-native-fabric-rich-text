@@ -121,6 +121,25 @@ reviews:
       enabled: false
     unit_tests:
       enabled: false
+  auto_title_placeholder: @coderabbitai
+  assess_linked_issues: true
+  enable_prompt_for_ai_agents: true
+  related_prs: true
+  high_level_summary_instructions:
+  fail_commit_status: false
+  abort_on_close: true
+  suggested_labels: true
+  auto_apply_labels: false
+  auto_assign_reviewers: false
+  estimate_code_review_effort: true
+  in_progress_fortune: true
+  pre_merge_checks:
+    { }
+  suggested_reviewers: true
+  disable_cache: false
+  commit_status: true
+  high_level_summary_placeholder: @coderabbitai summary
+  related_issues: true
 
 # Chat configuration
 chat:
