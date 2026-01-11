@@ -34,6 +34,11 @@ function countLinks(htmlString: string): number {
   return matches ? matches.length : 0;
 }
 
+// Escape a string for safe use in HTML attribute values
+function escapeAttr(s: string): string {
+  return s.replace(/"/g, '&quot;');
+}
+
 /**
  * Adds aria-describedby attributes to links with position info.
  * Returns the modified HTML and the hidden description elements.
@@ -54,7 +59,7 @@ function addLinkPositionInfo(
   // Use a simpler pattern that inserts the attribute right after <a
   const processedHtml = htmlString.replace(/<a\s/gi, () => {
     linkIndex++;
-    const descId = `${instanceId}-link-desc-${linkIndex}`;
+    const descId = `${escapeAttr(instanceId)}-link-desc-${linkIndex}`;
     descIds.push(descId);
     return `<a aria-describedby="${descId}" `;
   });

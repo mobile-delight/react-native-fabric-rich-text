@@ -42,13 +42,31 @@ bool isAllowedUrlScheme(const std::string& url) {
   if (start != std::string::npos) {
     lowerUrl = lowerUrl.substr(start);
   }
-  // Block dangerous schemes
-  if (lowerUrl.rfind("javascript:", 0) == 0 ||
-      lowerUrl.rfind("vbscript:", 0) == 0 ||
-      lowerUrl.rfind("data:", 0) == 0) {
-    return false;
+
+  // Allowlist: only permit safe schemes
+  // http://, https://, mailto:, tel:
+  if (lowerUrl.rfind("http://", 0) == 0 ||
+      lowerUrl.rfind("https://", 0) == 0 ||
+      lowerUrl.rfind("mailto:", 0) == 0 ||
+      lowerUrl.rfind("tel:", 0) == 0) {
+    return true;
   }
-  return true;
+
+  // Allow relative URLs (no scheme) and fragment-only URLs
+  // These start with /, #, or contain no colon before first slash
+  if (lowerUrl.empty() || lowerUrl[0] == '/' || lowerUrl[0] == '#') {
+    return true;
+  }
+
+  // Check for relative URL (no scheme - colon must come after first slash)
+  size_t colonPos = lowerUrl.find(':');
+  size_t slashPos = lowerUrl.find('/');
+  if (colonPos == std::string::npos ||
+      (slashPos != std::string::npos && slashPos < colonPos)) {
+    return true;  // Relative URL without scheme
+  }
+
+  return false;  // Block all other schemes
 }
 
 std::string extractHrefUrl(const std::string& fullTag) {
@@ -389,6 +407,10 @@ std::vector<FabricRichTextSegment> parseMarkupToSegments(const std::string& mark
           auto& currentList = listStack.back();
           currentList.itemCounter++;
           int indentLevel = static_cast<int>(listStack.size()) - 1;
+          // Cap indent level to prevent excessive memory allocation
+          if (indentLevel > 100) {
+            indentLevel = 100;
+          }
           if (indentLevel > 0) {
             currentText += std::string(indentLevel * 4, ' ');
           }
