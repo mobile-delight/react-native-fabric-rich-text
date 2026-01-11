@@ -6,7 +6,6 @@
 #include <react/renderer/textlayoutmanager/TextLayoutManager.h>
 #include <react/renderer/core/LayoutContext.h>
 #include <react/renderer/core/ShadowNode.h>
-#include <mutex>
 
 namespace facebook::react {
 
@@ -36,8 +35,6 @@ class FabricHTMLTextStateData final {
   Float animationDuration{0.2f};
   // Base writing direction for text content
   WritingDirectionState writingDirection{WritingDirectionState::LTR};
-  // Screen reader friendly version of text with pauses between list items
-  std::string accessibilityLabel;
 };
 
 /**
@@ -94,12 +91,8 @@ class FabricHTMLTextShadowNode final : public ConcreteViewShadowNode<
    */
   static std::string stripHtmlTags(const std::string& html);
 
-  // Mutex protecting mutable members from concurrent access.
-  // measureContent() may be called concurrently by Fabric's layout system.
-  mutable std::mutex _mutex;
   mutable AttributedString _attributedString;
   mutable std::vector<std::string> _linkUrls;
-  mutable std::string _accessibilityLabel;
 };
 
 } // namespace facebook::react

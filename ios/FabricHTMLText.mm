@@ -122,20 +122,10 @@ using namespace facebook::react;
     Float animationDuration = stateData.animationDuration;
     bool isRTL = (stateData.writingDirection == WritingDirectionState::RTL);
 
-    // Extract accessibility label from state (built by C++ parser with proper pauses)
-    NSString *a11yLabel = nil;
-    if (!stateData.accessibilityLabel.empty()) {
-        a11yLabel = [[NSString alloc] initWithUTF8String:stateData.accessibilityLabel.c_str()];
-        if (!a11yLabel) {
-            NSLog(@"[FabricHTMLText] Failed to decode accessibility label from UTF-8");
-        }
-    }
-
     // Update CoreText view properties
     _coreTextView.numberOfLines = numberOfLines;
     _coreTextView.animationDuration = animationDuration;
     _coreTextView.isRTL = isRTL;
-    _coreTextView.resolvedAccessibilityLabel = a11yLabel;
     _coreTextView.attributedText = nsAttributedString;
 }
 
@@ -159,20 +149,6 @@ using namespace facebook::react;
     if (!oldProps || newProps.textAlign != oldPropsTyped.textAlign) {
         NSString *textAlign = newProps.textAlign.empty() ? nil : [NSString stringWithUTF8String:newProps.textAlign.c_str()];
         _coreTextView.textAlign = textAlign;
-    }
-
-    // Check if React accessibilityLabel prop overrides the C++ built one
-    // The React prop (from ViewProps) takes precedence over the auto-generated label
-    if (!oldProps || newProps.accessibilityLabel != oldPropsTyped.accessibilityLabel) {
-        if (!newProps.accessibilityLabel.empty()) {
-            NSString *reactA11yLabel = [NSString stringWithUTF8String:newProps.accessibilityLabel.c_str()];
-            if (reactA11yLabel) {
-                _coreTextView.resolvedAccessibilityLabel = reactA11yLabel;
-            } else {
-                NSLog(@"[FabricHTMLText] Failed to decode React accessibilityLabel from UTF-8");
-            }
-        }
-        // If React prop is empty/not set, keep the C++ parsed one (set in updateState)
     }
 
     [super updateProps:props oldProps:oldProps];

@@ -9,8 +9,7 @@
     "test": "wdio run wdio.conf.ts",
     "test:ci": "./scripts/build-ios.sh && wdio run wdio.conf.ts --bail 1",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "clean": "rm -rf .appium && echo 'E2E build artifacts cleaned'"
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.33.0",

@@ -53,14 +53,13 @@ std::string FabricHTMLTextShadowNode::stripHtmlTags(const std::string& html) {
   return FabricHTMLParser::stripHtmlTags(html);
 }
 
-// NOTE: This method modifies _linkUrls and _accessibilityLabel. It must only be called while holding _mutex.
+// NOTE: This method modifies _linkUrls. It must only be called while holding _mutex.
 AttributedString FabricHTMLTextShadowNode::parseHtmlToAttributedString(
     const std::string& html,
     Float fontSizeMultiplier) const {
 
   if (html.empty()) {
     _linkUrls.clear();
-    _accessibilityLabel.clear();
     return AttributedString{};
   }
 
@@ -84,7 +83,7 @@ AttributedString FabricHTMLTextShadowNode::parseHtmlToAttributedString(
     LOGD("Props: tagStyles='%s'", props.tagStyles.substr(0, 100).c_str());
   }
 
-  // Call shared parser with all props - get link URLs and accessibility label too
+  // Call shared parser with all props - get link URLs too
   auto parseResult = FabricHTMLParser::parseHtmlWithLinkUrls(
       html,
       baseFontSize,
@@ -100,7 +99,6 @@ AttributedString FabricHTMLTextShadowNode::parseHtmlToAttributedString(
       props.tagStyles);
 
   _linkUrls = std::move(parseResult.linkUrls);
-  _accessibilityLabel = std::move(parseResult.accessibilityLabel);
   return parseResult.attributedString;
 }
 
@@ -208,12 +206,10 @@ void FabricHTMLTextShadowNode::layout(LayoutContext layoutContext) {
   // Copy cached data under mutex protection to avoid data races.
   AttributedString localAttributedString;
   std::vector<std::string> localLinkUrls;
-  std::string localAccessibilityLabel;
   {
     std::lock_guard<std::mutex> lock(_mutex);
     localAttributedString = _attributedString;
     localLinkUrls = _linkUrls;
-    localAccessibilityLabel = _accessibilityLabel;
   }
 
   // Get effective values for state
@@ -238,13 +234,12 @@ void FabricHTMLTextShadowNode::layout(LayoutContext layoutContext) {
       localLinkUrls,
       effectiveNumberOfLines,
       animationDuration,
-      writingDirection,
-      localAccessibilityLabel});
+      writingDirection});
 
   if (DEBUG_CPP_MEASUREMENT) {
-    LOGD("layout() - State set with %zu fragments, %zu linkUrls, numberOfLines=%d, writingDirection=%s, a11yLabel=%zu chars",
+    LOGD("layout() - State set with %zu fragments, %zu linkUrls, numberOfLines=%d, writingDirection=%s",
          localAttributedString.getFragments().size(), localLinkUrls.size(),
-         effectiveNumberOfLines, props.writingDirection.c_str(), localAccessibilityLabel.length());
+         effectiveNumberOfLines, props.writingDirection.c_str());
   }
 }
 

@@ -80,24 +80,20 @@ describe('allowedHtml', () => {
     it('contains exactly the expected attributes', () => {
       // 'id' removed per YAGNI - not used in rendering (matches native sanitizers)
       // 'dir' added for RTL support (direction attribute on elements)
-      // 'aria-describedby' added for accessibility link position info (WCAG 2.4.4)
-      // 'style' allowed for accessibility hidden description spans; DOMPurify handles CSS sanitization
-      expect(ALLOWED_ATTR).toHaveLength(5);
+      expect(ALLOWED_ATTR).toHaveLength(3);
       expect(ALLOWED_ATTR).toContain('href');
       expect(ALLOWED_ATTR).toContain('class');
       expect(ALLOWED_ATTR).toContain('dir');
-      expect(ALLOWED_ATTR).toContain('aria-describedby');
-      expect(ALLOWED_ATTR).toContain('style');
     });
 
     it('does not contain dangerous attributes', () => {
-      // Note: 'style' is allowed but sanitized by DOMPurify for accessibility features
       const dangerousAttrs = [
         'onclick',
         'onerror',
         'onload',
         'onmouseover',
         'src',
+        'style',
       ];
       for (const attr of dangerousAttrs) {
         expect(ALLOWED_ATTR).not.toContain(attr);

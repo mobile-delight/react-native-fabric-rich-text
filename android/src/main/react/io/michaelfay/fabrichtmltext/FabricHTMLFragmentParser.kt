@@ -38,8 +38,7 @@ data class ParsedState(
     val spannable: android.text.Spannable,
     val numberOfLines: Int,
     val animationDuration: Float,
-    val isRTL: Boolean,
-    val accessibilityLabel: String? = null
+    val isRTL: Boolean
 )
 
 /**
@@ -86,7 +85,6 @@ object FabricHTMLFragmentParser {
     private const val HTML_STATE_KEY_NUMBER_OF_LINES = 4
     private const val HTML_STATE_KEY_ANIMATION_DURATION = 5
     private const val HTML_STATE_KEY_WRITING_DIRECTION = 6
-    private const val HTML_STATE_KEY_ACCESSIBILITY_LABEL = 7
 
     // AttributedString keys (from conversions.h)
     private const val AS_KEY_HASH = 0
@@ -204,18 +202,11 @@ object FabricHTMLFragmentParser {
             false
         }
 
-        // Extract accessibilityLabel (screen reader friendly text with pauses)
-        val accessibilityLabel = if (stateMapBuffer.contains(HTML_STATE_KEY_ACCESSIBILITY_LABEL)) {
-            stateMapBuffer.getString(HTML_STATE_KEY_ACCESSIBILITY_LABEL)
-        } else {
-            null
-        }
-
         if (DEBUG) {
-            Log.d(TAG, "parseFullState: numberOfLines=$numberOfLines, animationDuration=$animationDuration, isRTL=$isRTL, a11yLabel=${accessibilityLabel?.length ?: 0} chars")
+            Log.d(TAG, "parseFullState: numberOfLines=$numberOfLines, animationDuration=$animationDuration, isRTL=$isRTL")
         }
 
-        return ParsedState(spannable, numberOfLines, animationDuration, isRTL, accessibilityLabel)
+        return ParsedState(spannable, numberOfLines, animationDuration, isRTL)
     }
 
     /**

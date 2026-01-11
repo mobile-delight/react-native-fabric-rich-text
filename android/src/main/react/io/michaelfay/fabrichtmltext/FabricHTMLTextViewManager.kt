@@ -244,13 +244,12 @@ class FabricHTMLTextViewManager : SimpleViewManager<FabricHTMLTextView>(),
   override fun updateExtraData(view: FabricHTMLTextView, extraData: Any?) {
     if (extraData is ParsedState) {
       if (DEBUG_STATE) {
-        Log.d(TAG, "updateExtraData: Setting state on view - isRTL=${extraData.isRTL}, numberOfLines=${extraData.numberOfLines}, a11yLabel=${extraData.accessibilityLabel?.length ?: 0} chars")
+        Log.d(TAG, "updateExtraData: Setting state on view - isRTL=${extraData.isRTL}, numberOfLines=${extraData.numberOfLines}")
       }
       // Apply all state properties to the view
       view.setNumberOfLines(extraData.numberOfLines)
       view.setAnimationDuration(extraData.animationDuration)
       view.setWritingDirectionFromState(extraData.isRTL)
-      view.setResolvedAccessibilityLabel(extraData.accessibilityLabel)
       view.setSpannableFromState(extraData.spannable)
     } else if (extraData is Spannable) {
       // Fallback for backward compatibility

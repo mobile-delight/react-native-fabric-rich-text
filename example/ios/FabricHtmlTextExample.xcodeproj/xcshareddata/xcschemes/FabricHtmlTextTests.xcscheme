@@ -35,7 +35,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C90E3E46ABE83EC47BFC00AA"
+               BlueprintIdentifier = "25E38AD62A74B12ED20A6677"
                BuildableName = "FabricHtmlTextTests.xctest"
                BlueprintName = "FabricHtmlTextTests"
                ReferencedContainer = "container:FabricHtmlTextExample.xcodeproj">

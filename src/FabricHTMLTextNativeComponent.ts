@@ -23,17 +23,6 @@ type LinkPressEvent = Readonly<{
   type: 'link' | 'email' | 'phone';
 }>;
 
-type LinkFocusChangeEvent = Readonly<{
-  // -1 for container focus, >= 0 for link index
-  focusedLinkIndex: Int32;
-  // Empty string if no URL (codegen requires non-null for primitives)
-  url: string;
-  // 'link' | 'email' | 'phone' | 'detected' | '' (empty = no focus)
-  type: string;
-  // Total number of visible links
-  totalLinks: Int32;
-}>;
-
 interface NativeProps extends ViewProps {
   html: string;
   // testID is inherited from ViewProps - do not redeclare here
@@ -69,9 +58,6 @@ interface NativeProps extends ViewProps {
   // 'ltr' = left-to-right, 'rtl' = right-to-left
   // Note: 'auto' is resolved in JS to explicit direction before passing to native
   writingDirection?: string | undefined;
-
-  // Accessibility link focus event
-  onLinkFocusChange?: DirectEventHandler<LinkFocusChangeEvent>;
 }
 
 export default codegenNativeComponent<NativeProps>(

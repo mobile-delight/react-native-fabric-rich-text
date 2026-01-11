@@ -11,46 +11,6 @@ import type { DetectedContentType } from '../FabricHTMLTextNativeComponent';
 export type WritingDirection = 'auto' | 'ltr' | 'rtl';
 
 /**
- * Type of focused link content.
- * Extends DetectedContentType with 'detected' for auto-detected content
- * where the specific type cannot be determined.
- */
-export type LinkFocusType = DetectedContentType | 'detected';
-
-/**
- * Event data for link focus changes.
- */
-export interface LinkFocusEvent {
-  /**
-   * Index of the currently focused link.
-   * - -1: Container is focused
-   * - 0+: Link at that index is focused
-   * - null: Component has lost focus entirely
-   */
-  focusedLinkIndex: number | null;
-
-  /**
-   * URL of the focused link, or null if no link is focused.
-   */
-  url: string | null;
-
-  /**
-   * Type of the focused link.
-   * - 'link': Standard URL
-   * - 'email': Email address
-   * - 'phone': Phone number
-   * - 'detected': Auto-detected content (when type cannot be determined)
-   * - null: No link focused
-   */
-  type: LinkFocusType | null;
-
-  /**
-   * Total number of visible (non-truncated) links in the component.
-   */
-  totalLinks: number;
-}
-
-/**
  * Props for the HTMLTextNative component.
  * Extends ViewProps to support standard view properties including accessibility.
  */
@@ -124,13 +84,4 @@ export interface HTMLTextNativeProps extends ViewProps {
    * @default 'auto'
    */
   writingDirection?: WritingDirection | undefined;
-
-  /**
-   * Callback fired when accessibility focus moves between links.
-   * Fires for both user-initiated (screen reader gestures, keyboard navigation)
-   * and programmatic focus changes.
-   *
-   * @param event - Contains information about the newly focused link
-   */
-  onLinkFocusChange?: ((event: LinkFocusEvent) => void) | undefined;
 }

@@ -12,22 +12,12 @@ interface LinkPressEvent {
   };
 }
 
-interface LinkFocusChangeNativeEvent {
-  nativeEvent: {
-    focusedLinkIndex: number;
-    url: string;
-    type: string;
-    totalLinks: number;
-  };
-}
-
 export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
   const {
     html,
     style,
     testID,
     onLinkPress,
-    onLinkFocusChange,
     tagStyles,
     className,
     detectLinks,
@@ -46,24 +36,6 @@ export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
       }
     },
     [onLinkPress]
-  );
-
-  const handleLinkFocusChange = useCallback(
-    (event: LinkFocusChangeNativeEvent): void => {
-      if (onLinkFocusChange) {
-        const { focusedLinkIndex, url, type, totalLinks } = event.nativeEvent;
-        // Convert native event format to TypeScript LinkFocusEvent
-        // Native uses -1 for container focus; we preserve that
-        // Native uses empty string for null values; we convert to null
-        onLinkFocusChange({
-          focusedLinkIndex: focusedLinkIndex,
-          url: url || null,
-          type: type ? (type as 'link' | 'email' | 'phone' | 'detected') : null,
-          totalLinks,
-        });
-      }
-    },
-    [onLinkFocusChange]
   );
 
   const serializedTagStyles = useMemo((): string | undefined => {
@@ -118,7 +90,6 @@ export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
       style={style}
       testID={testID}
       onLinkPress={handleLinkPress}
-      onLinkFocusChange={handleLinkFocusChange}
       tagStyles={serializedTagStyles}
       className={className}
       fontSize={fontSize}
