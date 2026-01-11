@@ -12,12 +12,22 @@ interface LinkPressEvent {
   };
 }
 
+interface LinkFocusChangeNativeEvent {
+  nativeEvent: {
+    focusedLinkIndex: number;
+    url: string;
+    type: string;
+    totalLinks: number;
+  };
+}
+
 export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
   const {
     html,
     style,
     testID,
     onLinkPress,
+    onLinkFocusChange,
     tagStyles,
     className,
     detectLinks,
@@ -36,6 +46,51 @@ export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
       }
     },
     [onLinkPress]
+  );
+
+  const handleLinkFocusChange = useCallback(
+    (event: LinkFocusChangeNativeEvent): void => {
+      if (onLinkFocusChange) {
+        const { focusedLinkIndex, url, type, totalLinks } = event.nativeEvent;
+
+        // Runtime validation for numeric fields
+        // totalLinks must be a non-negative integer
+        const validTotalLinks =
+          typeof totalLinks === 'number' &&
+          Number.isInteger(totalLinks) &&
+          totalLinks >= 0
+            ? totalLinks
+            : 0;
+
+        // focusedLinkIndex must be -1 (container) or a valid index in [0, totalLinks)
+        const validFocusedIndex =
+          typeof focusedLinkIndex === 'number' &&
+          Number.isInteger(focusedLinkIndex) &&
+          (focusedLinkIndex === -1 ||
+            (focusedLinkIndex >= 0 && focusedLinkIndex < validTotalLinks))
+            ? focusedLinkIndex
+            : -1;
+
+        // Validate type against allowed values before casting
+        // Native uses empty string for null/invalid values; we validate via allowlist
+        const validTypes = new Set(['link', 'email', 'phone', 'detected']);
+        const safeType =
+          type && validTypes.has(type)
+            ? (type as 'link' | 'email' | 'phone' | 'detected')
+            : null;
+
+        // Convert native event format to TypeScript LinkFocusEvent
+        // Native uses -1 for container focus; we preserve that
+        // Native uses empty string for url when null; we convert to null
+        onLinkFocusChange({
+          focusedLinkIndex: validFocusedIndex,
+          url: url || null,
+          type: safeType,
+          totalLinks: validTotalLinks,
+        });
+      }
+    },
+    [onLinkFocusChange]
   );
 
   const serializedTagStyles = useMemo((): string | undefined => {
@@ -90,6 +145,7 @@ export function HTMLTextNative(props: HTMLTextNativeProps): ReactElement {
       style={style}
       testID={testID}
       onLinkPress={handleLinkPress}
+      onLinkFocusChange={handleLinkFocusChange}
       tagStyles={serializedTagStyles}
       className={className}
       fontSize={fontSize}

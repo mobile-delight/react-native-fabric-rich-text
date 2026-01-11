@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "strings": {
+    "a11y_link": "link",
+    "a11y_link_web": "web link",
+    "a11y_link_phone": "phone number",
+    "a11y_link_email": "email address",
+    "a11y_link_position": "%1$d of %2$d",
+    "a11y_bold": "bold",
+    "a11y_italic": "italic",
+    "a11y_underline": "underline",
+    "a11y_strikethrough": "strikethrough",
+    "a11y_content_truncated": "Content is truncated"
+  },
+  "comments": {
+    "a11y_link": "Accessibility: Link role descriptions",
+    "a11y_link_web": "Accessibility: Link role descriptions",
+    "a11y_link_phone": "Accessibility: Link role descriptions",
+    "a11y_link_email": "Accessibility: Link role descriptions",
+    "a11y_link_position": "Accessibility: Link position format (e.g., \"1 of 2\")",
+    "a11y_bold": "Accessibility: Text formatting styles",
+    "a11y_italic": "Accessibility: Text formatting styles",
+    "a11y_underline": "Accessibility: Text formatting styles",
+    "a11y_strikethrough": "Accessibility: Text formatting styles",
+    "a11y_content_truncated": "Accessibility: Truncation indicator"
+  }
+}

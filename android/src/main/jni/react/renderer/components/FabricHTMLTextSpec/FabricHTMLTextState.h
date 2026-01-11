@@ -71,6 +71,12 @@ class FabricHTMLTextState final {
    */
   WritingDirectionState writingDirection{WritingDirectionState::LTR};
 
+  /**
+   * Screen reader friendly version of text with proper pauses between list items.
+   * Built by C++ parser, can be overridden by React accessibilityLabel prop.
+   */
+  std::string accessibilityLabel;
+
   FabricHTMLTextState() = default;
 
   FabricHTMLTextState(
@@ -79,13 +85,15 @@ class FabricHTMLTextState final {
       std::vector<std::string> linkUrls = {},
       int numberOfLines = 0,
       Float animationDuration = 0.2f,
-      WritingDirectionState writingDirection = WritingDirectionState::LTR)
+      WritingDirectionState writingDirection = WritingDirectionState::LTR,
+      std::string accessibilityLabel = "")
       : attributedString(std::move(attributedString)),
         paragraphAttributes(std::move(paragraphAttributes)),
         linkUrls(std::move(linkUrls)),
         numberOfLines(numberOfLines),
         animationDuration(animationDuration),
-        writingDirection(writingDirection) {}
+        writingDirection(writingDirection),
+        accessibilityLabel(std::move(accessibilityLabel)) {}
 
   /**
    * Constructor for state updates from JS (not supported for FabricHTMLText).

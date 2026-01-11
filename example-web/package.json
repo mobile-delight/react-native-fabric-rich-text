@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .next && echo 'Example-web build artifacts cleaned'"
   },
   "dependencies": {
     "dompurify": "^3.2.0",

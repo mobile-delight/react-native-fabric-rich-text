@@ -1055,6 +1055,14 @@ std::vector<FabricHTMLTextSegment> FabricHTMLParser::parseHtmlToSegments(const s
         } else {
           currentText += "• ";
         }
+      } else if (isClosing && cleanTag == "li") {
+        // Add period for screen reader pause if content doesn't end with punctuation
+        if (!currentText.empty()) {
+          char lastChar = currentText.back();
+          if (lastChar != '.' && lastChar != '!' && lastChar != '?' && lastChar != ':' && lastChar != ';') {
+            currentText += '.';
+          }
+        }
       } else if (!isClosing && cleanTag == "ul") {
         int nestingLevel = static_cast<int>(listStack.size()) + 1;
         listStack.push_back({FabricHTMLListType::Unordered, 0, nestingLevel});
@@ -1279,6 +1287,45 @@ FabricHTMLParser::ParseResult FabricHTMLParser::parseHtmlWithLinkUrls(
     result.attributedString.appendFragment(std::move(fragment));
     result.linkUrls.push_back(segment.linkUrl);
   }
+
+  // Build accessibility label with proper pauses between list items
+  // Get the plain text from the attributed string
+  std::string plainText;
+  for (const auto& fragment : result.attributedString.getFragments()) {
+    plainText += fragment.string;
+  }
+
+  // Add periods before list item markers for screen reader pauses
+  // This modifies the accessibility label without changing the rendered text
+  std::string a11yLabel;
+  a11yLabel.reserve(plainText.size() + 20);
+
+  for (size_t i = 0; i < plainText.size(); ++i) {
+    char c = plainText[i];
+
+    // Check for newline followed by list item marker (digit+period or bullet)
+    if (c == '\n' && i + 1 < plainText.size()) {
+      char next = plainText[i + 1];
+      bool isListMarker = (std::isdigit(static_cast<unsigned char>(next)) ||
+                           // Check for bullet character (UTF-8: E2 80 A2)
+                           (i + 3 < plainText.size() &&
+                            static_cast<unsigned char>(next) == 0xE2 &&
+                            static_cast<unsigned char>(plainText[i + 2]) == 0x80 &&
+                            static_cast<unsigned char>(plainText[i + 3]) == 0xA2));
+
+      if (isListMarker && !a11yLabel.empty()) {
+        // Check if we need to add a period before the newline
+        char lastChar = a11yLabel.back();
+        if (lastChar != '.' && lastChar != '!' && lastChar != '?' &&
+            lastChar != ':' && lastChar != ';') {
+          a11yLabel += '.';
+        }
+      }
+    }
+    a11yLabel += c;
+  }
+
+  result.accessibilityLabel = std::move(a11yLabel);
 
   return result;
 }

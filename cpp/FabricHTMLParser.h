@@ -151,6 +151,7 @@ class FabricHTMLParser {
   struct ParseResult {
     AttributedString attributedString;
     std::vector<std::string> linkUrls;  // URLs indexed by fragment position
+    std::string accessibilityLabel;     // Screen reader friendly version with pauses between list items
   };
 
   /**

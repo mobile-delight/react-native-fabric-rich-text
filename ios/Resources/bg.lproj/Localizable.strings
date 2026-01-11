@@ -1,0 +1,17 @@
+/* Accessibility: Link role descriptions */
+"a11y_link" = "връзка";
+"a11y_link_web" = "уеб връзка";
+"a11y_link_phone" = "телефонен номер";
+"a11y_link_email" = "имейл адрес";
+
+/* Accessibility: Link position format (e.g., "1 of 2") */
+"a11y_link_position" = "%1$d от %2$d";
+
+/* Accessibility: Text formatting styles */
+"a11y_bold" = "смел";
+"a11y_italic" = "курсив";
+"a11y_underline" = "подчертавам";
+"a11y_strikethrough" = "зачеркнат";
+
+/* Accessibility: Truncation indicator */
+"a11y_content_truncated" = "Съдържанието е съкратено";

@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, type ReactElement } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  type ReactElement,
+} from 'react';
 import type { HTMLTextProps } from './HTMLText';
 import { sanitize } from '../core/sanitize.web';
 import { convertStyle } from '../adapters/web/StyleConverter';
@@ -31,6 +37,10 @@ export default function HTMLText({
 }: HTMLTextProps): ReactElement | null {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Generate a unique instance ID for aria-describedby references
+  // Using useId() to avoid side effects during render
+  const instanceId = useId();
+
   // Warn once in dev mode if detection props are used (limited functionality on web)
   useEffect(() => {
     if (
@@ -46,6 +56,59 @@ export default function HTMLText({
       );
     }
   }, [detectLinks, detectPhoneNumbers, detectEmails]);
+
+  // Post-render DOM manipulation for accessibility and truncation
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+    const links = container.querySelectorAll('a');
+
+    // Add position info to links for screen readers
+    if (links.length > 0) {
+      links.forEach((link, index) => {
+        const descId = `${instanceId}-link-desc-${index + 1}`;
+
+        // Add aria-describedby to link
+        link.setAttribute('aria-describedby', descId);
+
+        // Create hidden description element
+        const descSpan = document.createElement('span');
+        descSpan.id = descId;
+        descSpan.style.cssText =
+          'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;';
+        descSpan.textContent = `Link ${index + 1} of ${links.length}`;
+
+        // Append to container
+        container.appendChild(descSpan);
+      });
+    }
+
+    // Apply line-clamp styles for truncation via className
+    if (numberOfLines && numberOfLines > 0) {
+      const blockElements = container.querySelectorAll(
+        'p, div, h1, h2, h3, h4, h5, h6, blockquote, li, ul, ol'
+      );
+      blockElements.forEach((element) => {
+        const htmlElement = element as HTMLElement;
+        htmlElement.style.display = '-webkit-box';
+        htmlElement.style.webkitLineClamp = String(numberOfLines);
+        htmlElement.style.webkitBoxOrient = 'vertical';
+        htmlElement.style.overflow = 'hidden';
+        htmlElement.style.margin = '0';
+        htmlElement.style.padding = '0';
+      });
+    }
+
+    // Cleanup function
+    return () => {
+      // Remove added description elements
+      const descElements = container.querySelectorAll(
+        `[id^="${instanceId}-link-desc-"]`
+      );
+      descElements.forEach((el) => el.remove());
+    };
+  }, [html, numberOfLines, instanceId]);
 
   // Handle link clicks if onLinkPress is provided
   const handleClick = useCallback(
@@ -73,50 +136,83 @@ export default function HTMLText({
     return null;
   }
 
-  const sanitizedHtml = sanitize(trimmedHtml);
   const cssStyle = convertStyle(style);
 
-  // Apply CSS line-clamp for truncation when numberOfLines > 0
-  // The line-clamp styles must be applied directly to the text-containing elements,
-  // not to a wrapper, for proper ellipsis behavior.
+  // Sanitize HTML once - used for link counting and dangerouslySetInnerHTML
+  const sanitizedHtml = sanitize(trimmedHtml);
+
+  // Count links for ARIA attributes using DOM parsing
+  // This is more robust than regex and handles edge cases like newlines in attributes
+  let linkCount = 0;
+  if (typeof DOMParser !== 'undefined') {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(sanitizedHtml, 'text/html');
+      linkCount = doc.querySelectorAll('a[href]').length;
+    } catch {
+      // Fallback: count won't be set, which results in no ARIA label
+      linkCount = 0;
+    }
+  }
+
+  // Apply CSS for truncation container
   const isTruncated = numberOfLines && numberOfLines > 0;
   const truncationStyle: React.CSSProperties = isTruncated
-    ? { overflow: 'hidden' }
-    : {};
+    ? { overflow: 'hidden', position: 'relative' as const }
+    : { position: 'relative' as const };
 
-  // Apply writing direction - 'auto' inherits from parent/system
-  // Using CSS logical property 'start' which automatically adapts to direction:
-  // - LTR: start = left
-  // - RTL: start = right
+  // Apply writing direction
   const directionStyle: React.CSSProperties =
     writingDirection === 'auto'
-      ? {} // Inherit from parent
+      ? {}
       : {
           direction: writingDirection,
-          // Use CSS logical property for RTL-aware alignment
           textAlign: 'start',
         };
 
-  // When truncating, apply line-clamp styles directly to block elements in the HTML.
-  // This ensures the ellipsis appears correctly at the truncation point.
-  const lineClampStyles = `display:-webkit-box;-webkit-line-clamp:${numberOfLines};-webkit-box-orient:vertical;overflow:hidden;margin:0;padding:0;`;
-  const processedHtml = isTruncated
-    ? sanitizedHtml.replace(
-        /<(p|div|h[1-6]|blockquote|li|ul|ol)(\s|>)/gi,
-        `<$1 style="${lineClampStyles}"$2`
-      )
-    : sanitizedHtml;
+  // Build ARIA description for screen reader navigation
+  // Using aria-describedby to preserve native semantics (aria-label replaces accessible name)
+  const linkCountDescId =
+    linkCount > 0 ? `${instanceId}-link-count` : undefined;
+  const linkCountDesc =
+    linkCount > 0
+      ? `Contains ${linkCount} ${linkCount === 1 ? 'link' : 'links'}`
+      : undefined;
+
+  // Visually hidden style for screen reader-only content
+  const visuallyHiddenStyle: React.CSSProperties = {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: 0,
+    margin: '-1px',
+    overflow: 'hidden',
+    clip: 'rect(0, 0, 0, 0)',
+    whiteSpace: 'nowrap',
+    border: 0,
+  };
 
   return (
-    <div
-      ref={containerRef}
-      className={className}
-      style={{ ...cssStyle, ...truncationStyle, ...directionStyle }}
-      dir={writingDirection === 'auto' ? undefined : writingDirection}
-      data-testid={testID}
-      onClick={onLinkPress ? handleClick : undefined}
-      // nosemgrep: no-dangerous-innerhtml-without-sanitization - processedHtml is sanitized via DOMPurify (sanitizedHtml on line 75)
-      dangerouslySetInnerHTML={{ __html: processedHtml }}
-    />
+    <>
+      <div
+        ref={containerRef}
+        className={className}
+        style={{ ...cssStyle, ...truncationStyle, ...directionStyle }}
+        dir={writingDirection === 'auto' ? undefined : writingDirection}
+        data-testid={testID}
+        onClick={onLinkPress ? handleClick : undefined}
+        // Container is not keyboard focusable since nested links are natively focusable
+        // This prevents duplicate tab stops (container + individual links)
+        tabIndex={-1}
+        aria-describedby={linkCountDescId}
+        // SAFETY: sanitize() uses DOMPurify (browser) or sanitize-html (SSR) - see sanitize.web.ts
+        dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+      />
+      {linkCountDesc && (
+        <span id={linkCountDescId} style={visuallyHiddenStyle}>
+          {linkCountDesc}
+        </span>
+      )}
+    </>
   );
 }

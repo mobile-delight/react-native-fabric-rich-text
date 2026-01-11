@@ -195,7 +195,8 @@ class FabricHtmlSpannableBuilder {
             if (state.pendingListItemStack.isNotEmpty()) {
                 val itemInfo = state.pendingListItemStack.removeAt(state.pendingListItemStack.lastIndex)
                 applyListItemFormatting(result, itemInfo.startPosition, itemInfo.nestingLevel)
-                // Don't append newline here - we add it before the NEXT item instead
+                // Note: Screen reader pauses are handled via resolvedAccessibilityLabel
+                // (built by C++ parser) rather than modifying the rendered text
             }
         } else {
             if (state.listStack.isNotEmpty()) {

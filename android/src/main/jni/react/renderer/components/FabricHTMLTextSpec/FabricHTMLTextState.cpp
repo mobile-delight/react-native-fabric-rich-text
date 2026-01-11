@@ -33,6 +33,7 @@ constexpr static MapBuffer::Key HTML_STATE_KEY_LINK_URLS = 3;
 constexpr static MapBuffer::Key HTML_STATE_KEY_NUMBER_OF_LINES = 4;
 constexpr static MapBuffer::Key HTML_STATE_KEY_ANIMATION_DURATION = 5;
 constexpr static MapBuffer::Key HTML_STATE_KEY_WRITING_DIRECTION = 6;
+constexpr static MapBuffer::Key HTML_STATE_KEY_ACCESSIBILITY_LABEL = 7;
 
 folly::dynamic FabricHTMLTextState::getDynamic() const {
   // Not used for Kotlin serialization, but required by Fabric
@@ -98,6 +99,12 @@ MapBuffer FabricHTMLTextState::getMapBuffer() const {
   int writingDirectionInt = (writingDirection == WritingDirectionState::RTL) ? 1 : 0;
   builder.putInt(HTML_STATE_KEY_WRITING_DIRECTION, writingDirectionInt);
   STATE_LOGD("Serialized writingDirection=%d (RTL=%d)", writingDirectionInt, writingDirection == WritingDirectionState::RTL ? 1 : 0);
+
+  // Serialize accessibilityLabel (screen reader friendly text with pauses)
+  if (!accessibilityLabel.empty()) {
+    builder.putString(HTML_STATE_KEY_ACCESSIBILITY_LABEL, accessibilityLabel);
+    STATE_LOGD("Serialized accessibilityLabel (%zu chars)", accessibilityLabel.length());
+  }
 
   return builder.build();
 }

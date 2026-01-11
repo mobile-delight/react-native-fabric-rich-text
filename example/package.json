@@ -11,8 +11,7 @@
     "build:android": "react-native build-android --extra-params \"--no-daemon --console=plain -PreactNativeArchitectures=arm64-v8a\"",
     "build:ios": "react-native build-ios --mode Debug --buildFolder ios/build",
     "build:ios:e2e": "cd ios && FORCE_BUNDLING=1 xcodebuild -workspace FabricHtmlTextExample.xcworkspace -scheme FabricHtmlTextExample -configuration Debug -sdk iphonesimulator -derivedDataPath build build",
-    "clean:android": "rm -rf android/app/build android/app/.cxx android/.gradle ../android/build ../android/.cxx && echo 'Android build directories cleaned'",
-    "clean:ios": "rm -rf ios/build ios/Pods ios/Podfile.lock && echo 'iOS build directories cleaned'"
+    "clean": "rm -rf android/app/build android/app/.cxx android/.gradle ../android/build ../android/.cxx ios/build ios/Pods ios/Podfile.lock && echo 'Example build artifacts cleaned'"
   },
   "dependencies": {
     "nativewind": "^4.2.0",

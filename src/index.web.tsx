@@ -11,6 +11,12 @@ export { sanitize, ALLOWED_TAGS, ALLOWED_ATTR } from './core/sanitize.web';
 // Re-export DetectedContentType for API compatibility
 export type DetectedContentType = 'link' | 'email' | 'phone';
 
+// Accessibility link focus types
+export type {
+  LinkFocusEvent,
+  LinkFocusType,
+} from './types/HTMLTextNativeProps';
+
 // FabricHTMLText is not available on web - provide a helpful error if accessed
 export const FabricHTMLText = (): never => {
   throw new Error(

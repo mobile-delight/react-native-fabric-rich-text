@@ -143,6 +143,22 @@ function StyleSheetExamples({
         testID="email-detection"
       />
 
+      <Text style={styles.sectionTitle}>Phone Links (href)</Text>
+      <HTMLText
+        html='<p>Call <a href="tel:+15551234567">+1 (555) 123-4567</a> for support.</p>'
+        style={styles.text}
+        onLinkPress={onLinkPress}
+        testID="phone-href"
+      />
+
+      <Text style={styles.sectionTitle}>Email Links (href)</Text>
+      <HTMLText
+        html='<p>Email <a href="mailto:support@example.com">support@example.com</a> for help.</p>'
+        style={styles.text}
+        onLinkPress={onLinkPress}
+        testID="email-href"
+      />
+
       <Text style={styles.sectionTitle}>All Detection Types</Text>
       <HTMLText
         html='<p>Visit <a href="https://example.com">our site</a>, call 555-987-6543, or email info@test.com.</p>'
@@ -185,7 +201,7 @@ function StyleSheetExamples({
       <Text style={styles.sectionTitle}>Expand/Collapse</Text>
       <TouchableOpacity onPress={toggleExpanded} activeOpacity={0.7}>
         <HTMLText
-          html="<p>This is a <strong>longer paragraph</strong> that demonstrates the <em>numberOfLines</em> feature. When collapsed, only 2 lines show. Tap to expand or collapse.</p>"
+          html="<p>This is a <strong>much longer paragraph</strong> that demonstrates the <em>numberOfLines</em> feature with actual truncation behavior. When collapsed, only the first 2 lines are visible, and the remaining content is hidden from view. This paragraph contains enough text to span multiple lines, ensuring that TalkBack users will experience the truncation indicator. The text includes various formatting like <strong>bold text</strong>, <em>italic text</em>, and continues for several more sentences to guarantee it exceeds two lines on most screen sizes. Additional content here to make absolutely sure this gets truncated when numberOfLines is set to 2.</p>"
           style={styles.text}
           numberOfLines={expandedText ? 0 : 2}
           animationDuration={0.3}
@@ -408,6 +424,22 @@ function NativeWindExamples({
         testID="nw-email-detection"
       />
 
+      <Text style={styles.sectionTitle}>Phone Links (href)</Text>
+      <NativeWindHTMLText
+        html='<p>Call <a href="tel:+15551234567">+1 (555) 123-4567</a> for support.</p>'
+        className="text-base leading-6"
+        onLinkPress={onLinkPress}
+        testID="nw-phone-href"
+      />
+
+      <Text style={styles.sectionTitle}>Email Links (href)</Text>
+      <NativeWindHTMLText
+        html='<p>Email <a href="mailto:support@example.com">support@example.com</a> for help.</p>'
+        className="text-base leading-6"
+        onLinkPress={onLinkPress}
+        testID="nw-email-href"
+      />
+
       <Text style={styles.sectionTitle}>All Detection Types</Text>
       <NativeWindHTMLText
         html='<p>Visit <a href="https://example.com">our site</a>, call 555-987-6543, or email info@test.com.</p>'
@@ -450,7 +482,7 @@ function NativeWindExamples({
       <Text style={styles.sectionTitle}>Expand/Collapse</Text>
       <TouchableOpacity onPress={toggleExpanded} activeOpacity={0.7}>
         <NativeWindHTMLText
-          html="<p>This is a <strong>longer paragraph</strong> that demonstrates the <em>numberOfLines</em> feature. When collapsed, only 2 lines show. Tap to expand or collapse.</p>"
+          html="<p>This is a <strong>much longer paragraph</strong> that demonstrates the <em>numberOfLines</em> feature with actual truncation behavior. When collapsed, only the first 2 lines are visible, and the remaining content is hidden from view. This paragraph contains enough text to span multiple lines, ensuring that TalkBack users will experience the truncation indicator. The text includes various formatting like <strong>bold text</strong>, <em>italic text</em>, and continues for several more sentences to guarantee it exceeds two lines on most screen sizes. Additional content here to make absolutely sure this gets truncated when numberOfLines is set to 2.</p>"
           className="text-base leading-6"
           numberOfLines={expandedText ? 0 : 2}
           animationDuration={0.3}

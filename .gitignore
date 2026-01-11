@@ -48,6 +48,7 @@ project.xcworkspace
 .idea
 .project
 .settings
+.kotlin
 local.properties
 android.iml
 
@@ -95,4 +96,7 @@ android/generated
 # React Native Nitro Modules
 nitrogen/
 coverage/
+
+# Google Cloud credentials
+scripts/service-account.json
 

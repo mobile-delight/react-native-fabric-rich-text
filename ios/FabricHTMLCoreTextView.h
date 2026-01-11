@@ -54,6 +54,30 @@ typedef NS_ENUM(NSInteger, HTMLDetectedContentType) {
 /// In RTL mode, "left" and "right" are swapped automatically (left → end, right → start).
 @property (nonatomic, copy, nullable) NSString *textAlign;
 
+/// Resolved accessibility label for screen readers.
+/// Built from C++ parser with proper pauses between list items.
+/// Can be overridden by passing accessibilityLabel prop from React.
+@property (nonatomic, copy, nullable) NSString *resolvedAccessibilityLabel;
+
+#pragma mark - Accessibility Link Support
+
+/**
+ * Returns the number of visible (non-truncated) links in the view.
+ * When numberOfLines is set, only counts links that start on visible lines.
+ */
+@property (nonatomic, assign, readonly) NSInteger visibleLinkCount;
+
+/**
+ * Returns the bounding rectangle for the link at the given index.
+ * The bounds are in the view's coordinate system (UIKit coordinates).
+ *
+ * @param index The zero-based index of the link (0 = first link)
+ * @return The bounding rectangle, or CGRectZero if index is invalid or no links exist
+ *
+ * For multi-line links, returns the union of all line segments containing the link.
+ */
+- (CGRect)boundsForLinkAtIndex:(NSUInteger)index;
+
 @end
 
 NS_ASSUME_NONNULL_END

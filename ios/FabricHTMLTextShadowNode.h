@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <react/renderer/components/FabricHTMLTextSpec/EventEmitters.h>
 #include <react/renderer/components/FabricHTMLTextSpec/Props.h>
 #include <react/renderer/components/view/ConcreteViewShadowNode.h>
@@ -35,6 +36,8 @@ class FabricHTMLTextStateData final {
   Float animationDuration{0.2f};
   // Base writing direction for text content
   WritingDirectionState writingDirection{WritingDirectionState::LTR};
+  // Screen reader friendly version of text with pauses between list items
+  std::string accessibilityLabel;
 };
 
 /**
@@ -91,8 +94,12 @@ class FabricHTMLTextShadowNode final : public ConcreteViewShadowNode<
    */
   static std::string stripHtmlTags(const std::string& html);
 
+  // Use recursive_mutex because measureContent() calls parseHtmlToAttributedString()
+  // which also needs to acquire the lock
+  mutable std::recursive_mutex _mutex;
   mutable AttributedString _attributedString;
   mutable std::vector<std::string> _linkUrls;
+  mutable std::string _accessibilityLabel;
 };
 
 } // namespace facebook::react

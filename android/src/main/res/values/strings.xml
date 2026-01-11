@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Accessibility: Link role descriptions -->
+    <string name="a11y_link">link</string>
+    <string name="a11y_link_web">web link</string>
+    <string name="a11y_link_phone">phone number</string>
+    <string name="a11y_link_email">email address</string>
+
+    <!-- Accessibility: Link position format (e.g., "1 of 2") -->
+    <string name="a11y_link_position">%1$d of %2$d</string>
+
+    <!-- Accessibility: Text formatting styles -->
+    <string name="a11y_bold">bold</string>
+    <string name="a11y_italic">italic</string>
+    <string name="a11y_underline">underline</string>
+    <string name="a11y_strikethrough">strikethrough</string>
+
+    <!-- Accessibility: Truncation indicator -->
+    <string name="a11y_content_truncated">Content is truncated</string>
+</resources>

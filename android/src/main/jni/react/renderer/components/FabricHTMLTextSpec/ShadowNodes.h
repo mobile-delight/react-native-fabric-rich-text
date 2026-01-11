@@ -75,6 +75,7 @@ class FabricHTMLTextShadowNode final : public ConcreteViewShadowNode<
   mutable std::mutex _mutex;
   mutable AttributedString _attributedString;
   mutable std::vector<std::string> _linkUrls;
+  mutable std::string _accessibilityLabel;
 };
 
 } // namespace facebook::react
