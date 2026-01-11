@@ -497,6 +497,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U8T8VY3446;
 				INFOPLIST_FILE = FabricHtmlTextTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				PRODUCT_BUNDLE_IDENTIFIER = io.michaelfay.fabrichtmltext.tests;
@@ -516,6 +517,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U8T8VY3446;
 				INFOPLIST_FILE = FabricHtmlTextTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				PRODUCT_BUNDLE_IDENTIFIER = io.michaelfay.fabrichtmltext.tests;

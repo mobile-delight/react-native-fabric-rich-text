@@ -149,7 +149,8 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.layoutIfNeeded()
 
         // When: We get the accessibility label
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
+        // Note: Index 0 is the text content element, links start at index 1
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
             XCTFail("Should have accessibility element")
             return
         }
@@ -268,7 +269,8 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.layoutIfNeeded()
 
         // When: We get the accessibility hint
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
+        // Note: Index 0 is the text content element, links start at index 1
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
             XCTFail("Should have accessibility element")
             return
         }
@@ -293,7 +295,8 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.layoutIfNeeded()
 
         // When: We get the accessibility hint
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
+        // Note: Index 0 is the text content element, links start at index 1
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
             XCTFail("Should have accessibility element")
             return
         }
@@ -362,7 +365,8 @@ final class AccessibilityContainerTests: XCTestCase {
         coreTextView.layoutIfNeeded()
 
         // When: We get the accessibility element
-        guard let element = coreTextView.accessibilityElement(at: 0) as? UIAccessibilityElement else {
+        // Note: Index 0 is the text content element, links start at index 1
+        guard let element = coreTextView.accessibilityElement(at: 1) as? UIAccessibilityElement else {
             XCTFail("Should have accessibility element")
             return
         }
