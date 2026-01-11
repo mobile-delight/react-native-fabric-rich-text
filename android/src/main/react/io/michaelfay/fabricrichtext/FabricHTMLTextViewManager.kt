@@ -97,9 +97,9 @@ class FabricRichTextViewManager : SimpleViewManager<FabricRichTextView>(),
     return view
   }
 
-  @ReactProp(name = "html")
-  override fun setHtml(view: FabricRichTextView?, html: String?) {
-    view?.setHtml(html)
+  @ReactProp(name = "text")
+  override fun setText(view: FabricRichTextView?, value: String?) {
+    view?.setHtml(value)
   }
 
   @ReactProp(name = "tagStyles")

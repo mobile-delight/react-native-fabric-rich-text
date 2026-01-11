@@ -121,7 +121,7 @@ reviews:
       enabled: false
     unit_tests:
       enabled: false
-  auto_title_placeholder: @coderabbitai
+  auto_title_placeholder: "@coderabbitai title"
   assess_linked_issues: true
   enable_prompt_for_ai_agents: true
   related_prs: true
@@ -138,7 +138,7 @@ reviews:
   suggested_reviewers: true
   disable_cache: false
   commit_status: true
-  high_level_summary_placeholder: @coderabbitai summary
+  high_level_summary_placeholder: "@coderabbitai summary"
   related_issues: true
 
 # Chat configuration

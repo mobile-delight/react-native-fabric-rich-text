@@ -36,7 +36,12 @@ function countLinks(htmlString: string): number {
 
 // Escape a string for safe use in HTML attribute values
 function escapeAttr(s: string): string {
-  return s.replace(/"/g, '&quot;');
+  return s
+    .replace(/&/g, '&amp;') // Must be first to avoid double-escaping
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 /**
