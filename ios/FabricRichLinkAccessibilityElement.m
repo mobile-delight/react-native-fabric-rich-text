@@ -1,4 +1,5 @@
 #import "FabricRichLinkAccessibilityElement.h"
+#import "FabricRichCoreTextView.h"
 
 /// Accessibility debug logging - set to 0 for production
 #define A11Y_DEBUG 1

@@ -1,15 +1,7 @@
 #import <UIKit/UIKit.h>
+#import "FabricRichTextTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-/**
- * Type of content detected when a link is pressed.
- */
-typedef NS_ENUM(NSInteger, HTMLDetectedContentType) {
-    HTMLDetectedContentTypeLink,
-    HTMLDetectedContentTypeEmail,
-    HTMLDetectedContentTypePhone
-};
 
 @protocol FabricRichCoreTextViewDelegate <NSObject>
 @optional
