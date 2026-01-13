@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
     "ios/**/ReactAppDependencyProvider.*",
     "ios/generated/android/**/*",
   ]
-  s.public_header_files = "ios/FabricRichCoreTextView.h"
+  s.public_header_files = ["ios/FabricRichCoreTextView.h", "ios/FabricRichTextTypes.h"]
 
   # Localized accessibility strings
   s.resource_bundles = {

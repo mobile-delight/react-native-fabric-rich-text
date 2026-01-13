@@ -1,9 +1,10 @@
 #import "FabricRichLinkAccessibilityElement.h"
+#import "FabricRichCoreTextView.h"
 
 /// Accessibility debug logging - set to 0 for production
-#define A11Y_DEBUG 1
+#define A11Y_DEBUG 0
 
-#if A11Y_DEBUG
+#if A11Y_DEBUG && defined(DEBUG)
 #define A11Y_LOG(fmt, ...) NSLog(@"[A11Y_FHLinkElem] " fmt, ##__VA_ARGS__)
 #else
 #define A11Y_LOG(fmt, ...) do { } while(0)

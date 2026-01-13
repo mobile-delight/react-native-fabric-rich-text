@@ -21,7 +21,7 @@ class HrefClickableSpan(val href: String) : ClickableSpan() {
     }
 
     override fun updateDrawState(ds: TextPaint) {
-        super.updateDrawState(ds)
+        // Only set underline; color is handled by ForegroundColorSpan from C++
         ds.isUnderlineText = true
     }
 }

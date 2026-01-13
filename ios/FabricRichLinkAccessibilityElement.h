@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-#import "FabricRichCoreTextView.h"
+#import "FabricRichTextTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
