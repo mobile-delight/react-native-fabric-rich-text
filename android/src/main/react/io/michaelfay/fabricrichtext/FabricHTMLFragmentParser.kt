@@ -369,9 +369,9 @@ object FabricRichFragmentParser {
             val endPos = builder.length
 
             if (startPos < endPos) {
-                // Apply font size
+                // Apply font size (use SP to match C++ TextLayoutManager measurement)
                 builder.setSpan(
-                    AbsoluteSizeSpan(fragment.fontSize.toInt(), true), // true = size in SP
+                    AbsoluteSizeSpan(fragment.fontSize.toInt(), true),
                     startPos,
                     endPos,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

@@ -309,6 +309,7 @@ class FabricRichTextView : AppCompatTextView, TextStyleApplier.StyleChangeListen
             val spannable = stateSpannable!!
 
             if (customLayout == null && width > 0) {
+                customTextPaint.set(paint)
                 customLayout = layoutProvider.createLayout(
                     spannable,
                     width - paddingLeft - paddingRight,
@@ -407,6 +408,7 @@ class FabricRichTextView : AppCompatTextView, TextStyleApplier.StyleChangeListen
         if (customLayout != null) return customLayout
 
         if (hasStateSpannable && stateSpannable != null && width > 0) {
+            customTextPaint.set(paint)
             customLayout = layoutProvider.createLayout(
                 stateSpannable!!,
                 width - paddingLeft - paddingRight,
