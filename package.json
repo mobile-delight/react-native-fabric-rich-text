@@ -1,6 +1,6 @@
 {
   "name": "react-native-fabric-rich-text",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-beta.1",
   "description": "Fabric-first rich text renderer for React Native with NativeWind/Tailwind CSS support",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -78,17 +78,17 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/michael-fay/react-native-fabric-rich-text.git"
+    "url": "git+https://github.com/mobile-delight/react-native-fabric-rich-text.git"
   },
   "author": "Michael Fay <michael@example.com> (https://github.com/michael-fay)",
   "license": "MIT",
   "engines": {
-    "node": ">=24.12.0"
+    "node": ">=20.0.0"
   },
   "bugs": {
-    "url": "https://github.com/michael-fay/react-native-fabric-rich-text/issues"
+    "url": "https://github.com/mobile-delight/react-native-fabric-rich-text/issues"
   },
-  "homepage": "https://github.com/michael-fay/react-native-fabric-rich-text#readme",
+  "homepage": "https://github.com/mobile-delight/react-native-fabric-rich-text#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
