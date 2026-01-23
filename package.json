@@ -1,6 +1,6 @@
 {
   "name": "react-native-fabric-rich-text",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "Fabric-first rich text renderer for React Native with NativeWind/Tailwind CSS support",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
