@@ -1,7 +1,7 @@
 PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
-  - FabricRichText (1.0.0-alpha.0):
+  - FabricRichText (1.0.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2344,7 +2344,7 @@ PODS:
     - RNWorklets
     - SocketRocket
     - Yoga
-  - RNWorklets (0.7.1):
+  - RNWorklets (0.7.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -2371,10 +2371,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNWorklets/worklets (= 0.7.1)
+    - RNWorklets/worklets (= 0.7.3)
     - SocketRocket
     - Yoga
-  - RNWorklets/worklets (0.7.1):
+  - RNWorklets/worklets (0.7.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -2401,10 +2401,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNWorklets/worklets/apple (= 0.7.1)
+    - RNWorklets/worklets/apple (= 0.7.3)
     - SocketRocket
     - Yoga
-  - RNWorklets/worklets/apple (0.7.1):
+  - RNWorklets/worklets/apple (0.7.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -2674,7 +2674,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
-  FabricRichText: ca8896ee851693f927a5e701176c67390d45b3ab
+  FabricRichText: 3a2ca3af96f665c6ef1f48e2fb50fe541eaba062
   fast_float: b32c788ed9c6a8c584d114d0047beda9664e7cc6
   FBLazyVector: a867936a67af0d09c37935a1b900a1a3c795b6d1
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
@@ -2741,10 +2741,10 @@ SPEC CHECKSUMS:
   React-timing: 25e8229ad1cf6874e9f0711515213cb2bc322215
   React-utils: 068cec677032ba78ca0700f2dcbe6d08a0939647
   ReactAppDependencyProvider: c91900fa724baee992f01c05eeb4c9e01a807f78
-  ReactCodegen: a55799cae416c387aeaae3aabc1bc0289ac19cee
+  ReactCodegen: 5606bcb7f5259e7446db14c9efa8f732a17cc397
   ReactCommon: 116d6ee71679243698620d8cd9a9042541e44aa6
   RNReanimated: fabac5a7aee92d454d7aef06335a7bef955d5603
-  RNWorklets: 416ef974c176d76634e34c0aeda83f6b67084a88
+  RNWorklets: ff9b9ff38df9accccbbbad692b6e435fec64e24e
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   SwiftSoup: 959c9ac70d7053fbf476341bfac90ab228523f2a
   Yoga: 00013dd9cde63a2d98e8002fcc4f5ddb66c10782
