@@ -24,7 +24,7 @@ export default function Navigation() {
           >
             FabricRichText
           </Link>
-          <ul className="flex space-x-6">
+          <ul className="flex gap-6">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (

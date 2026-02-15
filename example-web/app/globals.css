@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@plugin "@tailwindcss/container-queries";
 
 :root {
   --foreground-rgb: 23, 23, 23;
@@ -19,19 +19,36 @@ body {
   background: rgb(var(--background-rgb));
 }
 
-/* Restore default list styling (Tailwind preflight removes it) */
-ul {
+/* Restore default list styling inside RichText output only
+   (Tailwind preflight removes it; scope to avoid affecting nav/UI lists) */
+[data-richtext] ul,
+article ul,
+main > div ul {
   list-style-type: disc;
   padding-left: 1.5rem;
 }
 
-ol {
+[data-richtext] ol,
+article ol,
+main > div ol {
   list-style-type: decimal;
   padding-left: 1.5rem;
 }
 
-li {
+[data-richtext] li,
+article li,
+main > div li {
   margin: 0.25rem 0;
+}
+
+/* Reset nav lists to no styling */
+nav ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+nav li {
+  margin: 0;
 }
 
 /* Restore default heading styles (Tailwind preflight removes them) */
@@ -71,24 +88,32 @@ h6 {
   margin: 0.5rem 0;
 }
 
-/* Link styling */
-a {
+/* Link styling for rendered content (not nav) */
+[data-richtext] a,
+article a,
+main > div a {
   color: #2563eb;
   text-decoration: underline;
   text-underline-offset: 2px;
   transition: color 0.15s ease;
 }
 
-a:hover {
+[data-richtext] a:hover,
+article a:hover,
+main > div a:hover {
   color: #1d4ed8;
 }
 
 @media (prefers-color-scheme: dark) {
-  a {
+  [data-richtext] a,
+  article a,
+  main > div a {
     color: #60a5fa;
   }
 
-  a:hover {
+  [data-richtext] a:hover,
+  article a:hover,
+  main > div a:hover {
     color: #93c5fd;
   }
 }

@@ -3,10 +3,11 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import ReactTestRenderer from 'react-test-renderer';
 import App from '../src/App';
 
-test('renders App successfully', () => {
-  const { toJSON } = render(<App />);
-  expect(toJSON()).toBeTruthy();
+test('renders correctly', async () => {
+  await ReactTestRenderer.act(() => {
+    ReactTestRenderer.create(<App />);
+  });
 });

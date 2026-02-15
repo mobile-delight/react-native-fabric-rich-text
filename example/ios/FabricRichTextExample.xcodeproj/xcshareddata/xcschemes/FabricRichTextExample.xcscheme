@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2610"
+   LastUpgradeVersion = "1210"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A07247392F1139340006C67E"
+               BlueprintIdentifier = "00E356ED1AD99517003FC87E"
                BuildableName = "FabricRichTextExampleTests.xctest"
                BlueprintName = "FabricRichTextExampleTests"
                ReferencedContainer = "container:FabricRichTextExample.xcodeproj">

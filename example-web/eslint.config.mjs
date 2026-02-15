@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // CJS config files (next/jest requires CJS)
+    "jest.config.js",
+    // Turbopack empty module stub
+    "empty.js",
   ]),
 ]);
 

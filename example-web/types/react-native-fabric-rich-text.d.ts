@@ -1,6 +1,5 @@
 /**
  * Type shim for react-native-fabric-rich-text web module
- * Fixes React version mismatch between library (React 19) and example-web (React 18)
  *
  * This is an ambient module declaration that TypeScript will pick up automatically
  * when the types directory is included in tsconfig.
