@@ -6,8 +6,15 @@ import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 import App from '../src/App';
 
-test('renders correctly', async () => {
+test('should render the RichText Examples title', async () => {
+  let renderer: ReactTestRenderer.ReactTestRenderer;
   await ReactTestRenderer.act(() => {
-    ReactTestRenderer.create(<App />);
+    renderer = ReactTestRenderer.create(<App />);
   });
+
+  const root = renderer!.root;
+  const titleText = root.findAll(
+    node => node.type === 'Text' && node.children.includes('RichText Examples'),
+  );
+  expect(titleText.length).toBeGreaterThan(0);
 });
