@@ -129,7 +129,7 @@ jobs:
             ~/Library/Caches/CocoaPods
           key: ${{ runner.os }}-pods-test-${{ hashFiles('example/ios/Podfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pods-test-
+            ${{ runner.os }}-pods-test-${{ hashFiles('example/ios/Podfile.lock') }}
 
       - name: Cache Xcode DerivedData
         uses: irgaly/xcode-cache@25c0c601a065ad15ada58d5e9ac4515538411861 # v1.9.2

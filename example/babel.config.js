@@ -22,5 +22,5 @@ module.exports = getConfig(
       ...nativewindPlugins,
     ],
   },
-  { root, pkg }
+  { root, pkg },
 );

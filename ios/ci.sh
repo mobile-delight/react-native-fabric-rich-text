@@ -147,6 +147,8 @@ fi
 
 echo ""
 echo "=== Running Tests (Stage 2) ==="
+# Remove any existing result bundle to prevent xcodebuild from failing
+rm -rf "$DERIVED_DATA_PATH/TestResults.xcresult"
 # Run tests - pods cached from Stage 1, only incremental compilation needed
 if command -v xcbeautify &> /dev/null; then
     xcodebuild test \

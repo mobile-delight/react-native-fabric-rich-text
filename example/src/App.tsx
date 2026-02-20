@@ -882,15 +882,15 @@ export default function App(): React.JSX.Element {
       setLastLinkPressed(`${url} (${type})`);
       Alert.alert('Link Pressed', `URL: ${url}\nType: ${type}`);
     },
-    []
+    [],
   );
 
   const toggleExpanded = useCallback(() => {
-    setExpandedText((prev) => !prev);
+    setExpandedText(prev => !prev);
   }, []);
 
   const cycleNumberOfLines = useCallback(() => {
-    setNumberOfLinesDemo((prev) => {
+    setNumberOfLinesDemo(prev => {
       if (prev === 0) return 1;
       if (prev === 1) return 2;
       if (prev === 2) return 3;
@@ -903,14 +903,14 @@ export default function App(): React.JSX.Element {
   }, []);
 
   const toggleReadMore = useCallback(() => {
-    setReadMoreExpanded((prev) => !prev);
+    setReadMoreExpanded(prev => !prev);
   }, []);
 
   const handleReadMoreMeasurement = useCallback(
     (data: RichTextMeasurementData) => {
       setReadMoreMeasurement(data);
     },
-    []
+    [],
   );
 
   return (

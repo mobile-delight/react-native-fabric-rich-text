@@ -5,12 +5,13 @@ const createJestConfig = nextJest({
   dir: './',
 });
 
-// Ensure all React imports resolve to example-web's React 18
-const reactPath = path.resolve(__dirname, 'node_modules/react');
-const reactDomPath = path.resolve(__dirname, 'node_modules/react-dom');
-
 // Resolve library path relative to this config file
 const libWebPath = path.resolve(__dirname, '../lib/module/index.web.js');
+
+// Force all React imports to use example-web's copy (avoids dual-instance hooks error
+// when the built lib resolves React from the root workspace node_modules)
+const reactPath = path.resolve(__dirname, 'node_modules/react');
+const reactDomPath = path.resolve(__dirname, 'node_modules/react-dom');
 
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
@@ -20,7 +21,6 @@ const customJestConfig = {
     // Map to built web-specific entry point (includes sanitize, ALLOWED_TAGS, etc.)
     // This MUST come before tsconfig paths to override them
     '^react-native-fabric-rich-text$': libWebPath,
-    // Force all React imports to use example-web's React 18
     '^react$': reactPath,
     '^react/(.*)$': `${reactPath}/$1`,
     '^react-dom$': reactDomPath,

@@ -3,20 +3,30 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00E356F31AD99517003FC87E /* FabricRichTextExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FabricRichTextExampleTests.m */; };
+		0C80B921A6F3F58F76C31292 /* libPods-FabricRichTextExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-FabricRichTextExample.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		33FAB451990F614EE44CC46D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
-		76125E40773D17F29D267B57 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7376ECDB14BFF91CF0B9EFB9 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		9EB2624C45A0E1FD262801F7 /* libPods-FabricRichTextExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48138B3EC30185FA16B8472C /* libPods-FabricRichTextExample.a */; };
+		A1B2C3D400000001AAAAAAAA /* FabricRichParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000011AAAAAAAA /* FabricRichParserTests.mm */; };
+		A1B2C3D400000002AAAAAAAA /* FabricRichFragmentParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000012AAAAAAAA /* FabricRichFragmentParserTests.mm */; };
+		A1B2C3D400000003AAAAAAAA /* FabricRichLinksTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000013AAAAAAAA /* FabricRichLinksTests.mm */; };
+		A1B2C3D400000004AAAAAAAA /* FabricRichListsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000014AAAAAAAA /* FabricRichListsTests.mm */; };
+		A1B2C3D400000005AAAAAAAA /* FabricRichRTLTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000015AAAAAAAA /* FabricRichRTLTests.mm */; };
+		A1B2C3D400000006AAAAAAAA /* FabricRichStylingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000016AAAAAAAA /* FabricRichStylingTests.mm */; };
+		A1B2C3D400000007AAAAAAAA /* AccessibilityContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000017AAAAAAAA /* AccessibilityContainerTests.swift */; };
+		A1B2C3D400000008AAAAAAAA /* FabricRichSanitizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000018AAAAAAAA /* FabricRichSanitizerTests.swift */; };
+		A1B2C3D400000009AAAAAAAA /* LinkBoundsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D400000019AAAAAAAA /* LinkBoundsTests.swift */; };
+		B5006ED83D48809E0FE962D3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		D0BEF460B98E267B5CCF7782 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FF1B4D41CD1DF9EEAE1E0B4 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A072473E2F1139340006C67E /* PBXContainerItemProxy */ = {
+		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
@@ -26,52 +36,70 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0838639CC71AAF95AAED1CCA /* Pods-FabricRichTextExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabricRichTextExample.release.xcconfig"; path = "Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample.release.xcconfig"; sourceTree = "<group>"; };
+		00E356EE1AD99517003FC87E /* FabricRichTextExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FabricRichTextExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356F21AD99517003FC87E /* FabricRichTextExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FabricRichTextExampleTests.m; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* FabricRichTextExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FabricRichTextExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FabricRichTextExample/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FabricRichTextExample/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = FabricRichTextExample/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		48138B3EC30185FA16B8472C /* libPods-FabricRichTextExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FabricRichTextExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		62313A8CA6853161FAF9CE3D /* Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig"; path = "Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig"; sourceTree = "<group>"; };
-		7376ECDB14BFF91CF0B9EFB9 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FabricRichTextExample-FabricRichTextExampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B4392A12AC88292D35C810B /* Pods-FabricRichTextExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabricRichTextExample.debug.xcconfig"; path = "Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample.debug.xcconfig"; sourceTree = "<group>"; };
+		3FF1B4D41CD1DF9EEAE1E0B4 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FabricRichTextExample-FabricRichTextExampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		44C4762B566106F7ABA44DEF /* Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig"; path = "Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig"; sourceTree = "<group>"; };
+		5709B34CF0A7D63546082F79 /* Pods-FabricRichTextExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabricRichTextExample.release.xcconfig"; path = "Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample.release.xcconfig"; sourceTree = "<group>"; };
+		5DCACB8F33CDC322A6C60F78 /* libPods-FabricRichTextExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FabricRichTextExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = FabricRichTextExample/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = FabricRichTextExample/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		A072473A2F1139340006C67E /* FabricRichTextExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FabricRichTextExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AFF64C9DFFE2609D7196DA8D /* Pods-FabricRichTextExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabricRichTextExample.debug.xcconfig"; path = "Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample.debug.xcconfig"; sourceTree = "<group>"; };
-		C74A9EA236A6A63D60AB6E9E /* Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig"; path = "Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig"; sourceTree = "<group>"; };
+		94EF03057E96B0846F774126 /* Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig"; path = "Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig"; sourceTree = "<group>"; };
+		A1B2C3D400000011AAAAAAAA /* FabricRichParserTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FabricRichParserTests.mm; sourceTree = "<group>"; };
+		A1B2C3D400000012AAAAAAAA /* FabricRichFragmentParserTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FabricRichFragmentParserTests.mm; sourceTree = "<group>"; };
+		A1B2C3D400000013AAAAAAAA /* FabricRichLinksTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FabricRichLinksTests.mm; sourceTree = "<group>"; };
+		A1B2C3D400000014AAAAAAAA /* FabricRichListsTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FabricRichListsTests.mm; sourceTree = "<group>"; };
+		A1B2C3D400000015AAAAAAAA /* FabricRichRTLTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FabricRichRTLTests.mm; sourceTree = "<group>"; };
+		A1B2C3D400000016AAAAAAAA /* FabricRichStylingTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FabricRichStylingTests.mm; sourceTree = "<group>"; };
+		A1B2C3D400000017AAAAAAAA /* AccessibilityContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityContainerTests.swift; sourceTree = "<group>"; };
+		A1B2C3D400000018AAAAAAAA /* FabricRichSanitizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FabricRichSanitizerTests.swift; sourceTree = "<group>"; };
+		A1B2C3D400000019AAAAAAAA /* LinkBoundsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkBoundsTests.swift; sourceTree = "<group>"; };
+		A1B2C3D40000001AAAAAAAAA /* FabricRichTextTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "FabricRichTextTests-Bridging-Header.h"; path = "FabricRichTextTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		A072473B2F1139340006C67E /* FabricRichTextExampleTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
-			path = FabricRichTextExampleTests;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
+		00E356EB1AD99517003FC87E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D0BEF460B98E267B5CCF7782 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9EB2624C45A0E1FD262801F7 /* libPods-FabricRichTextExample.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A07247372F1139340006C67E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				76125E40773D17F29D267B57 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a in Frameworks */,
+				0C80B921A6F3F58F76C31292 /* libPods-FabricRichTextExample.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00E356EF1AD99517003FC87E /* FabricRichTextExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				00E356F21AD99517003FC87E /* FabricRichTextExampleTests.m */,
+				A1B2C3D400000011AAAAAAAA /* FabricRichParserTests.mm */,
+				A1B2C3D400000012AAAAAAAA /* FabricRichFragmentParserTests.mm */,
+				A1B2C3D400000013AAAAAAAA /* FabricRichLinksTests.mm */,
+				A1B2C3D400000014AAAAAAAA /* FabricRichListsTests.mm */,
+				A1B2C3D400000015AAAAAAAA /* FabricRichRTLTests.mm */,
+				A1B2C3D400000016AAAAAAAA /* FabricRichStylingTests.mm */,
+				A1B2C3D400000017AAAAAAAA /* AccessibilityContainerTests.swift */,
+				A1B2C3D400000018AAAAAAAA /* FabricRichSanitizerTests.swift */,
+				A1B2C3D400000019AAAAAAAA /* LinkBoundsTests.swift */,
+			);
+			path = FabricRichTextExampleTests;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* FabricRichTextExample */ = {
 			isa = PBXGroup;
 			children = (
@@ -88,8 +116,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				48138B3EC30185FA16B8472C /* libPods-FabricRichTextExample.a */,
-				7376ECDB14BFF91CF0B9EFB9 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a */,
+				5DCACB8F33CDC322A6C60F78 /* libPods-FabricRichTextExample.a */,
+				3FF1B4D41CD1DF9EEAE1E0B4 /* libPods-FabricRichTextExample-FabricRichTextExampleTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -106,10 +134,11 @@
 			children = (
 				13B07FAE1A68108700A75B9A /* FabricRichTextExample */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				A072473B2F1139340006C67E /* FabricRichTextExampleTests */,
+				00E356EF1AD99517003FC87E /* FabricRichTextExampleTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				A1B2C3D40000001AAAAAAAAA /* FabricRichTextTests-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -120,7 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				13B07F961A680F5B00A75B9A /* FabricRichTextExample.app */,
-				A072473A2F1139340006C67E /* FabricRichTextExampleTests.xctest */,
+				00E356EE1AD99517003FC87E /* FabricRichTextExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -128,10 +157,10 @@
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				AFF64C9DFFE2609D7196DA8D /* Pods-FabricRichTextExample.debug.xcconfig */,
-				0838639CC71AAF95AAED1CCA /* Pods-FabricRichTextExample.release.xcconfig */,
-				62313A8CA6853161FAF9CE3D /* Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig */,
-				C74A9EA236A6A63D60AB6E9E /* Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig */,
+				3B4392A12AC88292D35C810B /* Pods-FabricRichTextExample.debug.xcconfig */,
+				5709B34CF0A7D63546082F79 /* Pods-FabricRichTextExample.release.xcconfig */,
+				44C4762B566106F7ABA44DEF /* Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig */,
+				94EF03057E96B0846F774126 /* Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -139,17 +168,37 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		00E356ED1AD99517003FC87E /* FabricRichTextExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00E356F01AD99517003FC87E /* Build configuration list for PBXNativeTarget "FabricRichTextExampleTests" */;
+			buildPhases = (
+				EB7CA2C22F366154CC4BEB14 /* [CP] Check Pods Manifest.lock */,
+				00E356EA1AD99517003FC87E /* Sources */,
+				00E356EB1AD99517003FC87E /* Frameworks */,
+				182AB7FB9EC5F519C0622663 /* [CP] Embed Pods Frameworks */,
+				DAE8F795818CEDC07E4CED78 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00E356F51AD99517003FC87E /* PBXTargetDependency */,
+			);
+			name = FabricRichTextExampleTests;
+			productName = FabricRichTextExampleTests;
+			productReference = 00E356EE1AD99517003FC87E /* FabricRichTextExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		13B07F861A680F5B00A75B9A /* FabricRichTextExample */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FabricRichTextExample" */;
 			buildPhases = (
-				BB8EFAA5EB17DBBA49A3A348 /* [CP] Check Pods Manifest.lock */,
+				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				F89F68BE7D4EA96115D7BC31 /* [CP] Embed Pods Frameworks */,
-				86500FB91A8B4BA6A0CDF954 /* [CP] Copy Pods Resources */,
+				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
+				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -160,49 +209,24 @@
 			productReference = 13B07F961A680F5B00A75B9A /* FabricRichTextExample.app */;
 			productType = "com.apple.product-type.application";
 		};
-		A07247392F1139340006C67E /* FabricRichTextExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A07247402F1139340006C67E /* Build configuration list for PBXNativeTarget "FabricRichTextExampleTests" */;
-			buildPhases = (
-				01532E053916DB34E7605E66 /* [CP] Check Pods Manifest.lock */,
-				A07247362F1139340006C67E /* Sources */,
-				A07247372F1139340006C67E /* Frameworks */,
-				A07247382F1139340006C67E /* Resources */,
-				AE8F013CF8CE6B49C8AE23A4 /* [CP] Embed Pods Frameworks */,
-				36585C5A4CFF40B133E7BA72 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A072473F2F1139340006C67E /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				A072473B2F1139340006C67E /* FabricRichTextExampleTests */,
-			);
-			name = FabricRichTextExampleTests;
-			productName = FabricRichTextExampleTests;
-			productReference = A072473A2F1139340006C67E /* FabricRichTextExampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2610;
+				LastUpgradeCheck = 1210;
 				TargetAttributes = {
+					00E356ED1AD99517003FC87E = {
+						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
-					};
-					A07247392F1139340006C67E = {
-						CreatedOnToolsVersion = 26.1;
-						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FabricRichTextExample" */;
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -210,13 +234,12 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
-			preferredProjectObjectVersion = 77;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* FabricRichTextExample */,
-				A07247392F1139340006C67E /* FabricRichTextExampleTests */,
+				00E356ED1AD99517003FC87E /* FabricRichTextExampleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -228,14 +251,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				33FAB451990F614EE44CC46D /* PrivacyInfo.xcprivacy in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A07247382F1139340006C67E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				B5006ED83D48809E0FE962D3 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,63 +274,24 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"\\\"$WITH_ENVIRONMENT\\\" \\\"$REACT_NATIVE_XCODE\\\"\"\n";
 		};
-		01532E053916DB34E7605E66 /* [CP] Check Pods Manifest.lock */ = {
+		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-FabricRichTextExample-FabricRichTextExampleTests-checkManifestLockResult.txt",
+				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		36585C5A4CFF40B133E7BA72 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		86500FB91A8B4BA6A0CDF954 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AE8F013CF8CE6B49C8AE23A4 /* [CP] Embed Pods Frameworks */ = {
+		182AB7FB9EC5F519C0622663 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -331,7 +308,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BB8EFAA5EB17DBBA49A3A348 /* [CP] Check Pods Manifest.lock */ = {
+		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -353,26 +330,82 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F89F68BE7D4EA96115D7BC31 /* [CP] Embed Pods Frameworks */ = {
+		DAE8F795818CEDC07E4CED78 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample-FabricRichTextExampleTests/Pods-FabricRichTextExample-FabricRichTextExampleTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FabricRichTextExample/Pods-FabricRichTextExample-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EB7CA2C22F366154CC4BEB14 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FabricRichTextExample-FabricRichTextExampleTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		00E356EA1AD99517003FC87E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00E356F31AD99517003FC87E /* FabricRichTextExampleTests.m in Sources */,
+				A1B2C3D400000001AAAAAAAA /* FabricRichParserTests.mm in Sources */,
+				A1B2C3D400000002AAAAAAAA /* FabricRichFragmentParserTests.mm in Sources */,
+				A1B2C3D400000003AAAAAAAA /* FabricRichLinksTests.mm in Sources */,
+				A1B2C3D400000004AAAAAAAA /* FabricRichListsTests.mm in Sources */,
+				A1B2C3D400000005AAAAAAAA /* FabricRichRTLTests.mm in Sources */,
+				A1B2C3D400000006AAAAAAAA /* FabricRichStylingTests.mm in Sources */,
+				A1B2C3D400000007AAAAAAAA /* AccessibilityContainerTests.swift in Sources */,
+				A1B2C3D400000008AAAAAAAA /* FabricRichSanitizerTests.swift in Sources */,
+				A1B2C3D400000009AAAAAAAA /* LinkBoundsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -381,27 +414,87 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A07247362F1139340006C67E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A072473F2F1139340006C67E /* PBXTargetDependency */ = {
+		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* FabricRichTextExample */;
-			targetProxy = A072473E2F1139340006C67E /* PBXContainerItemProxy */;
+			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		00E356F61AD99517003FC87E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 44C4762B566106F7ABA44DEF /* Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_ENABLE_MODULES = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../../../cpp",
+				);
+				INFOPLIST_FILE = FabricRichTextExampleTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.FabricRichTextExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "FabricRichTextTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FabricRichTextExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FabricRichTextExample";
+			};
+			name = Debug;
+		};
+		00E356F71AD99517003FC87E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94EF03057E96B0846F774126 /* Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_ENABLE_MODULES = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../../../cpp",
+				);
+				INFOPLIST_FILE = FabricRichTextExampleTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.FabricRichTextExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "FabricRichTextTests-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FabricRichTextExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FabricRichTextExample";
+			};
+			name = Release;
+		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AFF64C9DFFE2609D7196DA8D /* Pods-FabricRichTextExample.debug.xcconfig */;
+			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-FabricRichTextExample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -419,7 +512,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.michaelfay.fabricrichtext;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = FabricRichTextExample;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -429,7 +522,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0838639CC71AAF95AAED1CCA /* Pods-FabricRichTextExample.release.xcconfig */;
+			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-FabricRichTextExample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -446,7 +539,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.michaelfay.fabricrichtext;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = FabricRichTextExample;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -484,7 +577,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = U8T8VY3446;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -515,6 +607,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DFOLLY_NO_CONFIG",
@@ -525,7 +618,6 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				USE_HERMES = true;
 			};
@@ -562,7 +654,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = U8T8VY3446;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -585,6 +676,7 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DFOLLY_NO_CONFIG",
@@ -595,80 +687,23 @@
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
 				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		A07247412F1139340006C67E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 62313A8CA6853161FAF9CE3D /* Pods-FabricRichTextExample-FabricRichTextExampleTests.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = io.michaelfay.FabricRichTextExampleTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FabricRichTextExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FabricRichTextExample";
-			};
-			name = Debug;
-		};
-		A07247422F1139340006C67E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = C74A9EA236A6A63D60AB6E9E /* Pods-FabricRichTextExample-FabricRichTextExampleTests.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = io.michaelfay.FabricRichTextExampleTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FabricRichTextExample.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FabricRichTextExample";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		00E356F01AD99517003FC87E /* Build configuration list for PBXNativeTarget "FabricRichTextExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00E356F61AD99517003FC87E /* Debug */,
+				00E356F71AD99517003FC87E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FabricRichTextExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -683,15 +718,6 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A07247402F1139340006C67E /* Build configuration list for PBXNativeTarget "FabricRichTextExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A07247412F1139340006C67E /* Debug */,
-				A07247422F1139340006C67E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
